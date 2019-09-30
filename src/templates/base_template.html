@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<title>Hello There</title>
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles.css') }}">
+</head>
+<h2 class="header">
+    CVE Assistance System
+</h2>
+<div>
+    <form action="/cve_entry" method="POST">
+        <label for="cve_entry_input">Enter a CVE Number: </label>
+        <input type="text" id="cve_entry_input" name="cve_entry">
+        <button type="submit">Submit CVE Number</button>
+    </form>
+</div>
