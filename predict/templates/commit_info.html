@@ -1,0 +1,17 @@
+{% extends "cve_selected.html" %}
+{% block content %}
+
+<center><h1>{{ commit_hash }}</h1></center>
+<p>{{ commit_msg }}</p>
+<ul>
+{% for file in commit_files %}
+<li>
+    <b>{{ file.get("file_name") }}</b>
+    <a href="{{ file.get("file_link") }}">FILE</a>
+    <a href="{{ file.get("history_link") }}">HISTORY</a>
+    <a href="{{ file.get("blame_link") }}">BLAME</a>
+</li>
+{% endfor %}
+</ul>
+
+{% endblock %}

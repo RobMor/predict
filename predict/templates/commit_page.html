@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" style="height: 100%">
+    <head>
+        <meta charset="UTF-8">
+        <title>Title</title>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles.css') }}">
+    </head>
+
+    {% for commit_entry in context %}
+        <div class="commitEntryDivInactive"
+             id= {{ context.get(commit_entry).get('generated_id') }}>
+            <div>
+                <h3>
+                    Viewing Commit #<a href={{ commit_entry }}>{{ commit_entry.split("/")[-1] }}</a>
+                </h3>
+                <h4>
+                    Description:
+                </h4>
+                <p class="commitDescriptionText">
+                    {{ context.get(commit_entry).get("commit_description") }}
+                </p>
+            </div>
+            <div>
+                <div class="leftPaneDiv">
+                    <p>
+                        {{ context.get(commit_entry).get('files') }}
+                    </p>
+                </div>
+                <div class="dividerDiv">
+
+                </div>
+                <div class="rightPaneDiv">
+                    <p>
+                        {{ context.get(commit_entry).get('generated_id') }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+
+</html>
+
+
+

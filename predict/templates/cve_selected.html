@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% block head %}
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles.css') }}" />
+    <title>{{ cve_id }}</title>
+    {% endblock %}
+</head>
+<body>
+    <style>
+    .sidebar {
+        height: 100%;
+        width: 0;
+        position: fixed;
+        z-index: 1;
+        top: 0;
+        left: 0;
+        color: white;
+        background-color: black;
+        overflow-x: hidden;
+        transition: 0.5s;
+        padding-top: 60px;
+    }
+    .float{
+        position:fixed;
+        top:40px;
+        left:40px;
+        text-align:center;
+    }
+    #content{
+        max-width: 60rem;
+        margin: 0 auto;
+    }
+    </style>
+    
+    <div id="mySidebar" class="sidebar">
+        <a onclick="closeNav()">X</a>
+        <h1>{{ cve_id }}</h1>
+        <p>{{ cve_desc }}</p>
+        <ul>
+        {% for link_element in cve_links %}
+            <li>
+                <a href={{ link_element }}>
+                    {{ link_element }}
+                </a>
+            </li>
+        {% endfor %}
+        </ul>
+    </div>
+    
+    <script>
+        function openNav() {
+            document.getElementById("mySidebar").style.width = "30%";
+        }
+        
+        function closeNav() {
+            document.getElementById("mySidebar").style.width = "0";
+        }
+    </script>
+
+    <a onclick="openNav()" class="float"> -> </a>
+
+    <div id="content">{% block content %}{% endblock %}</div>
+</body>
+</html>

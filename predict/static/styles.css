@@ -1,0 +1,135 @@
+.header{
+    max-width: 500px;
+    margin: auto;
+    border-style: outset;
+    background: slateblue;
+}
+.text_entry{
+    border-style: inset;
+    background: white;
+}
+.outsideDiv{
+    border-style: outset;
+    background: lightslategray;
+    height: 100%;
+}
+.descriptionDiv{
+    border-style: inset;
+    background: slategray;
+}
+.descriptionDivText{
+    border-style: inset;
+    padding:1px;
+    background: lightgray;
+}
+.mainbodyDiv{
+    background: white;
+    width: 100%;
+    height: 100%;
+}
+.hiddenLinksDiv{
+    display: none;
+    background: lightblue;
+    height: 100%;
+}
+.slideOutPanel{
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+.cvePageHeader{
+    background: #929c9e;
+    border-style: outset;
+}
+.cvePageLinkDiv{
+    background: #a1ccc7;
+    overflow: scroll;
+}
+.cveRefLinksTitle{
+    background: #9ec5cc;
+}
+.hiddenLinksDivActive{
+    display: inline-block;
+    background: lightblue;
+    border-style: inset;
+    border-color: white;
+    height: 100%;
+    width: 33%;
+    vertical-align: top;
+}
+.panesDivInactive{
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    background: lightgray;
+    border-style: solid;
+    border-color: #90908e;
+}
+.panesDivActive{
+    display: inline-block;
+    width: 65%;
+    height: 100%;
+    background: lightgray;
+    border-style: solid;
+    border-color: #90908e;
+}
+.leftPaneDiv{
+    display: inline-block;
+    background: #c1fffd;
+    border-style: solid;
+    border-color: white;
+    overflow: scroll;
+    height: 100%;
+    width: 48%;
+    vertical-align: top;
+}
+.dividerDiv{
+    width: 4px;
+    display: inline-block;
+    background: black;
+    height: 100%;
+}
+.rightPaneDiv{
+    display: inline-block;
+    background: #c3ffcd;
+    border-style: solid;
+    border-color: gray;
+    overflow: scroll;
+    width: 48%;
+    height: 100%;
+    vertical-align: top;
+}
+.commitEntryDivInactive{
+    display: none;
+    height: 100%;
+}
+.commitEntryDivActive{
+    display: inline-block;
+    height: 100%;
+}
+.commitDescriptionText{
+    background: #e8ecff;
+    padding: 1px;
+    border-style: inset;
+    border-color: #c5ffec;
+}
+.tabButtonDiv{
+    background: slategray;
+    border-style: inset;
+    border-color: #929c9e;
+}
+.commitInfoSelectionDiv{
+    height: 100%;
+}
+.notesArea{
+    width: 100%;
+    height: 15%;
+}
+.fileDivInactive {
+    display: none;
+    height: 100%;
+}
+.fileDivActive{
+    display: block;
+    height: 100%;
+}

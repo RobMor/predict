@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<title>Hello There</title>
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles.css') }}">
+    <script type="text/javascript">
+        function goto_cve() {
+            window.location.href = window.location.href+"cve/"+document.getElementById("cve_input").value
+            console.log(window.location.href)
+        }
+    </script>
+</head>
+<h2 class="header">
+    CVE Assistance System
+</h2>
+<div>
+    <input type="text" id="cve_input">
+    <button onclick="goto_cve()">Analyze CVE</button>
+</div>
