@@ -8,7 +8,7 @@
 </head>
 <body>
     <style>
-    .sidebar {
+    #sidebar {
         height: 100%;
         width: 0;
         position: fixed;
@@ -33,7 +33,7 @@
     }
     </style>
     
-    <div id="mySidebar" class="sidebar">
+    <div id="sidebar">
         <a onclick="closeNav()">X</a>
         <h1>{{ cve_id }}</h1>
         <p>{{ cve_desc }}</p>
@@ -50,11 +50,11 @@
     
     <script>
         function openNav() {
-            document.getElementById("mySidebar").style.width = "30%";
+            document.getElementById("sidebar").style.width = "30%";
         }
         
         function closeNav() {
-            document.getElementById("mySidebar").style.width = "0";
+            document.getElementById("sidebar").style.width = "0";
         }
     </script>
 
