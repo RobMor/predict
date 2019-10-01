@@ -3,6 +3,7 @@ import requests
 
 from flask import Flask
 from flask import render_template
+from flask import url_for
 from flask import request
 from flask import redirect
 
@@ -17,32 +18,44 @@ def cve_entry_page():
 
 
 @app.route("/cve/<cve_id>")
-def commit_information_page(cve_id):
+def cve_base(cve_id):
 
     # TODO -- Validate cve id here!
 
     cve_data = CVEWebScraper(cve_id).run()
 
-    for link in cve_data["links"]:
+    for num, link in enumerate(cve_data["links"]):
         # Display the page for the first github link we find
         if "github.com" in link:  # TODO -- More sophisticated checks in the future
-            github_data = GitHubWebScraper(link).run()
+            hash = link.split("/")[-1]
+            return redirect(url_for("commit_info_page", cve_id=cve_id, link_num=num, hash=hash))
 
-            return render_template(
-                "commit_info.html",
-                cve_id=cve_data["ID"],
-                cve_desc=cve_data["desc"],
-                cve_links=cve_data["links"],
-                commit_hash=github_data["hash"],
-                commit_msg=github_data["msg"],
-                commit_files=github_data["files"],
-            )
-
+    # TODO -- Give more information to the template as to which links are gitub links
     return render_template(
         "cve_selected.html",
         cve_id=cve_data["ID"],
         cve_desc=cve_data["desc"],
         cve_links=cve_data["links"],
+    )
+
+@app.route("/cve/<cve_id>/<link_num>/<hash>")
+def commit_info_page(cve_id, link_num, hash):
+
+    # TODO -- validate input here!!!
+
+    cve_data = CVEWebScraper(cve_id).run() # TODO -- Hmmmm
+
+    link = cve_data["links"][int(link_num)]
+    github_data = GitHubWebScraper(link).run()
+
+    return render_template(
+        "commit_info.html",
+        cve_id=cve_data["ID"],
+        cve_desc=cve_data["desc"],
+        cve_links=cve_data["links"],
+        commit_hash=github_data["hash"],
+        commit_msg=github_data["msg"],
+        commit_files=github_data["files"],
     )
 
 
