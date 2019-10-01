@@ -1,11 +1,20 @@
 <!DOCTYPE html>
-<title>Hello There</title>
 <head>
+    <title>Hello There</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles.css') }}">
     <script type="text/javascript">
         function goto_cve() {
-            window.location.href = window.location.href+"cve/"+document.getElementById("cve_input").value
-            console.log(window.location.href)
+            if (typeof(Storage) !== "undefined") {
+                localStorage.setItem("nav", "open")
+            }
+            
+            window.location.href = "cve/"+document.getElementById("cve_input").value
+            // Return false to avoid the real form submission
+            return false
+        }
+
+        window.onload = function() {
+            document.getElementById("cve_query").onsubmit = goto_cve
         }
     </script>
 </head>
@@ -13,6 +22,11 @@
     CVE Assistance System
 </h2>
 <div>
-    <input type="text" id="cve_input">
-    <button onclick="goto_cve()">Analyze CVE</button>
+    <center>
+        <form id="cve_query">
+            <label for="cve_input">CVE ID:</label>
+            <input type="text" id="cve_input">
+            <input type="submit" value="Analyze CVE">
+        </form>
+    </center>
 </div>

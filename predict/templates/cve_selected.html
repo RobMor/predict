@@ -7,6 +7,7 @@
     {% endblock %}
 </head>
 <body>
+    <!-- Get this outta here -->
     <style>
     #sidebar {
         height: 100%;
@@ -18,8 +19,6 @@
         color: white;
         background-color: black;
         overflow-x: hidden;
-        transition: 0.5s;
-        padding-top: 60px;
     }
     .float{
         position:fixed;
@@ -38,28 +37,44 @@
         <h1>{{ cve_id }}</h1>
         <p>{{ cve_desc }}</p>
         <ul>
-        {% for link_element in cve_links %}
+        {% for link in cve_links %}
             <li>
-                <a href={{ link_element }}>
-                    {{ link_element }}
+                <a href={{ link }}>
+                    {{ link }}
                 </a>
             </li>
         {% endfor %}
         </ul>
     </div>
     
+    <!-- Get these outta here -->
     <script>
         function openNav() {
             document.getElementById("sidebar").style.width = "30%";
+            if (typeof(Storage) !== "undefined") {
+                localStorage.setItem("nav", "open")
+            }
         }
         
         function closeNav() {
             document.getElementById("sidebar").style.width = "0";
+            if (typeof(Storage) !== "undefined") {
+                localStorage.setItem("nav", "closed")
+            }
+        }
+
+        if (typeof(Storage) !== "undefined") {
+            if (localStorage.getItem("nav") === "open") {
+                openNav()
+            }
         }
     </script>
 
     <a onclick="openNav()" class="float"> -> </a>
 
-    <div id="content">{% block content %}{% endblock %}</div>
+    <div id="content">
+        {% block content %}
+        {% endblock %}
+    </div>
 </body>
 </html>

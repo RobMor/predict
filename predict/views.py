@@ -24,6 +24,7 @@ def cve_base(cve_id):
 
     cve_data = CVEWebScraper(cve_id).run()
 
+    # TODO -- Might need to do this redirect with javascript
     for num, link in enumerate(cve_data["links"]):
         # Display the page for the first github link we find
         if "github.com" in link:  # TODO -- More sophisticated checks in the future
@@ -43,7 +44,7 @@ def commit_info_page(cve_id, link_num, hash):
 
     # TODO -- validate input here!!!
 
-    cve_data = CVEWebScraper(cve_id).run() # TODO -- Hmmmm
+    cve_data = CVEWebScraper(cve_id).run() # TODO -- How to save this data from the previous request!!
 
     link = cve_data["links"][int(link_num)]
     github_data = GitHubWebScraper(link).run()
