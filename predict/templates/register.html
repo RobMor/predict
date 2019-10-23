@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block head %}
+{{ super() }}
+<title>Register</title>
+{% endblock %}
+
+{% block body %}
+<div class = "jumbotron">
+    <h1>Predict Registration Page</h1>
+</div>
+
+<form>
+    <div class="form-group">
+        <label for="username">Username:</label>
+        <input class="form-control" id="username" placeholder="some_username_here">
+    </div>
+
+    <!--TODO: According to the requirements spec:
+    Upon entry of a “Password” and “Confirm Password” that do not match, the system shall not register the user, and shall display 
+    “Passwords do not match” in red above the text boxes, and shall clear the “Password” and “Confirm Password” text boxes, 
+    but shall not clear the “Username” text box. But this can be done after greenlighting.
+    -->
+    <div class="form-group">
+        <label for="password">Password:</label>
+        <input type="password" class="form-control" id="password" placeholder="password">
+    </div>
+    <div class="form-group">
+        <label for="password">Confirm Password:</label>
+        <input type="password" class="form-control" id="password_confirm" placeholder="confirm password">
+    </div>
+    <a href ="authentication.html">Already have an account? Click here to login!</a>
+    <br>
+    <button type="submit" class="btn btn-primary">Create account!</button>
+</form>
+{% endblock %}

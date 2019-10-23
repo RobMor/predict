@@ -1,82 +1,87 @@
 import json
+import sqlite3
+
+import flask
 import requests
 
-from flask import Flask
-from flask import render_template
-from flask import url_for
-from flask import request
-from flask import redirect
-
 from predict import app
-from predict.scrapers import CVEWebScraper
-from predict.scrapers import GitHubWebScraper
+import predict.cve
+import predict.github
 
 
 @app.route("/")
-def cve_entry_page():
-    return render_template("cve_entry.html")
+def base():
+    # If they're logged in direct to dashboard, if not direct to login
+    logged_in = True  # TODO how to check if the user is logged in
+    if logged_in:
+        return flask.redirect(flask.url_for("dashboard"))
+    else:
+        return flask.redirect(flask.url_for("login"))
+
+
+@app.route("/login")
+def login():
+    return flask.render_template("login.html")
+
+
+@app.route("/register")
+def register():
+    return "TODO"
+
+
+@app.route("/dashboard")
+def dashboard():
+    return flask.render_template("dashboard.html")
+
+
+@app.route("/resolution")
+def conflict_resolution():
+    return "TODO"
 
 
 @app.route("/cve/<cve_id>")
 def cve_base(cve_id):
+    cve_data = predict.cve.get_entry(cve_id)
 
-    # TODO -- Validate cve id here!
+    if len(cve_data.get("github_links", [])) > 0:
+        link = data["github_links"][0]
 
-    cve_data = CVEWebScraper(cve_id).run()
+        return flask.redirect(
+            url_for(
+                "info_page",
+                cve_id=cve_id,
+                repo_user=link["repo_user"],
+                repo_name=link["repo_name"],
+                hash=link["hash"],
+            )
+        )
 
-    # TODO -- Might need to do this redirect with javascript
-    for num, link in enumerate(cve_data["links"]):
-        # Display the page for the first github link we find
-        if "github.com" in link:  # TODO -- More sophisticated checks in the future
-            hash = link.split("/")[-1]
-            return redirect(url_for("commit_info_page", cve_id=cve_id, link_num=num, hash=hash))
+    return flask.render_template("cve_sidebar.html")
 
-    # TODO -- Give more information to the template as to which links are gitub links
-    return render_template(
-        "cve_selected.html",
-        cve_id=cve_data["ID"],
-        cve_desc=cve_data["desc"],
-        cve_links=cve_data["links"],
-    )
 
-@app.route("/cve/<cve_id>/<link_num>/<hash>")
-def commit_info_page(cve_id, link_num, hash):
+@app.route("/cve/<cve_id>/info/<repo_user>/<repo_name>/<hash>")
+def info_page(cve_id, repo_user, repo_name, hash):
 
     # TODO -- validate input here!!!
 
-    cve_data = CVEWebScraper(cve_id).run() # TODO -- How to save this data from the previous request!!
+    # cve_data = CVEWebScraper(cve_id).run() # TODO -- How to save this data from the previous request!!
 
-    link = cve_data["links"][int(link_num)]
-    github_data = GitHubWebScraper(link).run()
+    # link = cve_data["links"][int(link_num)]
+    # github_data = GitHubWebScraper(link).run()
 
-    return render_template(
-        "commit_info.html",
-        cve_id=cve_data["ID"],
-        cve_desc=cve_data["desc"],
-        cve_links=cve_data["links"],
-        commit_hash=github_data["hash"],
-        commit_msg=github_data["msg"],
-        commit_files=github_data["files"],
-    )
+    # return render_template(
+    #     "commit_info.html",
+    #     cve_id=cve_data["ID"],
+    #     cve_desc=cve_data["desc"],
+    #     cve_links=cve_data["links"],
+    #     commit_hash=github_data["hash"],
+    #     commit_msg=github_data["msg"],
+    #     commit_files=github_data["files"],
+    # )
 
-
-# @app.route("/add_commit_page")
-# def add_commit_page():
-#     if request.form["commit_link"] is not None:
-#         return render_template(
-#             "commit_page.html",
-#             context=CVEWebScraper.strip_commit_page(request.form["commit_link"]),
-#         )
+    return "TODO"
 
 
-# @app.route("/mark_commit_as_intro")
-# def mark_commit_as_intro():
-#     if (
-#         request.form["commit_link"] is not None
-#         and request.form["cve_number"] is not None
-#     ):
-#         print(
-#             "CVE entry {} solved at {}".format(
-#                 request.form["cve_number"], request.form["commit_link"]
-#             )
-#         )
+@app.route("/cve/<cve_id>/blame/<repo_user>/<repo_name>/<hash>/<file_name>")
+def blame_page(cve_id, repo_user, repo_name, hash, file_name):
+    return "TODO"
