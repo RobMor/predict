@@ -1,13 +1,12 @@
 {% extends "cve_sidebar.html" %}
 {% block content %}
 
-<center><h1>{{ commit_hash }}</h1></center>
-Testing
-<p>{{ commit_msg }}</p>
+<center><h1>{{ github_data["hash"] }}</h1></center>
+<p>{{ github_data["msg"] }}</p>
 <ul>
-{% for file in commit_files %}
+{% for file in github_data["files"] %}
 <li>
-    <b>{{ file.get("file_name") }}</b>
+    <b>{{ file["file_name"] }}</b>
     <a href="{{ file.get("file_link") }}">FILE</a>
     <a href="{{ file.get("history_link") }}">HISTORY</a>
     <a href="{{ file.get("blame_link") }}">BLAME</a>

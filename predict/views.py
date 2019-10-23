@@ -44,42 +44,18 @@ def cve_base(cve_id):
     cve_data = predict.cve.get_entry(cve_id)
 
     if len(cve_data.get("github_links", [])) > 0:
-        link = data["github_links"][0]
+        return flask.redirect(cve_data["github_links"][0][1])
 
-        return flask.redirect(
-            url_for(
-                "info_page",
-                cve_id=cve_id,
-                repo_user=link["repo_user"],
-                repo_name=link["repo_name"],
-                hash=link["hash"],
-            )
-        )
-
-    return flask.render_template("cve_sidebar.html")
+    return flask.render_template("cve_sidebar.html", cve_data=cve_data)
 
 
 @app.route("/cve/<cve_id>/info/<repo_user>/<repo_name>/<hash>")
 def info_page(cve_id, repo_user, repo_name, hash):
+    # Possibly collect these in parallel?
+    cve_data = predict.cve.get_entry(cve_id)
+    github_data = predict.github.get_commit(repo_user, repo_name, hash)
 
-    # TODO -- validate input here!!!
-
-    # cve_data = CVEWebScraper(cve_id).run() # TODO -- How to save this data from the previous request!!
-
-    # link = cve_data["links"][int(link_num)]
-    # github_data = GitHubWebScraper(link).run()
-
-    # return render_template(
-    #     "commit_info.html",
-    #     cve_id=cve_data["ID"],
-    #     cve_desc=cve_data["desc"],
-    #     cve_links=cve_data["links"],
-    #     commit_hash=github_data["hash"],
-    #     commit_msg=github_data["msg"],
-    #     commit_files=github_data["files"],
-    # )
-
-    return "TODO"
+    return flask.render_template("commit_info.html", cve_data=cve_data, github_data=github_data)
 
 
 @app.route("/cve/<cve_id>/blame/<repo_user>/<repo_name>/<hash>/<file_name>")

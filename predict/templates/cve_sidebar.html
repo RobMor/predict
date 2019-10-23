@@ -33,10 +33,21 @@
 
 <div id="sidebar">
     <a onclick="closeNav()">X</a>
-    <h1>{{ cve_id }}</h1>
-    <p>{{ cve_desc }}</p>
+    <h1>{{ cve_data["id"] }}</h1>
+    <p>{{ cve_data["desc"] }}</p>
+    <h3>Github Links</h3> 
     <ul>
-    {% for link in cve_links %}
+    {% for normal, updated in cve_data["github_links"] %}
+        <li>
+            <a href={{ updated }}>
+                {{ normal }}
+            </a>
+        </li>
+    {% endfor %}
+    </ul>
+    <h3>Non-Github Links</h3>
+    <ul>
+    {% for link in cve_data["normal_links"] %}
         <li>
             <a href={{ link }}>
                 {{ link }}

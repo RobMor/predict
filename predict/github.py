@@ -7,10 +7,12 @@ import time
 def get_commit(repo_user, repo_name, hash):
     data = {}
 
-    response = requests.get(self.link)
+    link = f"https://github.com/{repo_user}/{repo_name}/commit/{hash}"
+
+    response = requests.get(link)
     soup = BeautifulSoup(response.text, "html.parser")
 
-    data["hash"] = self.link.split("/")[-1]
+    data["hash"] = hash
     data["msg"] = soup.find("div", {"class": "commit-desc"}).text
 
     file_headers = soup.find_all(
@@ -47,6 +49,7 @@ def get_commit(repo_user, repo_name, hash):
                 )
         except Exception as file_header_exc:
             print(file_header_exc)
+
     return data
 
 
