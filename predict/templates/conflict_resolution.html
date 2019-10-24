@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block head %}
+{{ super() }}
+<title>Conflict Resolution</title>
+<!-- TODO!!! Delete This, it's already in the base template. -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+{% endblock %}
+{% block body%}
+<center>
+  <h1>
+    Conflict Resolution
+  </h1>
+</center>
+<a href="dashboard.html" class="btn btn-primary" role="button">Dashboard</a>
+<hr>
+<div class="container">           
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>CVE ID</th>
+        <th>User</th>
+        <th>Fix Commit</th>
+        <th>Fix File</th>
+	<th>Intro Commit</th>
+	<th>Intro File</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1234-567890</td>
+        <td>jbelke</td>
+        <td>1234abcd</td>
+	<td>fixFile.py</td>
+	<td>4321dcba</td>
+	<td>introFile.py</td>
+      </tr>
+      <tr>
+        <td>2019-42069</td>
+        <td>rmorrison</td>
+        <td>134lk34m</td>
+	<td>someFile.c</td>
+	<td>432kj4n4</td>
+	<td>someOtherFile.c</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+{% end block%}
