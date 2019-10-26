@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block head %}
+{{ super() }}
+<title>Git Blame Page</title>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+{% endblock %}
+{% block body%}
+<center>
+  <h1>
+    Git Blame Page
+  </h1>
+</center>
+<a href="dashboard.html" class="btn btn-primary" role="button">Dashboard</a>
+<hr>
+<div class="container">           
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>File Diff</th>
+        <th>File Blame</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Diff Placeholder</td>
+        <td>Blame Placeholder</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+{% end block%}
