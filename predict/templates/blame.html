@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block head %}
+{{ super() }}
+<title>Git Blame Page</title>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+{% endblock %}
+{% block body%}
+<style>
+	.sticky {
+	  overflow: hidden;
+	  border-style: solid;
+	  background-color: white;
+	  position: fixed;
+	  top: 0; 
+	  width: 100%; /* Full width */
+	}
+	.main {
+	  margin-top: 30px; /* Add a top margin to avoid content overlay */
+	}
+</style>
+
+<center>
+  <h1 class="main">
+    Git Blame Page
+  </h1>
+</center>
+
+
+<div class="header sticky" id="myHeader">
+  <h2>Header Placeholder</h2>
+</div>
+<a href="dashboard.html" class="btn btn-primary" role="button">Dashboard</a>
+<hr>
+<div class="container">           
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>File Diff</th>
+        <th>File Blame</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><pre>Diff Placeholder
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		</pre></td>
+        <td>Blame Placeholder</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+{% end block%}
