@@ -2,8 +2,9 @@
 
 {% block head %}
 {{ super() }}
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='sidebar.css') }}">
+<script type="text/javascript" src="{{ url_for('static', filename='cve_query.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='sidebar.js') }}"></script>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='sidebar.css') }}">
 {% endblock %}
 
 {% block title %} {{ cve_data["id"] }} {% endblock %}
@@ -11,7 +12,11 @@
 {% block body %}
 <!-- Actual sidebar -->
 <div id="sidebar" class="bg-light">
-    <a id="sidebar-close" class="btn btn-outline-dark" role="button" onclick="toggleSidebar()"> <i class="fas fa-arrow-left"></i> </a>
+    <div id="sidebar-controls">
+        <a class="sidebar-control btn btn-outline-dark" role="button" href="{{ url_for("dashboard") }}"> <i class="fas fa-home"></i> Dashboard </a>
+        <input id="cve-input" class="sidebar-control" type="text" placeholder="CVE ID">
+        <a class="sidebar-control btn btn-outline-dark" role="button" onclick="toggleSidebar()"> <i class="fas fa-arrow-left"></i> </a>
+    </div>
 
     <div id="sidebar-content">     
         <h1>{{ cve_data["id"] }}</h1>

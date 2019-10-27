@@ -35,12 +35,18 @@
     color: white;
 }
 
-#sidebar-close {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
+#sidebar-controls {
+    display: flex;
+    padding: 1rem;
+    padding-bottom: 0;
+}
 
-    text-align: center;
+#sidebar-controls > .sidebar-control {
+    margin: 0.2rem;
+}
+
+#sidebar-controls input.sidebar-control {
+    flex: 1;
 }
 
 #sidebar-close:hover {
