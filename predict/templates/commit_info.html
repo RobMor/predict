@@ -1,6 +1,6 @@
 {% extends "cve_sidebar.html" %}
-{% block content %}
 
+{% block content %}
 <center><h1>{{ github_data["commit_hash"] }}</h1></center>
 <p>{{ github_data["commit_description"] }}</p>
 <ul>
@@ -35,5 +35,4 @@
 </li>
 {% endfor %}
 </ul>
-
 {% endblock %}

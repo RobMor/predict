@@ -37,7 +37,8 @@ users = {}
 @app.route("/")
 def base():
     # If they're logged in direct to dashboard, if not direct to login
-    logged_in = flask_login.current_user.is_authenticated
+    # stop requiring me to log in grr!!
+    logged_in = True # flask_login.current_user.is_authenticated
     if logged_in:
         return flask.redirect(flask.url_for("dashboard"))
     else:
@@ -100,10 +101,11 @@ def register():
 @flask_login.login_required #TODO: Figure out why this annotation is not preventing access
 @app.route("/dashboard")
 def dashboard():
-    if flask_login.current_user.is_authenticated:
-        return flask.render_template("dashboard.html")
-    else:
-        return flask.redirect(flask.url_for("login"))
+    # Stop making me log in !!
+    # if flask_login.current_user.is_authenticated:
+    return flask.render_template("dashboard.html")
+    # else:
+    #     return flask.redirect(flask.url_for("login"))
 
 #@flask_login.login_required
 @app.route("/resolution")
@@ -171,8 +173,8 @@ def conflict_resolution():
 def cve_base(cve_id):
     cve_data = predict.cve.get_cve(cve_id)
 
-    if len(cve_data.get("github_links", [])) > 0:
-        return flask.redirect(cve_data["github_links"][0][1])
+    if len(cve_data.get("git_links", [])) > 0:
+        return flask.redirect(cve_data["git_links"][0][1])
 
     return flask.render_template("cve_sidebar.html", cve_data=cve_data)
 

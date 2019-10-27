@@ -1,22 +1,18 @@
-{% extends "base.html" %}
+{% extends "sidebar.html" %}
 
-{% block head %}
-{{ super() }}
-<script type="text/javascript" src="{{ url_for('static', filename='cve_query.js') }}"></script>
-<title>Dashboard</title>
-{% endblock %}
+{% block title %}Dashboard{% endblock %}
 
-{% block body %}
+{% block content %}
 
 <div class="container">
-    <h2 class="page-header">
-        CVE Assistance System
-    </h2>
-    <form id="cve-query" onsubmit="return goto_cve()">
+    <h1 class="page-header">
+        Predict
+    </h1>
+    <form id="sidebar-query" class="sidebar-element" onsubmit="return goto_cve('cve-input-main')()">
         <div class="input-group">
-            <input type="text" id="cve-input" class="form-control" placeholder="CVE ID">
+            <input type="text" id="cve-input-main" class="form-control" placeholder="CVE ID">
             <div class="input-group-append">
-                <input class="btn btn-outline-primary" type="submit" value="Analyze">
+                <input class="btn btn-outline-dark" type="submit" value="Analyze">
             </div>
         </div>
     </form>
