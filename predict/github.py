@@ -7,7 +7,7 @@ import time
 def get_commit(repo_user, repo_name, hash):
     data = {}
 
-    link = f"https://github.com/{repo_user}/{repo_name}/commit/{hash}"
+    link = "https://github.com/{}/{}/commit/{}".format(repo_user, repo_name, hash)
 
     response = requests.get(link)
     soup = BeautifulSoup(response.text, "html.parser")
