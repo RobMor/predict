@@ -19,6 +19,6 @@ In the same folder as the `setup.py` folder, which is `\prod\` run:
 ### This way you can view stack traces in the web browser
 
 Windows `set FLASK_ENV=development` and Linux `export FLASK_ENV=development`
-you can change the mode back to production with set `FLASK_ENV=production`
+you can change the mode back to production with `set FLASK_ENV=production`
 
 

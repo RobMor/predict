@@ -7,7 +7,7 @@
 
 {% block body %}
 <div class = "jumbotron">
-    <h1>Predict Authentication Page</h1>
+    <h1>Predict Login Page</h1>
 </div>
 
 <form method = "POST">
@@ -19,7 +19,7 @@
         <label for="password">Password:</label>
         <input type="password" class="form-control" name="password" id="password" placeholder="password">
     </div>
-    <a href ="registration.html">No account? Click here to register!</a>
+    <a href ="{{ url_for('register') }}">No account? Click here to register!</a>
     <br>
     <button type="submit" class="btn btn-primary">Login!</button>
 </form>
