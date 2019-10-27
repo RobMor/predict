@@ -11,5 +11,8 @@ setup(
     install_requires=["bs4", "flask", "requests"],
     entry_points={
         "console_scripts": ["predict=predict.cli:main"]
+    },
+    package_data={
+        "predict": ["templates/*", "static/*"]
     }
 )
