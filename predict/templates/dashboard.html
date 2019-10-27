@@ -4,17 +4,17 @@
 
 {% block content %}
 
-<div class="container">
-    <h1 class="page-header">
-        Predict
-    </h1>
-    <form id="sidebar-query" class="sidebar-element" onsubmit="return goto_cve('cve-input-main')()">
-        <div class="input-group">
-            <input type="text" id="cve-input-main" class="form-control" placeholder="CVE ID">
-            <div class="input-group-append">
-                <input class="btn btn-outline-dark" type="submit" value="Analyze">
-            </div>
+<h1 class="page-header text-center">
+    Predict
+</h1>
+
+<form id="sidebar-query" class="sidebar-element" onsubmit="return goto_cve('cve-input-main')()">
+    <div class="input-group">
+        <input type="text" id="cve-input-main" class="form-control" placeholder="CVE ID">
+        <div class="input-group-append">
+            <input class="btn btn-outline-dark" type="submit" value="Analyze">
         </div>
-    </form>
-</div>
+    </div>
+</form>
+
 {% endblock %}
