@@ -80,9 +80,13 @@ def process_cve(entry) -> dict:
     for link in links:
         parsed_link = urllib.parse.urlparse(link)
         if is_github_link(parsed_link):
-            entry["git_links"].append((link, convert_github_link(entry["id"], parsed_link)))
+            entry["git_links"].append(
+                (link, convert_github_link(entry["id"], parsed_link))
+            )
         elif is_git_link(parsed_link):
-            entry["git_links"].append((link, convert_git_link(entry["id"], parsed_link)))
+            entry["git_links"].append(
+                (link, convert_git_link(entry["id"], parsed_link))
+            )
         else:
             entry["normal_links"].append(link)
 
@@ -91,6 +95,7 @@ def process_cve(entry) -> dict:
 
 # The official CVE spec states that the numbers at the end won't exceed 7 digits
 cve_pattern = re.compile("^CVE-\d{4}-\d{4,7}$")
+
 
 def is_valid_cve_id(cve_id) -> bool:
     """Checks whether the given CVE ID is valid
@@ -103,7 +108,10 @@ def is_valid_cve_id(cve_id) -> bool:
     return cve_pattern.match(cve_id) is not None
 
 
-github_pattern = re.compile("\/?([A-Za-z0-9\-]+)\/([A-Za-z0-9\-]+)\/commit\/([0-9a-f]{5,40})\/?$")
+github_pattern = re.compile(
+    "\/?([A-Za-z0-9\-]+)\/([A-Za-z0-9\-]+)\/commit\/([0-9a-f]{5,40})\/?$"
+)
+
 
 def is_github_link(parsed_link) -> bool:
     """Checks whether the given parsed link is a github commit link
@@ -114,7 +122,10 @@ def is_github_link(parsed_link) -> bool:
     Returns:
         True if the given link is a github commit link, false otherwise
     """
-    return parsed_link.netloc == "github.com" and github_pattern.match(parsed_link.path) is not None
+    return (
+        parsed_link.netloc == "github.com"
+        and github_pattern.match(parsed_link.path) is not None
+    )
 
 
 def convert_github_link(cve_id, parsed_link):
@@ -136,11 +147,11 @@ def convert_github_link(cve_id, parsed_link):
         commit=match.group(3),
     )
 
+
 # A dictionary mapping known repositories to their github mirrors.
 # Dict[URL, Tuple[repo_user, repo_name]]
-known_repositories = {
-    "git.qemu.org": ("qemu", "qemu"),
-}
+known_repositories = {"git.qemu.org": ("qemu", "qemu")}
+
 
 def is_git_link(parsed_link):
     """Checks whether the given parsed link is a git commit link
@@ -166,7 +177,7 @@ def convert_git_link(cve_id, parsed_link):
         The converted link
     """
     query = urllib.parse.parse_qs(parsed_link.query)
-    
+
     repo_user, repo_name = known_repositories[parsed_link.netloc]
 
     commit = query["h"][0]

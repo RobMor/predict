@@ -11,7 +11,7 @@ window.onload = function () {
     // Sidebar functionality
     sidebar = document.getElementById("sidebar");
     overlay = document.getElementById("overlay");
-    
+
     sidebar.classList.add("notransition")
 
     if (typeof (Storage) !== "undefined") {
