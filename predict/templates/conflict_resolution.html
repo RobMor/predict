@@ -34,18 +34,45 @@
       <!-- TODO: Populate table with entries -->
       {% for entry in entries %}
             <!-- TODO Add entry to html table -->
-            <tr>
-
+            {% if entry[1] == current_user %}
+              <tr class="table-info">
+            {% else %}
+              <tr>
+            {% endif %}
               <td>{{entry[0]}}</td>
               <td>{{entry[1]}}</td>
               <td>{{entry[2]}}</td>
-              <td>{{entry[3]}}</td>
-      	      <td>{{entry[4]}}</td>
-              <td>{{entry[5]}}</td>
-      	      <td>{{entry[6]}}</td>
-              <td>{{entry[7]}}</td>
-      	      <td>{{entry[8]}}</td>
-              <td>{{entry[9]}}</td>
+              {% if entry[3] == "Match" %}
+                <td class="table-success">{{entry[3]}}</td>
+              {% elif entry[3] == "Conflict" %}
+                <td class="table-danger">{{entry[3]}}</td>
+              {% else %}
+                <td>{{entry[3]}}</td>
+              {% endif %}
+              <td>{{entry[4]}}</td>
+              {% if entry[5] == "Match" %}
+                <td class="table-success">{{entry[5]}}</td>
+              {% elif entry[5] == "Conflict" %}
+                <td class="table-danger">{{entry[5]}}</td>
+              {% else %}
+                <td>{{entry[5]}}</td>
+              {% endif %}
+    	        <td>{{entry[6]}}</td>
+              {% if entry[7] == "Match" %}
+                <td class="table-success">{{entry[7]}}</td>
+              {% elif entry[7] == "Conflict" %}
+                <td class="table-danger">{{entry[7]}}</td>
+              {% else %}
+                <td>{{entry[7]}}</td>
+              {% endif %}
+    	        <td>{{entry[8]}}</td>
+              {% if entry[9] == "Match" %}
+                <td class="table-success">{{entry[9]}}</td>
+              {% elif entry[9] == "Conflict" %}
+                <td class="table-danger">{{entry[9]}}</td>
+              {% else %}
+                <td>{{entry[9]}}</td>
+              {% endif %}
             </tr>
       {% endfor %}
     </tbody>
