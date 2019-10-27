@@ -7,20 +7,40 @@ import requests
 from bs4 import BeautifulSoup
 
 
-def get_entry(cve_id):
-    if is_valid_cve(cve_id):
+def get_cve(cve_id):
+    if is_valid_cve_id(cve_id):
         entry_in_database = False
 
         if entry_in_database:
-            # Retrieve the entry from the database
+            # TODO Retrieve the entry from the database here...
             return None
         else:
-            return process_entry(scrape_entry(cve_id))
+            raw_cve = scrape_cve(cve_id)
+            return process_cve(raw_cve)
     else:
         return None
 
 
-def process_entry(entry):
+def scrape_cve(cve_id):
+    # TODO -- We should be using the NVD
+    entry = {"id": cve_id}
+    url = f"https://nvd.nist.gov/vuln/detail/{cve_id}"
+
+    response = requests.get(url)
+    soup = BeautifulSoup(response.text, "html.parser")
+
+    entry["desc"] = soup.find("p", {"data-testid": "vuln-description"}).text
+
+    links = soup.find_all("td", {"data-testid": re.compile("vuln-hyperlinks-link-\d+")})
+
+    entry["links"] = []
+    for link in links:
+        entry["links"].append(link.find("a").get("href"))
+
+    return entry
+
+
+def process_cve(entry):
     links = entry["links"]
 
     del entry["links"]
@@ -30,7 +50,6 @@ def process_entry(entry):
 
     for link in links:
         if is_github_link(link):
-            print(entry)
             entry["github_links"].append(change_github_link(entry["id"], link))
         # elif is_git_link(link):
         #     entry["github_links"].append(change_git_link(cve_id, link))
@@ -40,35 +59,9 @@ def process_entry(entry):
     return entry
 
 
-def scrape_entry(cve_id):
-    # TODO -- We should be using the NVD
-    data = {"id": cve_id}
-    url = "https://cve.mitre.org/cgi-bin/cvename.cgi?name={}".format(cve_id)
-
-    response = requests.get(url)
-    soup = BeautifulSoup(response.text, "html.parser")
-
-    cve_table = soup.find("div", {"id": "GeneratedTable"})
-    # print cve_table.prettify()
-
-    data["desc"] = cve_table.find("td", {"colspan": "2"}).text
-    data["links"] = []
-    for list_element in cve_table.find("ul").find_all("li"):
-        try:
-            if (
-                list_element.find("a", recursive=False) is not None
-                and list_element.find("a", recursive=False).get("href") is not None
-            ):
-                data["links"].append(list_element.find("a").get("href"))
-        except Exception as e:
-            print(e)
-
-    return data
-
-
 cve_pattern = re.compile("^CVE-\d{4}-\d{4,7}$")
 
-def is_valid_cve(cve_id):
+def is_valid_cve_id(cve_id):
     return cve_pattern.match(cve_id) is not None
 
 
