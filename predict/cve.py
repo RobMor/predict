@@ -24,7 +24,7 @@ def get_cve(cve_id):
 def scrape_cve(cve_id):
     # TODO -- We should be using the NVD
     entry = {"id": cve_id}
-    url = f"https://nvd.nist.gov/vuln/detail/{cve_id}"
+    url = "https://nvd.nist.gov/vuln/detail/{}".format(cve_id)
 
     response = requests.get(url)
     soup = BeautifulSoup(response.text, "html.parser")

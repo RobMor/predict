@@ -1,17 +1,16 @@
-
 from bs4 import BeautifulSoup
 import requests
 import json
 import re
 
 
-def retrieve_commit_page(github_commit_link):
+def retrieve_commit_page(repo_user, repo_name, comm_hash):
 
     # Initialize variables
     master_dictionary = {
-        "user_name": "",
-        "repository_name": "",
-        "commit_hash": "",
+        "user_name": repo_user,
+        "repository_name": repo_name,
+        "commit_hash": comm_hash,
         "commit_description": "",
         "commit_title": "",
         "author_names": [],
@@ -21,19 +20,14 @@ def retrieve_commit_page(github_commit_link):
         "page_html": ""
     }  # Create a dictionary that we will return, containing the important information on the page
 
-    request = requests.get(github_commit_link)  # Retrieve the page from github corresponding to the link provided
-    page_html = BeautifulSoup(request.text, "html.parser")  # Get a manipulable representation of the page HTML with bs4
+    link = "https://github.com/{}/{}/commit/{}".format(repo_user, repo_name, comm_hash)
+
+    response = requests.get(link)
+    page_html = BeautifulSoup(response.text, "html.parser")  # Get a manipulable representation of the page HTML with bs4
     master_dictionary["page_html"] = page_html.prettify()  # Preserve the html page, just in case
 
     # Debugging output, can be removed
     #print page_html.prettify()
-
-    # Find user name and repository name. This is located at the top of the page, near a book icon, with 2 hyperlinks
-    # representing the user and repository
-
-    author_header = page_html.find("h1", {"class": "public"})  # Find the author header on the page
-    master_dictionary["user_name"] = author_header.find("span", {"class": "author"}).text  # Get the repository's author's name
-    master_dictionary["repository_name"] = author_header.find("strong", {"itemprop": "name"}).text  # Get the repository's name
 
     # To improve searching speed, we will create a variable representing the div that holds all the commit information
     # This has the class commit full-commit px-2 pt-2
@@ -70,10 +64,6 @@ def retrieve_commit_page(github_commit_link):
                 link_tag.get("href").split("/")[-1] for link_tag in parent_span.find_all("a", {"class": "sha"})
             ]  # Find all of the link tags in the span, then get the commit hash from their href values.
 
-            # Get the commit hash of the current commit
-
-            master_dictionary["commit_hash"] = commit_information_div.find("span", {"class": "sha user-select-contain"}).text.strip()  # This span holds the commit hash
-
         except Exception as e:  # We don't want the program to crash because one of the elements that should exist, doesn't.
             print e
 
@@ -87,6 +77,8 @@ def retrieve_commit_page(github_commit_link):
         try:
             file_data = {
                 "file_path": "",
+                "file_link":"",
+                "history_link":"",
                 "change_count": 0,
                 "addition_count": 0,
                 "deletion_count": 0,
@@ -110,9 +102,18 @@ def retrieve_commit_page(github_commit_link):
             file_data["addition_count"] = change_counts[1]  # Write additions
             file_data["deletion_count"] = change_counts[2]  # Write deletions
 
+            # Find the file link
+
+            link_prefix = "https://github.com/{}/{}/blob/{}/".format(master_dictionary["user_name"], master_dictionary["repository_name"], master_dictionary["commit_hash"])  # Replace this prefix with our version at some point
+            file_data["file_link"] = "{}{}".format(link_prefix, file_data["file_path"])
+
+            # Find the history link
+            link_prefix = "https://github.com/{}/{}/commits/{}/".format(master_dictionary["user_name"], master_dictionary["repository_name"], master_dictionary["commit_hash"])  # Replace this prefix with our version at some point
+            file_data["history_link"] = "{}{}".format(link_prefix, file_data["file_path"])
+
             #  Find the blame link...TODO convert to our blame link.
 
-            link_prefix= "https://github.com/{}/{}/blame/{}".format(master_dictionary["user_name"], master_dictionary["repository_name"], master_dictionary["commit_hash"])  # Replace this prefix with our version at some point
+            link_prefix= "https://github.com/{}/{}/blame/{}/".format(master_dictionary["user_name"], master_dictionary["repository_name"], master_dictionary["commit_hash"])  # Replace this prefix with our version at some point
             file_data["blame_link"] = "{}{}".format(link_prefix, file_data["file_path"])
 
             #  Create line dictionaries and inline diff
@@ -133,7 +134,7 @@ def retrieve_commit_page(github_commit_link):
                     "text": line_text
                     }
                 # DEBUGGING_OUTPUT
-                file_data["pretty_diff"] = output_pretty_inline_diff(file_data["inline_diff"])
+                file_data["sorted_line_numbers"] = sorted(file_data["inline_diff"].keys())
                 x = x+1  # Increment our internal line count by one after we have processed a line
             y = 0  # TODO Create split diff and add to file data
             # Add this processed file to our file dictionary
@@ -148,20 +149,8 @@ def retrieve_commit_page(github_commit_link):
 
     return master_dictionary
 
-def output_pretty_inline_diff(diff):
-    output_string = []
-    internal_lines = diff.keys()
-    for dict_entry_key in sorted(internal_lines):
-        diff_entry = diff[dict_entry_key]
-        output_string.append("{}\t{} |\t{}".format(
-            diff_entry["old_text_line_number"],
-            diff_entry["new_text_line_number"],
-            diff_entry["text"]
-            ))
-    return output_string
+def get_diffs(html_page):
 
-def output_pretty_split_diff(diff):
-    output_string = ""
 
 
 if __name__ == "__main__":

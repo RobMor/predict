@@ -1,15 +1,37 @@
 {% extends "cve_sidebar.html" %}
 {% block content %}
 
-<center><h1>{{ github_data["hash"] }}</h1></center>
-<p>{{ github_data["msg"] }}</p>
+<center><h1>{{ github_data["commit_hash"] }}</h1></center>
+<p>{{ github_data["commit_description"] }}</p>
 <ul>
-{% for file in github_data["files"] %}
+{% for file in github_data["files"].keys() %}
 <li>
-    <b>{{ file["file_name"] }}</b>
-    <a href="{{ file.get("file_link") }}">FILE</a>
-    <a href="{{ file.get("history_link") }}">HISTORY</a>
-    <a href="{{ file.get("blame_link") }}">BLAME</a>
+    <b>{{ file }}</b>
+    <a href="{{ github_data["files"][file].get("file_link") }}">FILE</a>
+    <a href="{{ github_data["files"][file].get("history_link") }}">HISTORY</a>
+    <a href="{{ github_data["files"][file].get("blame_link") }}">BLAME</a>
+    <p>
+        Diff:
+    </p>
+    <ul>
+        {% for diff_line in github_data["files"][file].get("sorted_line_numbers") %}
+            <li>
+            <div>
+                <span style="color:red; width: 20%" align="left">
+                    {{ github_data["files"][file]["inline_diff"][diff_line]["old_text_line_number"] }} |
+                </span>
+                <span style="color:blue; width: 20%" align="left">
+                    {{ github_data["files"][file]["inline_diff"][diff_line]["new_text_line_number"] }}
+                </span>
+                <span>
+                    {{ github_data["files"][file]["inline_diff"][diff_line]["text"] }}
+                </span>
+            </div>
+
+            </li>
+        {% endfor %}
+    </ul>
+
 </li>
 {% endfor %}
 </ul>
