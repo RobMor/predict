@@ -1,0 +1,87 @@
+#sidebar {
+    height: 100%;
+    width: 30%;
+    position: fixed;
+
+    /* Hidden initially */
+    margin-left: -30%;
+
+    /* Above everything */
+    z-index: 999;
+
+    /* Top left corner */
+    top: 0;
+    left: 0;
+
+    overflow-x: hidden;
+
+    /* Animate the transition */
+    transition: all 0.5s ease-in-out;
+}
+
+#sidebar.active {
+    margin-left: 0;
+}
+
+#sidebar-open {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+
+    text-align: center;
+}
+
+#sidebar-open:hover {
+    color: white;
+}
+
+#sidebar-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+
+    text-align: center;
+}
+
+#sidebar-close:hover {
+    color: white;
+}
+
+#overlay {
+    /* Full screen */
+    position: fixed;
+    width: 100%;
+    height: 100%;
+
+    /* Transparent black */
+    background: rgba(0, 0, 0, 0.7);
+
+    /* Hidden */
+    display: none;
+    opacity: 0;
+
+    /* Above everything except sidebar*/
+    z-index: 998;
+
+    /* TODO animate the overlay!!! */
+}
+
+/* display overlay when it has the .active class */
+#overlay.active {
+    display: block;
+    opacity: 1;
+}
+
+#sidebar-content {
+    padding: 1rem;
+}
+
+#content {
+    max-width: 60rem;
+    margin: 0 auto;
+}
+
+/* Trick to make the sidebar not animate on pageload */
+.notransition {
+    transition: none !important;
+}

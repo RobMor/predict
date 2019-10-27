@@ -133,20 +133,20 @@ def cve_base(cve_id):
     return flask.render_template("cve_sidebar.html", cve_data=cve_data)
 
 @flask_login.login_required
-@app.route("/cve/<cve_id>/info/<repo_user>/<repo_name>/<hash>")
-def info_page(cve_id, repo_user, repo_name, hash):
+@app.route("/cve/<cve_id>/info/<repo_user>/<repo_name>/<commit>")
+def info_page(cve_id, repo_user, repo_name, commit):
     # Possibly collect these in parallel?
     cve_data = predict.cve.get_cve(cve_id)
-    github_data = predict.github.retrieve_commit_page(cve_id, repo_user, repo_name, hash)
-    #print json.dumps(github_data, indent=4)
+    github_data = predict.github.retrieve_commit_page(cve_id, repo_user, repo_name, commit)
+    print(json.dumps(github_data, indent=4))
     return flask.render_template("commit_info.html", cve_data=cve_data, github_data=github_data)
 
 @flask_login.login_required
-@app.route("/cve/<cve_id>/blame/<repo_user>/<repo_name>/<hash>/<file_name>")
-def blame_page(cve_id, repo_user, repo_name, hash, file_name):
-    result = predict.github.get_blame_page(cve_id, repo_user, repo_name, hash, file_name)
+@app.route("/cve/<cve_id>/blame/<repo_user>/<repo_name>/<commit>/<file_name>")
+def blame_page(cve_id, repo_user, repo_name, commit, file_name):
+    result = predict.github.get_blame_page(cve_id, repo_user, repo_name, commit, file_name)
     cve_data = predict.cve.get_cve(cve_id)
-    #print json.dumps(result, indent=4)
+    print(json.dumps(result, indent=4))
     return flask.render_template("blame.html", cve_data=cve_data, github_data = result)
 
     return "TODO"

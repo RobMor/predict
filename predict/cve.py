@@ -1,7 +1,7 @@
 import re
 import time
 
-import json
+import urllib
 import flask
 import requests
 from bs4 import BeautifulSoup
@@ -50,10 +50,13 @@ def process_cve(entry):
 
     for link in links:
         # TODO matching same regex twice here...
-        if is_github_link(link):
-            entry["github_links"].append((link, convert_github_link(entry["id"], link)))
-        # elif is_git_link(link):
-        #     entry["github_links"].append(change_git_link(cve_id, link))
+        parsed_link = urllib.parse.urlparse(link)
+        if is_github_link(parsed_link):
+            entry["github_links"].append((link, convert_github_link(entry["id"], parsed_link)))
+        elif is_git_link(parsed_link):
+            entry["github_links"].append((link, convert_git_link(entry["id"], parsed_link)))
+
+            print(entry["github_links"][-1])
         else:
             entry["normal_links"].append(link)
 
@@ -67,45 +70,43 @@ def is_valid_cve_id(cve_id):
     return cve_pattern.match(cve_id) is not None
 
 
-github_pattern = re.compile(
-    "^(https?:\/\/)?(www\.)?github\.com\/([A-Za-z0-9\-]+)\/([A-Za-z0-9\-]+)\/commit\/([0-9a-f]{5,40})\/?$"
-)
-
+github_pattern = re.compile("\/?([A-Za-z0-9\-]+)\/([A-Za-z0-9\-]+)\/commit\/([0-9a-f]{5,40})\/?$")
 
 def is_github_link(link):
-    return github_pattern.match(link) is not None
-
-
-# git_pattern = re.compile("^(https?:\/\/)?(www\.)?(git\.[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}).*$") # TODO messy
-
-# def is_git_link(link):
-#     return git_pattern.match(link) is not None
+    return link.netloc == "github.com" and github_pattern.match(link.path) is not None
 
 
 def convert_github_link(cve_id, link):
-    match = github_pattern.match(link)
+    match = github_pattern.match(link.path)
 
     return flask.url_for(
         "info_page",
         cve_id=cve_id,
-        repo_user=match.group(3),
-        repo_name=match.group(4),
-        hash=match.group(5),
+        repo_user=match.group(1),
+        repo_name=match.group(2),
+        commit=match.group(3),
     )
 
 
-# known_github_repositories = {
-#     "git.qemu.org": "github.com/qemu/qemu",
-#     "git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git": "github.com/torvalds/linux",
-# }
+known_repositories = {
+    "git.qemu.org": ("qemu", "qemu"),
+}
 
-# def change_git_link(cve_id, link):
-#     match = git_pattern.match(link)
+def is_git_link(link):
+    return link.netloc in known_repositories
 
-#     repo_url = match.group(2)
 
-#     if repo_url in known_github_repositories:
-#         repo_user, repo_name = known_github_repositories[repo_url]
-#     else:
-#         # TODO what to do in this case...
-#         raise ValueError("Link is not a known github repository")
+def convert_git_link(cve_id, link):
+    info = urllib.parse.parse_qs(link.query)
+    
+    repo_user, repo_name = known_repositories[link.netloc]
+
+    commit = info["h"][0]
+
+    return flask.url_for(
+        "info_page",
+        cve_id=cve_id,
+        repo_user=repo_user,
+        repo_name=repo_name,
+        commit=commit,
+    )

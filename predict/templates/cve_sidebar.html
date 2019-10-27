@@ -2,10 +2,11 @@
 
 {% block head %}
 {{ super() }}
-<script type="text/javascript" src="{{ url_for('static', filename='sidebar.js') }}"></script>
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='sidebar.css') }}">
-<title>{{ cve_id }}</title>
+<script type="text/javascript" src="{{ url_for('static', filename='sidebar.js') }}"></script>
 {% endblock %}
+
+{% block title %} {{ cve_data["id"] }} {% endblock %}
 
 {% block body %}
 <!-- Actual sidebar -->
@@ -17,26 +18,31 @@
         
         <p>{{ cve_data["desc"] }}</p>
 
-        <h3>Github Links</h3> 
-        <ul>
-        {% for normal, converted in cve_data["github_links"] %}
-            <li>
-                <a href={{ converted }}>
-                    {{ normal }}
-                </a>
-            </li>
-        {% endfor %}
-        </ul>
-        <h3>Non-Github Links</h3>
-        <ul>
-        {% for link in cve_data["normal_links"] %}
-            <li>
-                <a href={{ link }}>
-                    {{ link }}
-                </a>
-            </li>
-        {% endfor %}
-        </ul>
+        {% if cve_data["github_links"]|length > 0 %}
+            <h3>Git Links</h3> 
+            <ul>
+            {% for normal, converted in cve_data["github_links"] %}
+                <li>
+                    <a href={{ converted }}>
+                        {{ normal }}
+                    </a>
+                </li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+
+        {% if cve_data["normal_links"]|length > 0 %}
+            <h3>Non-Git Links</h3>
+            <ul>
+            {% for link in cve_data["normal_links"] %}
+                <li>
+                    <a href={{ link }}>
+                        {{ link }}
+                    </a>
+                </li>
+            {% endfor %}
+            </ul>
+        {% endif %}
     </div>
 </div>
 

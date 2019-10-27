@@ -65,7 +65,7 @@ def retrieve_commit_page(cve_id, repo_user, repo_name, comm_hash):
             ]  # Find all of the link tags in the span, then get the commit hash from their href values.
 
         except Exception as e:  # We don't want the program to crash because one of the elements that should exist, doesn't.
-            #print e
+            print(e)
 
     # Create a variable holding the file div elements on the page
 
@@ -141,7 +141,7 @@ def retrieve_commit_page(cve_id, repo_user, repo_name, comm_hash):
             master_dictionary["files"][file_data["file_path"]] = file_data
 
         except Exception as e:  # Catching errors and printing to console
-            print e
+            print(e)
 
     return master_dictionary
 
@@ -285,4 +285,4 @@ def get_blame_page(cve_id, repo_user, repo_name, comm_hash, file_name):
 #     pass
 
 if __name__ == "__main__":
-    print json.dumps(get_blame_page("CVE-2015-8474","redmine", "redmine", "032f2c9be6520d9d1a1608aa4f1d5d1f184f2472", "app$controllers$application_controller.rb"), indent=4)
+    print(json.dumps(get_blame_page("CVE-2015-8474","redmine", "redmine", "032f2c9be6520d9d1a1608aa4f1d5d1f184f2472", "app$controllers$application_controller.rb"), indent=4))
