@@ -18,10 +18,10 @@
         
         <p>{{ cve_data["desc"] }}</p>
 
-        {% if cve_data["github_links"]|length > 0 %}
+        {% if cve_data["git_links"]|length > 0 %}
             <h3>Git Links</h3> 
             <ul>
-            {% for normal, converted in cve_data["github_links"] %}
+            {% for normal, converted in cve_data["git_links"] %}
                 <li>
                     <a href={{ converted }}>
                         {{ normal }}

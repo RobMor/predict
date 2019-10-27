@@ -7,7 +7,7 @@ import flask_login
 
 from predict import app
 import predict.cve
-#import predict.github
+import predict.github
 from predict.user import User
 
 # Constants for database entry indices.
@@ -32,12 +32,6 @@ app.config.update(
 users = {}
 #end login stuff
 
-#A dummy template for ensuring we can find the template folder and return the rendered webpage.
-@app.route('/hello/')
-@app.route('/hello/<name>')
-def hello(name=None):
-    print ("hello world")
-    return flask.render_template('hello.html', name=name)
 
 @app.route("/")
 def base():
@@ -127,8 +121,8 @@ def conflict_resolution():
 def cve_base(cve_id):
     cve_data = predict.cve.get_cve(cve_id)
 
-    if len(cve_data.get("github_links", [])) > 0:
-        return flask.redirect(cve_data["github_links"][0][1])
+    if len(cve_data.get("git_links", [])) > 0:
+        return flask.redirect(cve_data["git_links"][0][1])
 
     return flask.render_template("cve_sidebar.html", cve_data=cve_data)
 
