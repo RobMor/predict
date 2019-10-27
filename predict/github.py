@@ -65,7 +65,7 @@ def retrieve_commit_page(cve_id, repo_user, repo_name, comm_hash):
             ]  # Find all of the link tags in the span, then get the commit hash from their href values.
 
         except Exception as e:  # We don't want the program to crash because one of the elements that should exist, doesn't.
-            print e
+            #print e
 
     # Create a variable holding the file div elements on the page
 

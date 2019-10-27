@@ -2,11 +2,13 @@ import json
 import sqlite3
 
 import flask
-import requests
+import requests 
+import flask_login
 
 from predict import app
 import predict.cve
-import predict.github
+#import predict.github
+from predict.user import User
 
 # Constants for database entry indices.
 # May not be accurate, update later as necessary.
@@ -19,31 +21,87 @@ import predict.github
 #INTRO_COMMIT_INDEX = 4
 #INTRO_FILE_INDEX = 5
 
+#login stuff
+login_manager = flask_login.LoginManager()
+login_manager.init_app(app)
+#login config
+app.config.update(
+    SECRET_KEY = 'secret_xxx'
+)
+#TODO: Later on this hash of authenticated users will be converted into database calls.
+users = {}
+#end login stuff
+
+#A dummy template for ensuring we can find the template folder and return the rendered webpage.
+@app.route('/hello/')
+@app.route('/hello/<name>')
+def hello(name=None):
+    print ("hello world")
+    return flask.render_template('hello.html', name=name)
+
 @app.route("/")
 def base():
     # If they're logged in direct to dashboard, if not direct to login
-    logged_in = True  # TODO how to check if the user is logged in
+    logged_in = flask_login.current_user.is_authenticated  # TODO how to check if the user is logged in
     if logged_in:
         return flask.redirect(flask.url_for("dashboard"))
     else:
         return flask.redirect(flask.url_for("login"))
 
 
-@app.route("/login")
+@app.route("/login", methods=['GET', 'POST'])
 def login():
-    return flask.render_template("login.html")
+    #If the information is a GET, then return the form. 
+    if flask.request.method == 'GET':
+        return flask.render_template("login.html")
+    elif flask.request.method == 'POST':
+        print("hello login page post.")
 
+        valid = False
+        username = flask.request.form['username']
+        password = flask.request.form['password']
+        
+        print("username: " + username)
+        print("password: " + password)
 
-@app.route("/register")
+        user = User(username, password)
+
+        #TODO: Validate by checking the database, for now, just checking to see that user is "foo" and passwoord is "bar"
+        #should suffice. Integration with Edward's login functionality.         
+        if username == "foo" and password == "bar":
+            valid = True
+            print ("Valid username and password combo!")
+            if username not in users:
+                users[username] = user
+
+        if valid:
+            flask_login.login_user(user) 
+            return flask.redirect(flask.url_for("dashboard")) #If valid, send the user to the dashboard
+        else:
+            #TODO: Return an appended version of the login page asking to try again, and should
+            #probably wipe the form data as well.
+            return "Invalid login! Please try again! (In the future this should get appended to the login page.)"
+     
+        #If the information is a POST, then validate the data that is passed in
+    else:
+        print ("wrong kind of request got routed here somehow.")
+  
+@app.route("/register", methods=['GET', 'POST'])
 def register():
-    return "TODO"
+    if flask.request.method == 'GET':
+        return flask.render_template("register.html")
+    if flask.request.method == 'POST':
+        return "Submitted the registration form."
 
-
+@flask_login.login_required #TODO: Figure out why this annotation is not preventing access
 @app.route("/dashboard")
 def dashboard():
-    return flask.render_template("dashboard.html")
+    if flask_login.current_user.is_authenticated:
+        return flask.render_template("dashboard.html")
+    else:
+        return flask.redirect(flask.url_for("login"))
 
-
+@flask_login.login_required
 @app.route("/resolution")
 def conflict_resolution():
 
@@ -74,20 +132,43 @@ def cve_base(cve_id):
 
     return flask.render_template("cve_sidebar.html", cve_data=cve_data)
 
-
+@flask_login.login_required
 @app.route("/cve/<cve_id>/info/<repo_user>/<repo_name>/<hash>")
 def info_page(cve_id, repo_user, repo_name, hash):
     # Possibly collect these in parallel?
     cve_data = predict.cve.get_cve(cve_id)
     github_data = predict.github.retrieve_commit_page(cve_id, repo_user, repo_name, hash)
-    print json.dumps(github_data, indent=4)
+    #print json.dumps(github_data, indent=4)
     return flask.render_template("commit_info.html", cve_data=cve_data, github_data=github_data)
 
-
+@flask_login.login_required
 @app.route("/cve/<cve_id>/blame/<repo_user>/<repo_name>/<hash>/<file_name>")
 def blame_page(cve_id, repo_user, repo_name, hash, file_name):
     result = predict.github.get_blame_page(cve_id, repo_user, repo_name, hash, file_name)
     cve_data = predict.cve.get_cve(cve_id)
-    print json.dumps(result, indent=4)
+    #print json.dumps(result, indent=4)
     return flask.render_template("blame.html", cve_data=cve_data, github_data = result)
 
+    return "TODO"
+
+'''User callback function for getting the current user.  "This callback is used to reload the user object from the 
+user ID stored in the session. Called whenever a user has logged in." Authentication function.'''
+@login_manager.user_loader
+def load_user(username):
+    print ("callback called with " + username)
+    if username in users:
+        print ("found!")
+        return users[username]
+    else:
+        print ("not found.")
+        return None
+
+@app.route("/logout")
+#@flask_login.login_required
+def logout():
+    print ("logout function called!")
+    if flask_login.current_user.is_authenticated:
+        flask_login.logout_user()
+        return flask.redirect(flask.url_for("login"))
+    else:
+        return "The user tried to logout when there was no user! (This should be a webpage or an error code.)"

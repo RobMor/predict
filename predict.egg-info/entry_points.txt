@@ -1,0 +1,3 @@
+[console_scripts]
+predict = predict.cli:main
+
