@@ -9,6 +9,7 @@ from predict import app
 import predict.cve
 import predict.github
 from predict.user import User
+import predict.conflict_resolution
 
 # Constants for database entry indices.
 # May not be accurate, update later as necessary.
@@ -45,23 +46,49 @@ def base():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+<<<<<<< .mine
+    #If the information is a GET, then return the form.
+    if flask.request.method == 'GET':
+||||||| .r60169
+    #If the information is a GET, then return the form. 
+    if flask.request.method == 'GET':
+=======
     # If the information is a GET, then return the form.
     if flask.request.method == "GET":
+>>>>>>> .r60171
         return flask.render_template("login.html")
     elif flask.request.method == "POST":
         print("hello login page post.")
 
         valid = False
+<<<<<<< .mine
+        username = flask.request.form['username']
+        password = flask.request.form['password']
+
+||||||| .r60169
+        username = flask.request.form['username']
+        password = flask.request.form['password']
+        
+=======
         username = flask.request.form["username"]
         password = flask.request.form["password"]
 
+>>>>>>> .r60171
         print("username: " + username)
         print("password: " + password)
 
         user = User(username, password)
 
+<<<<<<< .mine
+        #TODO: Validate by checking the database, for now, just checking to see that user is "foo" and passwoord is "bar"
+        #should suffice. Integration with Edward's login functionality.
+||||||| .r60169
+        #TODO: Validate by checking the database, for now, just checking to see that user is "foo" and passwoord is "bar"
+        #should suffice. Integration with Edward's login functionality.         
+=======
         # TODO: Validate by checking the database, for now, just checking to see that user is "foo" and passwoord is "bar"
         # should suffice. Integration with Edward's login functionality.
+>>>>>>> .r60171
         if username == "foo" and password == "bar":
             valid = True
             print("Valid username and password combo!")
@@ -69,21 +96,47 @@ def login():
                 users[username] = user
 
         if valid:
+<<<<<<< .mine
+            flask_login.login_user(user)
+            return flask.redirect(flask.url_for("dashboard")) #If valid, send the user to the dashboard
+||||||| .r60169
+            flask_login.login_user(user) 
+            return flask.redirect(flask.url_for("dashboard")) #If valid, send the user to the dashboard
+=======
             flask_login.login_user(user)
             return flask.redirect(
                 flask.url_for("dashboard")
             )  # If valid, send the user to the dashboard
+>>>>>>> .r60171
         else:
             # TODO: Return an appended version of the login page asking to try again, and should
             # probably wipe the form data as well.
             return "Invalid login! Please try again! (In the future this should get appended to the login page.)"
+<<<<<<< .mine
+
+        #If the information is a POST, then validate the data that is passed in
+||||||| .r60169
+     
+        #If the information is a POST, then validate the data that is passed in
+=======
 
         # If the information is a POST, then validate the data that is passed in
+>>>>>>> .r60171
     else:
+<<<<<<< .mine
+        print ("wrong kind of request got routed here somehow.")
+
+@app.route("/register", methods=['GET', 'POST'])
+||||||| .r60169
+        print ("wrong kind of request got routed here somehow.")
+  
+@app.route("/register", methods=['GET', 'POST'])
+=======
         print("wrong kind of request got routed here somehow.")
 
 
 @app.route("/register", methods=["GET", "POST"])
+>>>>>>> .r60171
 def register():
     if flask.request.method == "GET":
         return flask.render_template("register.html")
@@ -116,6 +169,16 @@ def conflict_resolution():
     #    if connection:
     #        connection.close()
 
+<<<<<<< .mine
+    #TODO: Replace this with above code!
+    entries = [("1234-5678", "tgiddings", "3k432k4h", "fix_file1.cpp", "98018927", "intro_file2.cpp"), ("1234-5678", "jbelke", "3k432k4h", "fix_file1.cpp", "09sdf09sf", "intro_file1.cpp"), ("1234-5678", "rmorrison", "ihg6yhud", "fix_file2.cpp", "21b9de987ac", "intro_file1.cpp"), ("1234-5678", "cwolff", "ihg6yhud", "fix_file2.cpp", "21b9de987ac", "intro_file1.cpp")]
+    currentUser = "jbelke" #TODO: Replace with get_current_user
+||||||| .r60169
+    #TODO: Replace this with above code!
+    entries = [("1234-5678", "jbelke", "3k432k4h", "fix_file1.cpp", "09sdf09sf", "intro_file1.cpp"), ("9876-54321", "rmorrison", "ihg6yhud", "fix_file2.cpp", "21b9de987ac", "intro_file2.cpp")]
+    current_user = "jbelke"
+    return flask.render_template("conflict_resolution.html", entries=entries, current_user = current_user) #TODO: Replace with get_current_user
+=======
     # TODO: Replace this with above code!
     entries = [
         (
@@ -139,6 +202,21 @@ def conflict_resolution():
     return flask.render_template(
         "conflict_resolution.html", entries=entries, current_user=current_user
     )  # TODO: Replace with get_current_user
+>>>>>>> .r60171
+
+    blocks = predict.conflict_resolution.splitByCveId(entries)
+    newEntries = []
+    for block in blocks:
+        block = predict.conflict_resolution.moveUserToFront(block, currentUser)
+        currUserEntry = block[0]
+        for i in range(1, len(block)):
+            block[i] = predict.conflict_resolution.insertAgreements(block[i], currUserEntry)
+
+        block = predict.conflict_resolution.insertPercentages(block)
+        if block is not None:
+            newEntries.extend(block)
+
+    return flask.render_template("conflict_resolution.html", entries=newEntries, current_user = currentUser) #TODO: Replace with get_current_user
 
 
 @app.route("/cve/<cve_id>")
@@ -177,11 +255,19 @@ def blame_page(cve_id, repo_user, repo_name, commit, file_name):
 
     return "TODO"
 
+<<<<<<< .mine
+'''User callback function for getting the current user.  "This callback is used to reload the user object from the
+user ID stored in the session. Called whenever a user has logged in." Authentication function.'''
+||||||| .r60169
+'''User callback function for getting the current user.  "This callback is used to reload the user object from the 
+user ID stored in the session. Called whenever a user has logged in." Authentication function.'''
+=======
 
 """User callback function for getting the current user.  "This callback is used to reload the user object from the 
 user ID stored in the session. Called whenever a user has logged in." Authentication function."""
 
 
+>>>>>>> .r60171
 @login_manager.user_loader
 def load_user(username):
     print("callback called with " + username)
