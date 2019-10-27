@@ -28,7 +28,12 @@
 
 
 <div class="header sticky" id="myHeader">
-  <h2>Header Placeholder</h2>
+  <select>
+	<option value="" disabled selected>Relation to Vulnerability</option>
+	<option value="fVuln"> Fixes Vulnerability</option>
+	<option value="fVuln"> Introduces Vulnerability</option>
+	<option value="fVuln"> None</option>
+  </select>
 </div>
 <a href="dashboard.html" class="btn btn-primary" role="button">Dashboard</a>
 <hr>
@@ -36,7 +41,7 @@
   <table class="table table-bordered">
     <thead>
       <tr>
-        <th>File Diff</th>
+        <th>{{GitDiff}}</th>
         <th>File Blame</th>
       </tr>
     </thead>
