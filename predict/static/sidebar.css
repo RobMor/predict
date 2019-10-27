@@ -23,6 +23,20 @@
     margin-left: 0;
 }
 
+.sidebar-element {
+    padding: 1rem;
+    padding-bottom: 0rem;
+}
+
+#sidebar-controls {
+    display: flex;
+    width: 100%;
+}
+
+.sidebar-control + .sidebar-control {
+    margin-left: 0.5rem;
+}
+
 #sidebar-open {
     position: absolute;
     top: 1rem;
@@ -35,22 +49,27 @@
     color: white;
 }
 
-#sidebar-controls {
-    display: flex;
-    padding: 1rem;
-    padding-bottom: 0;
-}
-
-#sidebar-controls > .sidebar-control {
-    margin: 0.2rem;
-}
-
-#sidebar-controls input.sidebar-control {
-    flex: 1;
+#sidebar-close {
+    margin-left: auto;
 }
 
 #sidebar-close:hover {
     color: white;
+}
+
+#sidebar-query{
+    position: -webkit-sticky;
+    position: sticky;
+    bottom: 0;
+    width: 100%;
+
+    padding: 1rem;
+
+    display: flex;
+}
+
+#cve-input {
+    flex: 1;
 }
 
 #overlay {
@@ -76,15 +95,6 @@
 #overlay.active {
     display: block;
     opacity: 1;
-}
-
-#sidebar-content {
-    padding: 1rem;
-}
-
-#content {
-    max-width: 60rem;
-    margin: 0 auto;
 }
 
 /* Trick to make the sidebar not animate on pageload */

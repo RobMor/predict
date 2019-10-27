@@ -8,14 +8,17 @@
 
 {% block body %}
 
-<div class="text-center">
-    <h2 class="header">
+<div class="container">
+    <h2 class="page-header">
         CVE Assistance System
     </h2>
-    <form id="cve-query" onsubmit="goto_cve()">
-        <label for="cve-input">CVE ID:</label>
-        <input type="text" id="cve_input">
-        <input type="submit" value="Analyze CVE">
+    <form id="cve-query" onsubmit="return goto_cve()">
+        <div class="input-group">
+            <input type="text" id="cve-input" class="form-control" placeholder="CVE ID">
+            <div class="input-group-append">
+                <input class="btn btn-outline-primary" type="submit" value="Analyze">
+            </div>
+        </div>
     </form>
 </div>
 {% endblock %}
