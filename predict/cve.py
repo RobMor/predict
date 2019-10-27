@@ -49,8 +49,9 @@ def process_cve(entry):
     entry["normal_links"] = []
 
     for link in links:
+        # TODO matching same regex twice here...
         if is_github_link(link):
-            entry["github_links"].append(change_github_link(entry["id"], link))
+            entry["github_links"].append((link, convert_github_link(entry["id"], link)))
         # elif is_git_link(link):
         #     entry["github_links"].append(change_git_link(cve_id, link))
         else:
@@ -61,11 +62,15 @@ def process_cve(entry):
 
 cve_pattern = re.compile("^CVE-\d{4}-\d{4,7}$")
 
+
 def is_valid_cve_id(cve_id):
     return cve_pattern.match(cve_id) is not None
 
 
-github_pattern = re.compile("^(https?:\/\/)?(www\.)?github\.com\/([A-Za-z0-9\-]+)\/([A-Za-z0-9\-]+)\/commit\/([0-9a-f]{5,40})\/?$")
+github_pattern = re.compile(
+    "^(https?:\/\/)?(www\.)?github\.com\/([A-Za-z0-9\-]+)\/([A-Za-z0-9\-]+)\/commit\/([0-9a-f]{5,40})\/?$"
+)
+
 
 def is_github_link(link):
     return github_pattern.match(link) is not None
@@ -77,15 +82,15 @@ def is_github_link(link):
 #     return git_pattern.match(link) is not None
 
 
-def change_github_link(cve_id, link):
+def convert_github_link(cve_id, link):
     match = github_pattern.match(link)
 
-    return link, flask.url_for(
+    return flask.url_for(
         "info_page",
         cve_id=cve_id,
         repo_user=match.group(3),
         repo_name=match.group(4),
-        hash=match.group(5)
+        hash=match.group(5),
     )
 
 
