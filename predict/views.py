@@ -8,6 +8,7 @@ import flask_login
 from predict import app
 import predict.cve
 #import predict.github
+import predict.conflict_resolution
 from predict.user import User
 
 # Constants for database entry indices.
