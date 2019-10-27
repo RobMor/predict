@@ -113,8 +113,8 @@ def retrieve_commit_page(cve_id, repo_user, repo_name, comm_hash):
 
             #  Find the blame link...TODO convert to our blame link.
 
-            link_prefix= "{}/{}/{}/blame/{}/".format(our_link_format, master_dictionary["user_name"], master_dictionary["repository_name"], master_dictionary["commit_hash"])  # Replace this prefix with our version at some point
-            file_data["blame_link"] = "{}{}".format(link_prefix, file_data["file_path"])
+            link_prefix= "{}/{}/{}/{}/".format(our_link_format, master_dictionary["user_name"], master_dictionary["repository_name"], master_dictionary["commit_hash"])  # Replace this prefix with our version at some point
+            file_data["blame_link"] = "{}{}".format(link_prefix, file_data["file_path"].replace("/", "$"))
 
             #  Create line dictionaries and inline diff
             code_body = file_div.find("table")
@@ -157,15 +157,19 @@ def get_blame_page(cve_id, repo_user, repo_name, comm_hash, file_name):
         "inline_diff": "",
         "split_diff": "",
         "line_representation": {},
-        "block_representation":{},
+        "block_representation": {},
+        "sorted_lines": [],
+        "sorted_block_numbers":[],
         "page_html": ""
     }  # Create a dictionary that we will return, containing the important information on the page
+    # Our file name should come to us with $ replacing the / characters, because we cannot put it in a link otherwise. So we replace those
+
+    file_name = file_name.replace("$","/")
 
     link = "https://github.com/{}/{}/blame/{}/{}".format(repo_user, repo_name, comm_hash, file_name)
 
     response = requests.get(link)
-    page_html = BeautifulSoup(response.text,
-                              "html.parser")  # Get a manipulable representation of the page HTML with bs4
+    page_html = BeautifulSoup(response.text, "html.parser")  # Get a manipulable representation of the page HTML with bs4
     #master_dictionary["page_html"] = page_html.prettify()  # Preserve the html page, just in case
 
     # Debugging output, can be removed
@@ -176,7 +180,7 @@ def get_blame_page(cve_id, repo_user, repo_name, comm_hash, file_name):
     result = retrieve_commit_page(cve_id, repo_user, repo_name, comm_hash)
     master_dictionary["inline_diff"] = result.get("files", {}).get(file_name, {}).get("inline_diff", {})
     master_dictionary["split_diff"] = result.get("files", {}).get(file_name, {}).get("split_diff", {})
-
+    master_dictionary["sorted_line_numbers"] = result.get("files", {}).get(file_name, {}).get("sorted_line_numbers", {})
 
     master_dictionary["line_count"] = re.findall(r"([\d,]+) lines", page_html.find("div", {"class": "file-info"}).text)[0].replace(",", "")  # We find the line count of the file we are looking at using regex
     master_dictionary["file_size"] = re.findall(r"[\d,\.]+ [KMGkmg]?[Bb](?:ytes)?", page_html.find("div", {"class": "file-info"}).text)[0].replace(",", "")  # We find the size of the file we are looking at using regex
@@ -201,7 +205,7 @@ def get_blame_page(cve_id, repo_user, repo_name, comm_hash, file_name):
 
         our_link_format = "/cve/{}/blame".format(cve_id)  # If we change our link format, change this
 
-        blame_commit_link = "{}{}".format(our_link_format, code_hunk.find("div", {"class": "blob-reblame pl-1 pr-1"}).find("a").get("href"))
+        blame_commit_link = "{}{}".format(our_link_format, code_hunk.find("div", {"class": "blob-reblame pl-1 pr-1"}).find("a").get("href").replace("blame/",""))
 
         master_dictionary["block_representation"][x] ={
             "blame_commit_message": blame_commit_message,
@@ -222,9 +226,9 @@ def get_blame_page(cve_id, repo_user, repo_name, comm_hash, file_name):
                 "line_number": line_number,
                 "line_text": line_text.strip()
             }
-
+        master_dictionary["sorted_block_numbers"].append(x)
         x = x+1
-
+    master_dictionary["sorted_blame_line_numbers"] = sorted(master_dictionary["line_representation"].keys())
     return master_dictionary
 
 # def get_commit(repo_user, repo_name, hash):
@@ -281,4 +285,4 @@ def get_blame_page(cve_id, repo_user, repo_name, comm_hash, file_name):
 #     pass
 
 if __name__ == "__main__":
-    print json.dumps(get_blame_page("CVE-2015-8474","redmine", "redmine", "032f2c9be6520d9d1a1608aa4f1d5d1f184f2472", "app/controllers/application_controller.rb"), indent=4)
+    print json.dumps(get_blame_page("CVE-2015-8474","redmine", "redmine", "032f2c9be6520d9d1a1608aa4f1d5d1f184f2472", "app$controllers$application_controller.rb"), indent=4)

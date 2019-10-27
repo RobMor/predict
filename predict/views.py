@@ -86,4 +86,8 @@ def info_page(cve_id, repo_user, repo_name, hash):
 
 @app.route("/cve/<cve_id>/blame/<repo_user>/<repo_name>/<hash>/<file_name>")
 def blame_page(cve_id, repo_user, repo_name, hash, file_name):
-    return "TODO"
+    result = predict.github.get_blame_page(cve_id, repo_user, repo_name, hash, file_name)
+    cve_data = predict.cve.get_cve(cve_id)
+    print json.dumps(result, indent=4)
+    return flask.render_template("blame.html", cve_data=cve_data, github_data = result)
+

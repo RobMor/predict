@@ -42,18 +42,56 @@
     </thead>
     <tbody>
       <tr>
-        <td><pre>Diff Placeholder
-		
-	
-		
-		
-		
-		
-		</pre></td>
-        <td>Blame Placeholder</td>
+        <td>
+            <ul>
+                {% for diff_line in github_data.get("sorted_line_numbers") %}
+                    <li>
+                    <div>
+                        <span style="color:red; width: 20%" align="left">
+                            {{ github_data["inline_diff"][diff_line]["old_text_line_number"] }} |
+                        </span>
+                        <span style="color:blue; width: 20%" align="left">
+                            {{ github_data["inline_diff"][diff_line]["new_text_line_number"] }}
+                        </span>
+                        <span>
+                            {{ github_data["inline_diff"][diff_line]["text"] }}
+                        </span>
+                    </div>
+
+                    </li>
+                {% endfor %}
+            </ul>
+        </td>
+        <td>
+            {% for blame_line in github_data.get("sorted_blame_line_numbers") %}
+                <div>
+                    <span style="color: gray">
+                        {{ github_data["line_representation"][blame_line].get("line_number")}}
+                    </span>
+                    <span style="color: black">
+                        |
+                    </span>
+                    <a href={{ github_data["line_representation"][blame_line].get("blame_commit_link") }}>
+                        <span style="color:  red">
+                            {{ github_data["line_representation"][blame_line].get("blame_commit_message")}}
+                        </span>
+                        <span style="color: lightgreen">
+                            {{ github_data["line_representation"][blame_line].get("blame_commit_time")}}
+                        </span>
+                    </a>
+                    <span style="color: black;">
+                        |
+                    </span>
+                   <span style="color: gray;">
+                        {{ github_data["line_representation"][blame_line].get("line_text")}}
+                   </span>
+                </div>
+
+            {% endfor %}
+        </td>
       </tr>
     </tbody>
   </table>
 </div>
 
-{% end block%}
+{% endblock%}
