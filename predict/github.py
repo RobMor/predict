@@ -149,19 +149,6 @@ def retrieve_commit_page(repo_user, repo_name, comm_hash):
 
     return master_dictionary
 
-def get_diffs(html_page):
-
-
-
-if __name__ == "__main__":
-    result = retrieve_commit_page("https://github.com/torvalds/linux/commit/3278a2c20cb302d27e6f6ee45a3f57361176e426")
-    print json.dumps(result, indent=4)
-    for r in result["files"]:
-        print "_______________________________________________________________________________________________"
-        print "\n".join(result["files"][r]["pretty_diff"])
-        print "_______________________________________________________________________________________________"
-
-
 
 
 def get_commit(repo_user, repo_name, hash):
