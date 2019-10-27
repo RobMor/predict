@@ -4,8 +4,8 @@ import json
 import re
 
 
-def retrieve_commit_page(repo_user, repo_name, comm_hash):
-
+def retrieve_commit_page(cve_id, repo_user, repo_name, comm_hash):
+    our_link_format = "/cve/{}/blame".format(cve_id)  # If we change our link format, change this
     # Initialize variables
     master_dictionary = {
         "user_name": repo_user,
@@ -113,7 +113,7 @@ def retrieve_commit_page(repo_user, repo_name, comm_hash):
 
             #  Find the blame link...TODO convert to our blame link.
 
-            link_prefix= "https://github.com/{}/{}/blame/{}/".format(master_dictionary["user_name"], master_dictionary["repository_name"], master_dictionary["commit_hash"])  # Replace this prefix with our version at some point
+            link_prefix= "{}/{}/{}/blame/{}/".format(our_link_format, master_dictionary["user_name"], master_dictionary["repository_name"], master_dictionary["commit_hash"])  # Replace this prefix with our version at some point
             file_data["blame_link"] = "{}{}".format(link_prefix, file_data["file_path"])
 
             #  Create line dictionaries and inline diff
@@ -143,63 +143,142 @@ def retrieve_commit_page(repo_user, repo_name, comm_hash):
         except Exception as e:  # Catching errors and printing to console
             print e
 
+    return master_dictionary
+
+def get_blame_page(cve_id, repo_user, repo_name, comm_hash, file_name):
+    # Initialize variables
+    master_dictionary = {
+        "user_name": repo_user,
+        "repository_name": repo_name,
+        "commit_hash": comm_hash,
+        "file_name": file_name,
+        "line_count": 0,
+        "file_size": "",
+        "inline_diff": "",
+        "split_diff": "",
+        "line_representation": {},
+        "block_representation":{},
+        "page_html": ""
+    }  # Create a dictionary that we will return, containing the important information on the page
+
+    link = "https://github.com/{}/{}/blame/{}/{}".format(repo_user, repo_name, comm_hash, file_name)
+
+    response = requests.get(link)
+    page_html = BeautifulSoup(response.text,
+                              "html.parser")  # Get a manipulable representation of the page HTML with bs4
+    #master_dictionary["page_html"] = page_html.prettify()  # Preserve the html page, just in case
+
+    # Debugging output, can be removed
+    # print page_html.prettify()
+
+    # We need a diff. To get this, we will look at the entire commit page, for lack of a better option. This should be removed eventually and replaced with a faster method like caching the diff from the commit page
+
+    result = retrieve_commit_page(cve_id, repo_user, repo_name, comm_hash)
+    master_dictionary["inline_diff"] = result.get("files", {}).get(file_name, {}).get("inline_diff", {})
+    master_dictionary["split_diff"] = result.get("files", {}).get(file_name, {}).get("split_diff", {})
 
 
+    master_dictionary["line_count"] = re.findall(r"([\d,]+) lines", page_html.find("div", {"class": "file-info"}).text)[0].replace(",", "")  # We find the line count of the file we are looking at using regex
+    master_dictionary["file_size"] = re.findall(r"[\d,\.]+ [KMGkmg]?[Bb](?:ytes)?", page_html.find("div", {"class": "file-info"}).text)[0].replace(",", "")  # We find the size of the file we are looking at using regex
 
+    # Now we need to get to the code blocks
+    # Create a variable to hold the div above, reducing look time
+
+    code_hunk_div = page_html.find("div", {"class": "blob-wrapper"})
+
+    # Iterate through code hunks and add them to the lines field in our dictionary
+    x = 0
+    for code_hunk in code_hunk_div.find_all("div", {"class": "blame-hunk d-flex border-gray-light border-bottom"}):
+
+        # Now we possess a code hunk. We need to go through this, separate out lines, and match them with a blame commit, timestamp and reblame link.
+
+        blame_hunk = code_hunk.find("div", {"class": "blame-commit flex-self-stretch mr-1"})  # Create a hunk variable to limit searching
+
+        blame_commit_message = blame_hunk.find("div", {"class": "blame-commit-content d-flex no-wrap flex-items-center"}).text.strip()
+        blame_commit_time = blame_hunk.find("time-ago").get("datetime")
+
+        # Format the link
+
+        our_link_format = "/cve/{}/blame".format(cve_id)  # If we change our link format, change this
+
+        blame_commit_link = "{}{}".format(our_link_format, code_hunk.find("div", {"class": "blob-reblame pl-1 pr-1"}).find("a").get("href"))
+
+        master_dictionary["block_representation"][x] ={
+            "blame_commit_message": blame_commit_message,
+            "blame_commit_time": blame_commit_time,
+            "blame_commit_link": blame_commit_link,
+            "text": code_hunk.find("div", {"class": "width-full"}).text.strip()
+        }
+
+        # Now we need to create a dictionary for each line, and then add those to the lines field
+
+        for blame_line in code_hunk.find_all("div", {"class": "d-flex flex-justify-start flex-items-start"}):
+            line_number = int(blame_line.find("div", {"class": "blob-num blame-blob-num bg-gray-light js-line-number"}).text.strip())
+            line_text = blame_line.find("div", {"class": "blob-code blob-code-inner js-file-line"}).text.strip()
+            master_dictionary["line_representation"][line_number] = {
+                "blame_commit_message": blame_commit_message,
+                "blame_commit_time": blame_commit_time,
+                "blame_commit_link": blame_commit_link,
+                "line_number": line_number,
+                "line_text": line_text.strip()
+            }
+
+        x = x+1
 
     return master_dictionary
 
+# def get_commit(repo_user, repo_name, hash):
+#     data = {}
+#
+#     link = "https://github.com/{}/{}/commit/{}".format(repo_user, repo_name, hash)
+#
+#     response = requests.get(link)
+#     soup = BeautifulSoup(response.text, "html.parser")
+#
+#     data["hash"] = hash
+#     data["msg"] = soup.find("div", {"class": "commit-desc"}).text
+#
+#     file_headers = soup.find_all(
+#         "div",
+#         {
+#             "class": "file-header d-flex flex-items-center file-header--expandable js-file-header"
+#         },
+#     )
+#
+#     data["files"] = []
+#     # print file_headers
+#     for file_header in file_headers:
+#         file_name = (
+#             file_header.find("div", {"class": "file-info flex-auto"})
+#             .find("a", {"class": "link-gray-dark"})
+#             .text
+#         )
+#         try:
+#             file_link_div = file_header.find("div", {"class": "file-actions pt-0"})
+#             if file_link_div is not None:
+#                 file_link = "http://github.com{}".format(
+#                     file_link_div.find("a").get("href")
+#                 )
+#                 blame_link = file_link.replace("blob", "blame")
+#                 history_link = file_link.replace("blob", "commits")
+#
+#                 data["files"].append(
+#                     {
+#                         "file_name": file_name,
+#                         "file_link": file_link,
+#                         "blame_link": blame_link,
+#                         "history_link": history_link,
+#                     }
+#                 )
+#         except Exception as file_header_exc:
+#             print(file_header_exc)
+#
+#     return data
+#
+#
+# def get_blame(repo_user, repo_name, hash, file_name):
+#     # TODO
+#     pass
 
-
-def get_commit(repo_user, repo_name, hash):
-    data = {}
-
-    link = "https://github.com/{}/{}/commit/{}".format(repo_user, repo_name, hash)
-
-    response = requests.get(link)
-    soup = BeautifulSoup(response.text, "html.parser")
-
-    data["hash"] = hash
-    data["msg"] = soup.find("div", {"class": "commit-desc"}).text
-
-    file_headers = soup.find_all(
-        "div",
-        {
-            "class": "file-header d-flex flex-items-center file-header--expandable js-file-header"
-        },
-    )
-
-    data["files"] = []
-    # print file_headers
-    for file_header in file_headers:
-        file_name = (
-            file_header.find("div", {"class": "file-info flex-auto"})
-            .find("a", {"class": "link-gray-dark"})
-            .text
-        )
-        try:
-            file_link_div = file_header.find("div", {"class": "file-actions pt-0"})
-            if file_link_div is not None:
-                file_link = "http://github.com{}".format(
-                    file_link_div.find("a").get("href")
-                )
-                blame_link = file_link.replace("blob", "blame")
-                history_link = file_link.replace("blob", "commits")
-
-                data["files"].append(
-                    {
-                        "file_name": file_name,
-                        "file_link": file_link,
-                        "blame_link": blame_link,
-                        "history_link": history_link,
-                    }
-                )
-        except Exception as file_header_exc:
-            print(file_header_exc)
-
-    return data
-
-
-def get_blame(repo_user, repo_name, hash, file_name):
-    # TODO 
-    pass
+if __name__ == "__main__":
+    print json.dumps(get_blame_page("CVE-2015-8474","redmine", "redmine", "032f2c9be6520d9d1a1608aa4f1d5d1f184f2472", "app/controllers/application_controller.rb"), indent=4)

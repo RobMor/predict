@@ -79,7 +79,7 @@ def cve_base(cve_id):
 def info_page(cve_id, repo_user, repo_name, hash):
     # Possibly collect these in parallel?
     cve_data = predict.cve.get_cve(cve_id)
-    github_data = predict.github.retrieve_commit_page(repo_user, repo_name, hash)
+    github_data = predict.github.retrieve_commit_page(cve_id, repo_user, repo_name, hash)
     print json.dumps(github_data, indent=4)
     return flask.render_template("commit_info.html", cve_data=cve_data, github_data=github_data)
 
