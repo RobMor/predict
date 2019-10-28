@@ -5,11 +5,13 @@ import flask
 import requests
 import flask_login
 
-from predict import app, login_manager, users
+from predict import app, login_manager
 import predict.cve
-import predict.auth
 import predict.github
 import predict.conflict_resolution
+from predict import db
+from predict.models import User
+import predict.auth
 
 # Constants for database entry indices.
 # May not be accurate, update later as necessary.
@@ -38,19 +40,20 @@ def login():
     # If the information is a GET, then return the form.
     if flask.request.method == "GET":
         return flask.render_template("login.html")
-    elif flask.request.method == "POST":
-        username = flask.request.form["username"]
-        password = flask.request.form["password"]
-        print(
-            "Here are the currently known users when the user tried to login: "
-            + str(users)
-        )
-
-        if username in users:
-            flask_login.login_user(users[username])
+    elif flask.request.method == 'POST':
+        username = flask.request.form['username']
+        password = flask.request.form['password']
+        print("Here are the currently known users when the user tried to login: " + str(User.query.all()))
+        current_user = User.query.filter_by(name=username).first()
+        if current_user:
+            print("logging in current user" + str(current_user))
+            flask_login.login_user(current_user)
             return flask.redirect(
                 flask.url_for("dashboard")
             )  # If valid, send the user to the dashboard
+        #if username in users:
+        #    flask_login.login_user(users[username])
+        #    return flask.redirect(flask.url_for("dashboard")) #If valid, send the user to the dashboard
         else:
             # TODO: Return an appended version of the login page asking to try again, and should
             # probably wipe the form data as well.
@@ -75,31 +78,19 @@ def register():
 
         print("username: " + username)
         print("password: " + password)
-
-        user = predict.auth.User(username, password)
-
+        if User.query.filter_by(name=username).first():
+            return "User Already Exists"
         # Ensure there is not a user like this in the hash #TODO: ensure there is not a user like this in the database
-        if username not in users:
-            users[username] = user
+        else:
+            new_user = User(name = username, password = password)
+            db.session.add(new_user)
+            db.session.commit()
             return flask.redirect(
                 flask.url_for("login")
             )
-        else:
-            return "User already exists!"
     else:
         # TODO: Return a 400 error
         return "How did you get in here!?"
-
-
-@app.route("/logout")
-def logout():
-    print("logout function called!")
-    if flask_login.current_user.is_authenticated:
-        flask_login.logout_user()
-        return flask.redirect(flask.url_for("login"))
-    else:
-        return "The user tried to logout when there was no user! (This should be a webpage or an error code.)"
-
 
 @app.route("/dashboard")
 def dashboard():
