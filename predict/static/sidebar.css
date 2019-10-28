@@ -3,6 +3,9 @@
     width: 30%;
     position: fixed;
 
+    display: flex;
+    flex-direction: column;
+
     /* Hidden initially */
     margin-left: -30%;
 
@@ -23,12 +26,14 @@
     margin-left: 0;
 }
 
-.sidebar-element {
-    padding: 1rem;
-    padding-bottom: 0rem;
-}
-
 #sidebar-controls {
+    position: sticky;
+    top: 0;
+
+    z-index: 1001;
+
+    padding: 1rem;
+
     display: flex;
     width: 100%;
 }
@@ -57,9 +62,22 @@
     color: white;
 }
 
+#sidebar-content {
+    /* Space for the sidebar-query */
+    padding-bottom: 3em; /* A bit of a hack but there's no better way */
+    padding-left: 1rem;
+    padding-right: 1rem;
+
+    flex: 1;
+
+    z-index: 1000;
+}
+
 #sidebar-query{
     position: -webkit-sticky;
     position: sticky;
+    z-index: 1001;
+    /* position: fixed; */
     bottom: 0;
     width: 100%;
 

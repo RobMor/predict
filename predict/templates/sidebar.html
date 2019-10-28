@@ -10,7 +10,7 @@
 {% block body %}
 <!-- Actual sidebar -->
 <div id="sidebar" class="bg-light">
-    <div id="sidebar-controls" class="sidebar-element">
+    <div id="sidebar-controls" class="sidebar-element bg-light">
         <a class="sidebar-control btn btn-outline-dark" role="button" href="{{ url_for("dashboard") }}"> <i class="fas fa-home"></i> Dashboard </a>
         <a class="sidebar-control btn btn-outline-dark" role="button" href="{{ url_for("logout") }}"> <i class="fas fa-sign-out-alt"></i> Log Out </a>
         <a id="sidebar-close" class="sidebar-control btn btn-outline-dark" role="button" onclick="toggleSidebar()"> <i class="fas fa-times"></i> </a>
