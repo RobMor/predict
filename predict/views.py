@@ -103,7 +103,7 @@ def logout():
 
 @app.route("/dashboard")
 def dashboard():
-    
+
     if flask_login.current_user.is_authenticated:
         return flask.render_template("dashboard.html")
     else:
@@ -112,6 +112,9 @@ def dashboard():
 
 @app.route("/resolution")
 def conflict_resolution():
+    # Login required:
+    #if not flask_login.current_user.is_authenticated:
+    #    return flask.redirect(flask.url_for("login"))
 
     # try:
     #    connection = sqlite3.connect(db_file)
@@ -196,9 +199,6 @@ def conflict_resolution():
 
     currentUser = "jbelke"  # TODO: Replace with get_current_user
     blocks = predict.conflict_resolution.splitByCveId(entries)
-    print("Blocks after splitting by CVE ID:\n")
-    print(blocks)
-    print("\n")
     newEntries = []
     for block in blocks:
         block = predict.conflict_resolution.moveUserToFront(block, currentUser)
@@ -207,10 +207,9 @@ def conflict_resolution():
             block[i] = predict.conflict_resolution.appendURLs(block[i])
             if i != 0:
                 block[i] = predict.conflict_resolution.insertAgreements(block[i], currUserEntry)
-
         block = predict.conflict_resolution.insertPercentages(block)
         newEntries.extend(block)
-
+    print(newEntries)
     return flask.render_template(
         "conflict_resolution.html", entries=newEntries, current_user=currentUser
     )  # TODO: Replace with get_current_user

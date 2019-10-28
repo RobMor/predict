@@ -41,7 +41,7 @@
             {% endif %}
               <td>{{entry[0]}}</td>
               <td>{{entry[1]}}</td>
-              <td><a href={{entry[10]}}>{{entry[2]}}</td>
+              <td><a href={{entry[10]}} title={{entry[10]}}>{{entry[2]}}</td>
               {% if entry[3] == "Match" %}
                 <td class="table-success">{{entry[3]}}</td>
               {% elif entry[3] == "Conflict" %}
@@ -49,7 +49,7 @@
               {% else %}
                 <td>{{entry[3]}}</td>
               {% endif %}
-              <td><a href={{entry[11]}}>{{entry[4]}}</a></td>
+              <td><a href={{entry[11]}} title={{entry[11]}}>{{entry[4]}}</a></td>
               {% if entry[5] == "Match" %}
                 <td class="table-success">{{entry[5]}}</td>
               {% elif entry[5] == "Conflict" %}
@@ -57,7 +57,7 @@
               {% else %}
                 <td>{{entry[5]}}</td>
               {% endif %}
-    	        <td><a href={{entry[12]}}>{{entry[6]}}</td>
+    	        <td><a href={{entry[12]}} title={{entry[12]}}>{{entry[6]}}</td>
               {% if entry[7] == "Match" %}
                 <td class="table-success">{{entry[7]}}</td>
               {% elif entry[7] == "Conflict" %}
@@ -65,7 +65,7 @@
               {% else %}
                 <td>{{entry[7]}}</td>
               {% endif %}
-    	        <td><a href={{entry[13]}}>{{entry[8]}}</a></td>
+    	        <td><a href={{entry[13]}} title={{entry[13]}}>{{entry[8]}}</a></td>
               {% if entry[9] == "Match" %}
                 <td class="table-success">{{entry[9]}}</td>
               {% elif entry[9] == "Conflict" %}

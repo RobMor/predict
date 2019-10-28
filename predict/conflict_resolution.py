@@ -21,26 +21,42 @@ FIX_COMMIT_INDEX = 4
 FIX_FILE_INDEX = 5
 INTRO_COMMIT_INDEX = 6
 INTRO_FILE_INDEX = 7
-#FIX_COMMIT_URL_INDEX = 8
-#FIX_FILE_URL_INDEX = 9
-#INTRO_COMMIT_URL_INDEX = 10
-#INTRO_FILE_URL_INDEX = 11
+FIX_COMMIT_URL_INDEX = 8
+FIX_FILE_URL_INDEX = 9
+INTRO_COMMIT_URL_INDEX = 10
+INTRO_FILE_URL_INDEX = 11
 
 
+## *** TODO: FIgure out hwo to clean up these long-ass lines of code without screwing up python indenting!
 
 def insertAgreements(entry, currUserEntry):
     fixCommitAgree = "Match" if entry[FIX_COMMIT_INDEX] == currUserEntry[FIX_COMMIT_INDEX] else "Conflict"
     fixFileAgree = "Match" if entry[FIX_FILE_INDEX] == currUserEntry[FIX_FILE_INDEX] else "Conflict"
     introCommitAgree = "Match" if entry[INTRO_COMMIT_INDEX] == currUserEntry[INTRO_COMMIT_INDEX] else "Conflict"
     introFileAgree = "Match" if entry[INTRO_FILE_INDEX] == currUserEntry[INTRO_FILE_INDEX] else "Conflict"
-    return (entry[CVE_ID_INDEX], entry[USERNAME_INDEX], entry[FIX_COMMIT_INDEX], fixCommitAgree, entry[FIX_FILE_INDEX], fixFileAgree, entry[INTRO_COMMIT_INDEX], introCommitAgree, entry[INTRO_FILE_INDEX], introFileAgree)
+    return (entry[CVE_ID_INDEX], entry[USERNAME_INDEX], entry[FIX_COMMIT_INDEX],
+        fixCommitAgree, entry[FIX_FILE_INDEX], fixFileAgree,
+        entry[INTRO_COMMIT_INDEX], introCommitAgree, entry[INTRO_FILE_INDEX],
+        introFileAgree, entry[FIX_COMMIT_URL_INDEX], entry[FIX_FILE_URL_INDEX],
+        entry[INTRO_COMMIT_URL_INDEX], entry[INTRO_FILE_URL_INDEX])
 
 def appendURLs(entry):
-    fixCommitURL = flask.url_for("info_page", cve_id = entry[CVE_ID_INDEX], repo_name = entry[REPO_NAME_INDEX], repo_user = entry[REPO_USER_INDEX], commit = entry[FIX_COMMIT_INDEX])
-    fixFileURL = flask.url_for("info_page", cve_id = entry[CVE_ID_INDEX], repo_name = entry[REPO_NAME_INDEX], repo_user = entry[REPO_USER_INDEX], commit = entry[FIX_FILE_INDEX])
-    introCommitURL = flask.url_for("info_page", cve_id = entry[CVE_ID_INDEX], repo_name = entry[REPO_NAME_INDEX], repo_user = entry[REPO_USER_INDEX], commit = entry[INTRO_COMMIT_INDEX])
-    introFileURL = flask.url_for("info_page", cve_id = entry[CVE_ID_INDEX], repo_name = entry[REPO_NAME_INDEX], repo_user = entry[REPO_USER_INDEX], commit = entry[INTRO_FILE_INDEX])
-    return (entry[CVE_ID_INDEX], entry[USERNAME_INDEX], entry[REPO_NAME_INDEX], entry[REPO_USER_INDEX], entry[FIX_COMMIT_INDEX], entry[FIX_FILE_INDEX], entry[INTRO_COMMIT_INDEX], entry[INTRO_FILE_INDEX], fixCommitURL, fixFileURL, introCommitURL, introFileURL)
+    fixCommitURL = flask.url_for("info_page", cve_id = entry[CVE_ID_INDEX],
+        repo_name = entry[REPO_NAME_INDEX], repo_user = entry[REPO_USER_INDEX],
+        commit = entry[FIX_COMMIT_INDEX])
+    fixFileURL = flask.url_for("info_page", cve_id = entry[CVE_ID_INDEX],
+        repo_name = entry[REPO_NAME_INDEX], repo_user = entry[REPO_USER_INDEX],
+        commit = entry[FIX_FILE_INDEX])
+    introCommitURL = flask.url_for("info_page", cve_id = entry[CVE_ID_INDEX],
+        repo_name = entry[REPO_NAME_INDEX], repo_user = entry[REPO_USER_INDEX],
+        commit = entry[INTRO_COMMIT_INDEX])
+    introFileURL = flask.url_for("info_page", cve_id = entry[CVE_ID_INDEX],
+        repo_name = entry[REPO_NAME_INDEX], repo_user = entry[REPO_USER_INDEX],
+        commit = entry[INTRO_FILE_INDEX])
+    return (entry[CVE_ID_INDEX], entry[USERNAME_INDEX], entry[REPO_NAME_INDEX],
+        entry[REPO_USER_INDEX], entry[FIX_COMMIT_INDEX], entry[FIX_FILE_INDEX],
+        entry[INTRO_COMMIT_INDEX], entry[INTRO_FILE_INDEX], fixCommitURL,
+        fixFileURL, introCommitURL, introFileURL)
 
 def insertPercentages(block):
     length = len(block)-1
@@ -60,11 +76,17 @@ def insertPercentages(block):
         if entry[USERNAME_INDEX] != userEntry[USERNAME_INDEX] and entry[9] == "Match":
             introFileCount += 1
     if length > 0:
-        print(length)
-        print(fixCommitCount)
-        newBlock[0] =(newBlock[0][CVE_ID_INDEX], newBlock[0][USERNAME_INDEX], newBlock[0][FIX_COMMIT_INDEX], str(round(fixCommitCount/length*100)) + "%", newBlock[0][FIX_FILE_INDEX], str(round(fixFileCount/length*100)) + "%", newBlock[0][INTRO_COMMIT_INDEX], str(round(introCommitCount/length*100)) + "%", newBlock[0][INTRO_FILE_INDEX], str(round(introFileCount/length*100)) + "%")
+        newBlock[0] =(newBlock[0][CVE_ID_INDEX], newBlock[0][USERNAME_INDEX],
+            newBlock[0][FIX_COMMIT_INDEX], str(round(fixCommitCount/length*100)) + "%",
+            newBlock[0][FIX_FILE_INDEX], str(round(fixFileCount/length*100)) + "%",
+            newBlock[0][INTRO_COMMIT_INDEX], str(round(introCommitCount/length*100)) + "%",
+            newBlock[0][INTRO_FILE_INDEX], str(round(introFileCount/length*100)) + "%",
+            newBlock[0][FIX_COMMIT_URL_INDEX], newBlock[0][FIX_FILE_URL_INDEX],
+            newBlock[0][INTRO_COMMIT_URL_INDEX], newBlock[0][INTRO_FILE_URL_INDEX])
     else:
-        newBlock[0] =(newBlock[0][CVE_ID_INDEX], newBlock[0][USERNAME_INDEX], newBlock[0][FIX_COMMIT_INDEX], "N/A", newBlock[0][FIX_FILE_INDEX], "N/A", newBlock[0][INTRO_COMMIT_INDEX], "N/A", newBlock[0][INTRO_FILE_INDEX], "N/A")
+        newBlock[0] =(newBlock[0][CVE_ID_INDEX], newBlock[0][USERNAME_INDEX],
+        newBlock[0][FIX_COMMIT_INDEX], "N/A", newBlock[0][FIX_FILE_INDEX], "N/A",
+        newBlock[0][INTRO_COMMIT_INDEX], "N/A", newBlock[0][INTRO_FILE_INDEX], "N/A")
     return newBlock
 
 
