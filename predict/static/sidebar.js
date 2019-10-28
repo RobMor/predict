@@ -24,11 +24,4 @@ window.onload = function () {
 
     sidebar.offsetHeight; // Trigger a "reflow"
     sidebar.classList.remove("notransition")
-
-    // Check for the enter key being pressed in the sidebar input field
-    document.getElementById("cve-input").addEventListener("keydown", function (e) {
-        if (e.keyCode === 13) {  // Checks whether the pressed key is "Enter"
-            goto_cve(e); /* In cve_query.js */
-        }
-    });
 }

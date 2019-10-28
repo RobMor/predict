@@ -106,7 +106,6 @@ def logout():
         return "The user tried to logout when there was no user! (This should be a webpage or an error code.)"
 
 
-
 @app.route("/dashboard")
 # @flask_login.login_required #TODO: Figure out why this annotation is not preventing access
 def dashboard():
