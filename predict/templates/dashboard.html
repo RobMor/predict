@@ -29,7 +29,7 @@
 
     <br>
 
-    
+
     <div class = "row">
         <div class="col-sm-6">
             <div class="card" style="width: 50rem; height:33rem">
@@ -38,7 +38,7 @@
                 <h3 class="card-title">Data Export</h3>
                 <p class="card-text">Use the below dropdowns to export your CVE data!</p>
 
-               
+
                 <div class="dropdown">
                         <button class="btn btn-secondary dropdown-toggle" type="button" id="fileDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                           Choose File Format
@@ -60,7 +60,7 @@
                           <div class="dropdown-item">None</div>
                       </div>
                 </div>
-                   
+
 
                 <br>
 
@@ -73,7 +73,7 @@
                               <div class="dropdown-item">None</div>
                           </div>
                 </div>
-               
+
 
                 <br>
 
@@ -96,25 +96,25 @@
                 </div>
             </div>
         </div>
-            
+
         <div class="col-sm-6">
             <div class="card" style="width: 50rem; height:33rem">
-        
+
                 <div class="card-body">
                     <h3 class="card-title">Review</h3>
                     <div class="card text-white bg-danger mb-3" style="max-width: 25rem;">
                         <h4><a href ="{{ url_for('conflict_resolution') }}">Resolve Conflicts</a></h4>
                     </div>
-                    
 
-                
+
+
 
                     <div class="card text-white bg-info mb-3" style="max-width: 75rem;">
                             <div class="card-body">
                             <h4>MyCVEs</h4>
                             <p class="card-text">A List of the user's most recent CVEs will appear below</p>
                             <!--TODO: Jinja, use templates and Python to figure out user's list of labeled CVEs from the database. Or could
-                            also use JS to do those DB calls and figure out what is inside, and then generate bootstrapped table containing 
+                            also use JS to do those DB calls and figure out what is inside, and then generate bootstrapped table containing
                             the results of the call.-->
                             </div>
                     </div>
