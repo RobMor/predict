@@ -1,18 +1,30 @@
 # Data Processing Helpers File
-#from __future__ import division
+
+# ***** NOTE: Asumption is that database entries are of the format:
+# (CVE ID, Username, Repo Name, Repo User, Fix Commit, Fix File, Intro Commit, Intro File)
 
 import json
 import sqlite3
 import predict.cve
 import predict.github
 
+import flask
+import requests
+import flask_login
+
 
 CVE_ID_INDEX = 0
 USERNAME_INDEX = 1
-FIX_COMMIT_INDEX = 2
-FIX_FILE_INDEX = 3
-INTRO_COMMIT_INDEX = 4
-INTRO_FILE_INDEX = 5
+REPO_NAME_INDEX = 2
+REPO_USER_INDEX = 3
+FIX_COMMIT_INDEX = 4
+FIX_FILE_INDEX = 5
+INTRO_COMMIT_INDEX = 6
+INTRO_FILE_INDEX = 7
+#FIX_COMMIT_URL_INDEX = 8
+#FIX_FILE_URL_INDEX = 9
+#INTRO_COMMIT_URL_INDEX = 10
+#INTRO_FILE_URL_INDEX = 11
 
 
 
@@ -22,6 +34,13 @@ def insertAgreements(entry, currUserEntry):
     introCommitAgree = "Match" if entry[INTRO_COMMIT_INDEX] == currUserEntry[INTRO_COMMIT_INDEX] else "Conflict"
     introFileAgree = "Match" if entry[INTRO_FILE_INDEX] == currUserEntry[INTRO_FILE_INDEX] else "Conflict"
     return (entry[CVE_ID_INDEX], entry[USERNAME_INDEX], entry[FIX_COMMIT_INDEX], fixCommitAgree, entry[FIX_FILE_INDEX], fixFileAgree, entry[INTRO_COMMIT_INDEX], introCommitAgree, entry[INTRO_FILE_INDEX], introFileAgree)
+
+def appendURLs(entry):
+    fixCommitURL = flask.url_for("info_page", cve_id = entry[CVE_ID_INDEX], repo_name = entry[REPO_NAME_INDEX], repo_user = entry[REPO_USER_INDEX], commit = entry[FIX_COMMIT_INDEX])
+    fixFileURL = flask.url_for("info_page", cve_id = entry[CVE_ID_INDEX], repo_name = entry[REPO_NAME_INDEX], repo_user = entry[REPO_USER_INDEX], commit = entry[FIX_FILE_INDEX])
+    introCommitURL = flask.url_for("info_page", cve_id = entry[CVE_ID_INDEX], repo_name = entry[REPO_NAME_INDEX], repo_user = entry[REPO_USER_INDEX], commit = entry[INTRO_COMMIT_INDEX])
+    introFileURL = flask.url_for("info_page", cve_id = entry[CVE_ID_INDEX], repo_name = entry[REPO_NAME_INDEX], repo_user = entry[REPO_USER_INDEX], commit = entry[INTRO_FILE_INDEX])
+    return (entry[CVE_ID_INDEX], entry[USERNAME_INDEX], entry[REPO_NAME_INDEX], entry[REPO_USER_INDEX], entry[FIX_COMMIT_INDEX], entry[FIX_FILE_INDEX], entry[INTRO_COMMIT_INDEX], entry[INTRO_FILE_INDEX], fixCommitURL, fixFileURL, introCommitURL, introFileURL)
 
 def insertPercentages(block):
     length = len(block)-1
@@ -43,9 +62,9 @@ def insertPercentages(block):
     if length > 0:
         print(length)
         print(fixCommitCount)
-        newBlock[0] =(newBlock[0][0], newBlock[0][1], newBlock[0][2], str(round(fixCommitCount/length*100)) + "%", newBlock[0][3], str(round(fixFileCount/length*100)) + "%", newBlock[0][4], str(round(introCommitCount/length*100)) + "%", newBlock[0][5], str(round(introFileCount/length*100)) + "%")
+        newBlock[0] =(newBlock[0][CVE_ID_INDEX], newBlock[0][USERNAME_INDEX], newBlock[0][FIX_COMMIT_INDEX], str(round(fixCommitCount/length*100)) + "%", newBlock[0][FIX_FILE_INDEX], str(round(fixFileCount/length*100)) + "%", newBlock[0][INTRO_COMMIT_INDEX], str(round(introCommitCount/length*100)) + "%", newBlock[0][INTRO_FILE_INDEX], str(round(introFileCount/length*100)) + "%")
     else:
-        newBlock[0] =(newBlock[0][0], newBlock[0][1], newBlock[0][2], "N/A", newBlock[0][3], "N/A", newBlock[0][4], "N/A", newBlock[0][5], "N/A")
+        newBlock[0] =(newBlock[0][CVE_ID_INDEX], newBlock[0][USERNAME_INDEX], newBlock[0][FIX_COMMIT_INDEX], "N/A", newBlock[0][FIX_FILE_INDEX], "N/A", newBlock[0][INTRO_COMMIT_INDEX], "N/A", newBlock[0][INTRO_FILE_INDEX], "N/A")
     return newBlock
 
 

@@ -136,6 +136,8 @@ def conflict_resolution():
         (
             "1234-5678",
             "tgiddings",
+            "thisisareponame",
+            "thisisarepouser",
             "3k432k4h",
             "fix_file1.cpp",
             "98018927",
@@ -144,6 +146,8 @@ def conflict_resolution():
         (
             "1234-5678",
             "jbelke",
+            "thisisareponame",
+            "thisisarepouser",
             "3k432k4h",
             "fix_file1.cpp",
             "09sdf09sf",
@@ -152,6 +156,8 @@ def conflict_resolution():
         (
             "1234-5678",
             "rmorrison",
+            "thisisareponame",
+            "thisisarepouser",
             "ihg6yhud",
             "fix_file2.cpp",
             "21b9de987ac",
@@ -160,23 +166,54 @@ def conflict_resolution():
         (
             "1234-5678",
             "cwolff",
+            "thisisareponame",
+            "thisisarepouser",
             "ihg6yhud",
             "fix_file2.cpp",
             "21b9de987ac",
-            "intro_file1.cpp",
-        ),
+            "intro_file1.cpp"),
+        (
+            "8765-4321",
+            "elin",
+            "thisisareponame",
+            "thisisarepouser",
+            "123485",
+            "fix_file3.py",
+            "21b9de9erwe",
+            "intro_file58.fortranlol"),
+        (
+            "8765-4321",
+            "cwolff",
+            "thisisareponame",
+            "thisisarepouser",
+            "ihg6yhud",
+            "fix_file2.cpp",
+            "21b9de987ac",
+            "intro_file1.cpp"),
+        (
+            "8765-4321",
+            "jbelke",
+            "thisisareponame",
+            "thisisarepouser",
+            "123485",
+            "lolXD.py",
+            "4206969",
+            "elonmuskrat.cobal")
     ]
 
     currentUser = "jbelke"  # TODO: Replace with get_current_user
     blocks = predict.conflict_resolution.splitByCveId(entries)
+    print("Blocks after splitting by CVE ID:\n")
+    print(blocks)
+    print("\n")
     newEntries = []
     for block in blocks:
         block = predict.conflict_resolution.moveUserToFront(block, currentUser)
         currUserEntry = block[0]
-        for i in range(1, len(block)):
-            block[i] = predict.conflict_resolution.insertAgreements(
-                block[i], currUserEntry
-            )
+        for i in range(0, len(block)):
+            block[i] = predict.conflict_resolution.appendURLs(block[i])
+            if i != 0:
+                block[i] = predict.conflict_resolution.insertAgreements(block[i], currUserEntry)
 
         block = predict.conflict_resolution.insertPercentages(block)
         newEntries.extend(block)

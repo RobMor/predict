@@ -15,7 +15,7 @@
 <a href="dashboard.html" class="btn btn-primary" role="button">Dashboard</a>
 <hr>
 <div class="container">
-  <table class="table table-striped">
+  <table class="table table-striped table-bordered">
     <thead>
       <tr>
         <th>CVE ID</th>
@@ -35,13 +35,13 @@
       {% for entry in entries %}
             <!-- TODO Add entry to html table -->
             {% if entry[1] == current_user %}
-              <tr class="table-info">
+              <tr class="table-primary">
             {% else %}
               <tr>
             {% endif %}
               <td>{{entry[0]}}</td>
               <td>{{entry[1]}}</td>
-              <td>{{entry[2]}}</td>
+              <td><a href={{entry[10]}}>{{entry[2]}}</td>
               {% if entry[3] == "Match" %}
                 <td class="table-success">{{entry[3]}}</td>
               {% elif entry[3] == "Conflict" %}
@@ -49,7 +49,7 @@
               {% else %}
                 <td>{{entry[3]}}</td>
               {% endif %}
-              <td>{{entry[4]}}</td>
+              <td><a href={{entry[11]}}>{{entry[4]}}</a></td>
               {% if entry[5] == "Match" %}
                 <td class="table-success">{{entry[5]}}</td>
               {% elif entry[5] == "Conflict" %}
@@ -57,7 +57,7 @@
               {% else %}
                 <td>{{entry[5]}}</td>
               {% endif %}
-    	        <td>{{entry[6]}}</td>
+    	        <td><a href={{entry[12]}}>{{entry[6]}}</td>
               {% if entry[7] == "Match" %}
                 <td class="table-success">{{entry[7]}}</td>
               {% elif entry[7] == "Conflict" %}
@@ -65,7 +65,7 @@
               {% else %}
                 <td>{{entry[7]}}</td>
               {% endif %}
-    	        <td>{{entry[8]}}</td>
+    	        <td><a href={{entry[13]}}>{{entry[8]}}</a></td>
               {% if entry[9] == "Match" %}
                 <td class="table-success">{{entry[9]}}</td>
               {% elif entry[9] == "Conflict" %}
