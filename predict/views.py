@@ -194,7 +194,53 @@ def conflict_resolution():
             "123485",
             "lolXD.py",
             "4206969",
-            "elonmuskrat.cobal")
+            "elonmuskrat.cobal"),
+        (
+            "867-5309",
+            "thenson",
+            "thisisareponame",
+            "thisisarepouser",
+            "ab73b9b",
+            "jennyigoturnumber.onehitwonder",
+            "3jd9983",
+            "g**gleisabadword.purtilo"),
+        (
+            "867-5309",
+            "ckruskal",
+            "isthisthekrustykrab",
+            "nothisispatrick",
+            "ab73b9b",
+            "kruskalkrab.clyde",
+            "3jd9983",
+            "krabbypatty.recipe"),
+        (
+            "867-5309",
+            "mzuckerberg",
+            "robotrepo",
+            "robotuser",
+            "7538938",
+            "hellofellow.humans",
+            "3jd9983",
+            "notarobot.beepboop"),
+        (
+            "867-5309",
+            "jbelke",
+            "thisisareponame",
+            "thisisarepouser",
+            "7538938",
+            "area51.raid",
+            "3jd9983",
+            "daniel.san"),
+        (
+            "867-5309",
+            "esnowden",
+            "thisisareponame",
+            "thisisarepouser",
+            "3209dbce9",
+            "turnoffyourwebcam.nsa",
+            "0932840293",
+            "myfbiagent.lol")
+
     ]
 
     currentUser = "jbelke"  # TODO: Replace with get_current_user
