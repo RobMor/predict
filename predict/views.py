@@ -5,7 +5,7 @@ import flask
 import requests
 import flask_login
 
-from predict import app, login_manager
+from predict import app, login_manager, users
 import predict.cve
 import predict.auth
 import predict.github
@@ -22,16 +22,11 @@ import predict.conflict_resolution
 # INTRO_COMMIT_INDEX = 4
 # INTRO_FILE_INDEX = 5
 
-# TODO: Later on this hash of users will be converted into database calls. These users are not neccessarily authenticated.
-users = {}
-# end login stuff
-
-
 @app.route("/")
 def base():
     # If they're logged in direct to dashboard, if not direct to login
     # stop requiring me to log in grr!!
-    logged_in = True  # flask_login.current_user.is_authenticated
+    logged_in = flask_login.current_user.is_authenticated
     if logged_in:
         return flask.redirect(flask.url_for("dashboard"))
     else:
@@ -70,7 +65,6 @@ def login():
 def register():
     print("register function")
     if flask.request.method == "GET":
-        print("Gotem.")
         return flask.render_template("register.html")
     if flask.request.method == "POST":
 
@@ -87,7 +81,9 @@ def register():
         # Ensure there is not a user like this in the hash #TODO: ensure there is not a user like this in the database
         if username not in users:
             users[username] = user
-            return "New user created!"
+            return flask.redirect(
+                flask.url_for("login")
+            )
         else:
             return "User already exists!"
     else:
@@ -96,7 +92,6 @@ def register():
 
 
 @app.route("/logout")
-# @flask_login.login_required
 def logout():
     print("logout function called!")
     if flask_login.current_user.is_authenticated:
@@ -107,17 +102,15 @@ def logout():
 
 
 @app.route("/dashboard")
-# @flask_login.login_required #TODO: Figure out why this annotation is not preventing access
 def dashboard():
-    # Stop making me log in !!
-    # if flask_login.current_user.is_authenticated:
-    return flask.render_template("dashboard.html")
-    # else:
-    #     return flask.redirect(flask.url_for("login"))
+    
+    if flask_login.current_user.is_authenticated:
+        return flask.render_template("dashboard.html")
+    else:
+        return flask.redirect(flask.url_for("login"))
 
 
 @app.route("/resolution")
-# @flask_login.login_required
 def conflict_resolution():
 
     # try:
@@ -235,7 +228,6 @@ def cve_base(cve_id):
 
 
 @app.route("/cve/<cve_id>/info/<repo_user>/<repo_name>/<commit>")
-# @flask_login.login_required
 def info_page(cve_id, repo_user, repo_name, commit):
     # Possibly collect these in parallel?
     cve_data = predict.cve.get_cve(cve_id)
@@ -249,7 +241,6 @@ def info_page(cve_id, repo_user, repo_name, commit):
 
 
 @app.route("/cve/<cve_id>/blame/<repo_user>/<repo_name>/<commit>/<file_name>")
-# @flask_login.login_required
 def blame_page(cve_id, repo_user, repo_name, commit, file_name):
     result = predict.github.get_blame_page(
         cve_id, repo_user, repo_name, commit, file_name

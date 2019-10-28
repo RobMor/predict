@@ -2,15 +2,15 @@ import flask_login
 from flask_login import UserMixin
 
 from predict import login_manager
-
+from predict import users
 
 class User(UserMixin):
-    def __init__(self, username):
+    def __init__(self, username, password):
         self.username = username
         self.password = password
 
     def get_id(self):
-        return self.name
+        return self.username
 
 
 '''User callback function for getting the current user.  "This callback is used to reload the user object from the

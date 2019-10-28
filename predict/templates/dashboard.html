@@ -4,17 +4,125 @@
 
 {% block content %}
 
-<h1 class="page-header text-center">
-    Predict
-</h1>
+<div class = "jumbotron">
+    <h1>Predict Dashboard</h1>
+</div>
+
+<!--<img src ="../../images/logo.png"> -->   <!--TODO: Figure out why this image will not load.-->
+
+<div class="text-center">
+    <h2 class="header">
+        CVE Assistance System
+    </h2>
+</div>
+
 
 <form id="sidebar-query" class="sidebar-element" onsubmit="return goto_cve('cve-input-main')()">
     <div class="input-group">
         <input type="text" id="cve-input-main" class="form-control" placeholder="CVE ID">
         <div class="input-group-append">
             <input class="btn btn-outline-dark" type="submit" value="Analyze">
+
         </div>
-    </div>
-</form>
+    </form>
+
+
+    <br>
+
+    
+    <div class = "row">
+        <div class="col-sm-6">
+            <div class="card" style="width: 50rem; height:33rem">
+
+                <div class="card-body">
+                <h3 class="card-title">Data Export</h3>
+                <p class="card-text">Use the below dropdowns to export your CVE data!</p>
+
+               
+                <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="fileDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          Choose File Format
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" >
+                            <div class="dropdown-item">.csv</div>
+                        </div>
+                </div>
+
+                <br>
+
+                <!--TODO: Determine if None item is needed, or just assumer the user provided None if they don't select anything from the dropdown-->
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="conflictStratDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Select Conflict Resolution Strategy
+                      </button>
+                      <div class="dropdown-menu" aria-labelledby="conflictStratDropdown"> <!--TODO: Tooltip to explain what these are?-->
+                          <div class="dropdown-item">Majority</div>
+                          <div class="dropdown-item">None</div>
+                      </div>
+                </div>
+                   
+
+                <br>
+
+                <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="filtersDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Select Filters
+                          </button>
+                          <div class="dropdown-menu" aria-labelledby="filtersDropdown"> <!--TODO: Tooltip to explain what these are?-->
+                              <div class="dropdown-item">Only Me</div>
+                              <div class="dropdown-item">None</div>
+                          </div>
+                </div>
+               
+
+                <br>
+
+                <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="additionalData" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Select Additional Data
+                          </button>
+                          <div class="dropdown-menu" aria-labelledby="additionalData"> <!--TODO: Tooltip to explain what these are?-->
+                              <div class="dropdown-item">Comments</div>
+                              <div class="dropdown-item">Number In Agreement</div>
+                              <div class="dropdown-item">None</div>
+                          </div>
+                </div>
+
+                <br>
+
+                <button class="btn btn-primary">Export Data!</button>
+
+
+                </div>
+            </div>
+        </div>
+            
+        <div class="col-sm-6">
+            <div class="card" style="width: 50rem; height:33rem">
+        
+                <div class="card-body">
+                    <h3 class="card-title">Review</h3>
+                    <div class="card text-white bg-danger mb-3" style="max-width: 25rem;">
+                        <h4><a href ="{{ url_for('conflict_resolution') }}">Resolve Conflicts</a></h4>
+                    </div>
+                    
+
+                
+
+                    <div class="card text-white bg-info mb-3" style="max-width: 75rem;">
+                            <div class="card-body">
+                            <h4>MyCVEs</h4>
+                            <p class="card-text">A List of the user's most recent CVEs will appear below</p>
+                            <!--TODO: Jinja, use templates and Python to figure out user's list of labeled CVEs from the database. Or could
+                            also use JS to do those DB calls and figure out what is inside, and then generate bootstrapped table containing 
+                            the results of the call.-->
+                            </div>
+                    </div>
+
+                </div>
+            </div><!--End Review Card/Section-->
+        </div><!--End col-->
+    </div> <!--End row-->
+
 
 {% endblock %}
