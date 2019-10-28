@@ -95,6 +95,18 @@ def register():
         return "How did you get in here!?"
 
 
+@app.route("/logout")
+# @flask_login.login_required
+def logout():
+    print("logout function called!")
+    if flask_login.current_user.is_authenticated:
+        flask_login.logout_user()
+        return flask.redirect(flask.url_for("login"))
+    else:
+        return "The user tried to logout when there was no user! (This should be a webpage or an error code.)"
+
+
+
 @app.route("/dashboard")
 # @flask_login.login_required #TODO: Figure out why this annotation is not preventing access
 def dashboard():
@@ -211,14 +223,3 @@ def blame_page(cve_id, repo_user, repo_name, commit, file_name):
     return flask.render_template("blame.html", cve_data=cve_data, github_data=result)
 
     return "TODO"
-
-
-@app.route("/logout")
-# @flask_login.login_required
-def logout():
-    print("logout function called!")
-    if flask_login.current_user.is_authenticated:
-        flask_login.logout_user()
-        return flask.redirect(flask.url_for("login"))
-    else:
-        return "The user tried to logout when there was no user! (This should be a webpage or an error code.)"
