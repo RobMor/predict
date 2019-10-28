@@ -10,7 +10,6 @@ import predict.cve
 import predict.auth
 import predict.github
 import predict.conflict_resolution
-from predict.user import User
 
 # Constants for database entry indices.
 # May not be accurate, update later as necessary.
@@ -83,7 +82,7 @@ def register():
         print("username: " + username)
         print("password: " + password)
 
-        user = User(username, password)
+        user = predict.auth.User(username, password)
 
         # Ensure there is not a user like this in the hash #TODO: ensure there is not a user like this in the database
         if username not in users:
