@@ -92,7 +92,7 @@
 
             {% for cve_id, cve_link, date, labels in [("CVE-2014-4014", "/cve/CVE-2014-4014", "2019-10-28", [(True, "file.c", "abcdef", "file.c", "123456"), (False, "file.c", "abcdef", "file.c", "123456")]), ("CVE-2014-4014", "/cve/CVE-2014-4014", "2019-10-28", [(True, "file.c", "abcdef", "file.c", "123456"), (False, "file.c", "abcdef", "file.c", "123456")])] %}
                 <div class="card border-dark review-card">
-                    <a href="{{ cve_link }}" class="card-header bg-transparent text-reset d-flex w-100 justify-content-between">
+                    <a href="{{ cve_link }}" class="card-header text-reset d-flex w-100 justify-content-between">
                         {{ cve_id }}
                         <small>{{ date }}{# TODO use date times here #}</small>{# TODO more time granularity #}
                     </a>
