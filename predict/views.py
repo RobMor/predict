@@ -10,8 +10,8 @@ import predict.cve
 import predict.auth
 import predict.github
 import predict.conflict_resolution
-# from predict.models import User
-
+import predict.sqlite3_helper as sql3h
+from predict.models import User
 # Constants for database entry indices.
 # May not be accurate, update later as necessary.
 # Haven't yet figured out how to use these values in templates without passing them all in
@@ -45,12 +45,13 @@ def login():
         password = flask.request.form["password"]
         print(
             "Here are the currently known users when the user tried to login: "
-            + str(User.query.all())
+            + str(sql3h.display_AllUsers())
         )
-        current_user = User.query.filter_by(name=username).first()
+        current_user = sql3h.check_UserExists(username, password)
         if current_user:
-            print("logging in current user" + str(current_user))
-            flask_login.login_user(current_user)
+            print("logging in current user " + str(current_user) + " "+ str(username))
+            current_user_obj = User(username, password)
+            flask_login.login_user(current_user_obj)
             return flask.redirect(
                 flask.url_for("dashboard")
             )  # If valid, send the user to the dashboard
@@ -81,13 +82,15 @@ def register():
 
         print("username: " + username)
         print("password: " + password)
-        if User.query.filter_by(name=username).first():
+        if sql3h.check_UserNameExists(username):
             return "User Already Exists"
         # Ensure there is not a user like this in the hash #TODO: ensure there is not a user like this in the database
         else:
             # new_user = User(name=username, password=password)
             # db.session.add(new_user)
             # db.session.commit()
+            sql3h.insert_User(username, password)
+            print("inserted user: " + str(username))
             return flask.redirect(flask.url_for("login"))
     else:
         # TODO: Return a 400 error
@@ -265,7 +268,7 @@ def conflict_resolution():
 
 
 @app.route("/cve/<cve_id>")
-# @flask_login.login_required
+@flask_login.login_required
 def cve_base(cve_id):
     cve_data = predict.cve.get_cve(cve_id)
 
