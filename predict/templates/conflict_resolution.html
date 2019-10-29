@@ -13,70 +13,85 @@
   </div>
 </center>
 
+<div class = "accordion">
+  {% for block in blocks %}
+  <div class="card">
+    <div class="card-header" id="heading{{block[0][0]}}">
+      <h2 class="mb-0">
+        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapse{{block[0][0]}}" aria-expanded="false" aria-controls="collapse{{block[0][0]}}">
+          {{block[0][0]}}
+        </button>
+      </h2>
+    </div>
 
-<div class="table">
-  <table class="table table-striped table-bordered">
-    <thead>
-      <tr>
-        <th>CVE ID</th>
-        <th>User</th>
-        <th>Fix Commit</th>
-        <th>%</th>
-        <th>Fix File</th>
-        <th>%</th>
-	      <th>Intro Commit</th>
-        <th>%</th>
-	      <th>Intro File</th>
-        <th>%</th>
-      </tr>
-    </thead>
-    <tbody>
-      <!-- TODO: Populate table with entries -->
-      {% for entry in entries %}
-            <!-- TODO Add entry to html table -->
-            {% if entry[1] == current_user %}
-              <tr class="table-primary">
-            {% else %}
+    <div id="collapse{{block[0][0]}}" class="collapse" aria-labelledby="{{block[0][0]}}">
+      <div class="card-body">
+        <div class="table">
+          <table class="table table-striped table-bordered">
+            <thead>
               <tr>
-            {% endif %}
-              <td>{{entry[0]}}</td>
-              <td>{{entry[1]}}</td>
-              <td><a href={{entry[10]}} title={{entry[10]}}>{{entry[2]}}</td>
-              {% if entry[3] == "Match" %}
-                <td class="table-success">{{entry[3]}}</td>
-              {% elif entry[3] == "Conflict" %}
-                <td class="table-danger">{{entry[3]}}</td>
-              {% else %}
-                <td>{{entry[3]}}</td>
-              {% endif %}
-              <td><a href={{entry[11]}} title={{entry[11]}}>{{entry[4]}}</a></td>
-              {% if entry[5] == "Match" %}
-                <td class="table-success">{{entry[5]}}</td>
-              {% elif entry[5] == "Conflict" %}
-                <td class="table-danger">{{entry[5]}}</td>
-              {% else %}
-                <td>{{entry[5]}}</td>
-              {% endif %}
-    	        <td><a href={{entry[12]}} title={{entry[12]}}>{{entry[6]}}</td>
-              {% if entry[7] == "Match" %}
-                <td class="table-success">{{entry[7]}}</td>
-              {% elif entry[7] == "Conflict" %}
-                <td class="table-danger">{{entry[7]}}</td>
-              {% else %}
-                <td>{{entry[7]}}</td>
-              {% endif %}
-    	        <td><a href={{entry[13]}} title={{entry[13]}}>{{entry[8]}}</a></td>
-              {% if entry[9] == "Match" %}
-                <td class="table-success">{{entry[9]}}</td>
-              {% elif entry[9] == "Conflict" %}
-                <td class="table-danger">{{entry[9]}}</td>
-              {% else %}
-                <td>{{entry[9]}}</td>
-              {% endif %}
-            </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+                <th>CVE ID</th>
+                <th>User</th>
+                <th>Fix Commit</th>
+                <th>%</th>
+                <th>Fix File</th>
+                <th>%</th>
+    	          <th>Intro Commit</th>
+                <th>%</th>
+    	          <th>Intro File</th>
+                <th>%</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for entry in entries %}
+                {% if entry[1] == current_user %}
+                  <tr class="table-primary">
+                {% else %}
+                  <tr>
+                {% endif %}
+                  <td>{{entry[0]}}</td>
+                  <td>{{entry[1]}}</td>
+                  <td><a href={{entry[10]}} title={{entry[10]}}>{{entry[2]}}</td>
+                  {% if entry[3] == "Match" %}
+                    <td class="table-success">{{entry[3]}}</td>
+                  {% elif entry[3] == "Conflict" %}
+                    <td class="table-danger">{{entry[3]}}</td>
+                  {% else %}
+                    <td>{{entry[3]}}</td>
+                  {% endif %}
+                  <td><a href={{entry[11]}} title={{entry[11]}}>{{entry[4]}}</a></td>
+                  {% if entry[5] == "Match" %}
+                    <td class="table-success">{{entry[5]}}</td>
+                  {% elif entry[5] == "Conflict" %}
+                    <td class="table-danger">{{entry[5]}}</td>
+                  {% else %}
+                    <td>{{entry[5]}}</td>
+                  {% endif %}
+        	        <td><a href={{entry[12]}} title={{entry[12]}}>{{entry[6]}}</td>
+                  {% if entry[7] == "Match" %}
+                    <td class="table-success">{{entry[7]}}</td>
+                  {% elif entry[7] == "Conflict" %}
+                    <td class="table-danger">{{entry[7]}}</td>
+                  {% else %}
+                    <td>{{entry[7]}}</td>
+                  {% endif %}
+        	        <td><a href={{entry[13]}} title={{entry[13]}}>{{entry[8]}}</a></td>
+                  {% if entry[9] == "Match" %}
+                    <td class="table-success">{{entry[9]}}</td>
+                  {% elif entry[9] == "Conflict" %}
+                    <td class="table-danger">{{entry[9]}}</td>
+                  {% else %}
+                    <td>{{entry[9]}}</td>
+                  {% endif %}
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
 </div>
 
-{% endblock%}
+{% endblock %}

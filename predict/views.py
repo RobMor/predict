@@ -249,7 +249,7 @@ def conflict_resolution():
 
     currentUser = "jbelke"  # TODO: Replace with get_current_user
     blocks = predict.conflict_resolution.splitByCveId(entries)
-    newEntries = []
+    newBlocks = []
     for block in blocks:
         block = predict.conflict_resolution.moveUserToFront(block, currentUser)
         currUserEntry = block[0]
@@ -260,10 +260,11 @@ def conflict_resolution():
                     block[i], currUserEntry
                 )
         block = predict.conflict_resolution.insertPercentages(block)
-        newEntries.extend(block)
-    print(newEntries)
+        if block is not None:
+            newBlocks.append(block)
+    print(newBlocks)
     return flask.render_template(
-        "conflict_resolution.html", entries=newEntries, current_user=currentUser
+        "conflict_resolution.html", blocks=newBlocks, current_user=currentUser
     )  # TODO: Replace with get_current_user
 
 

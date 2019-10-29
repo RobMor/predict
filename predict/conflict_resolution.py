@@ -12,7 +12,7 @@ import flask
 import requests
 import flask_login
 
-
+# Need 0-7 from database query
 CVE_ID_INDEX = 0
 USERNAME_INDEX = 1
 REPO_NAME_INDEX = 2
