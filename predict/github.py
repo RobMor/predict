@@ -145,8 +145,10 @@ def retrieve_commit_page(cve_id, repo_user, repo_name, comm_hash):
 
     return master_dictionary
 
-def get_blame_page(cve_id, repo_user, repo_name, comm_hash, file_name):
+def get_blame_page(cve_id, repo_user, repo_name, comm_hash, file_name_ref):
     # Initialize variables
+    file_name = file_name_ref.replace("$", "/")
+
     master_dictionary = {
         "user_name": repo_user,
         "repository_name": repo_name,
@@ -164,7 +166,7 @@ def get_blame_page(cve_id, repo_user, repo_name, comm_hash, file_name):
     }  # Create a dictionary that we will return, containing the important information on the page
     # Our file name should come to us with $ replacing the / characters, because we cannot put it in a link otherwise. So we replace those
 
-    file_name = file_name.replace("$","/")
+
 
     link = "https://github.com/{}/{}/blame/{}/{}".format(repo_user, repo_name, comm_hash, file_name)
 
@@ -182,6 +184,7 @@ def get_blame_page(cve_id, repo_user, repo_name, comm_hash, file_name):
     master_dictionary["split_diff"] = result.get("files", {}).get(file_name, {}).get("split_diff", {})
     master_dictionary["sorted_line_numbers"] = result.get("files", {}).get(file_name, {}).get("sorted_line_numbers", {})
 
+    #print(page_html)
     master_dictionary["line_count"] = re.findall(r"([\d,]+) lines", page_html.find("div", {"class": "file-info"}).text)[0].replace(",", "")  # We find the line count of the file we are looking at using regex
     master_dictionary["file_size"] = re.findall(r"[\d,\.]+ [KMGkmg]?[Bb](?:ytes)?", page_html.find("div", {"class": "file-info"}).text)[0].replace(",", "")  # We find the size of the file we are looking at using regex
 
@@ -192,6 +195,7 @@ def get_blame_page(cve_id, repo_user, repo_name, comm_hash, file_name):
 
     # Iterate through code hunks and add them to the lines field in our dictionary
     x = 0
+    print(code_hunk_div.find_all("div", {"class": "blame-hunk d-flex border-gray-light border-bottom"}))
     for code_hunk in code_hunk_div.find_all("div", {"class": "blame-hunk d-flex border-gray-light border-bottom"}):
 
         # Now we possess a code hunk. We need to go through this, separate out lines, and match them with a blame commit, timestamp and reblame link.
