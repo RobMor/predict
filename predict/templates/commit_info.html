@@ -2,7 +2,7 @@
 
 {% block content %}
 <center><h1>{{ github_data["commit_hash"] }}</h1></center>
-<p>{{ github_data["commit_description"] }}</p>
+<pre>{{ github_data["commit_description"] }}</pre>
 <ul>
 {% for file in github_data["files"].keys() %}
 <li>
