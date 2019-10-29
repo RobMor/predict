@@ -1,7 +1,7 @@
 import flask_login
 import flask
 from predict import app, login_manager
-from predict.models import User
+# from predict.models import User
 
 '''User callback function for getting the current user.  "This callback is used to reload the user object from the
 user ID stored in the session. Called whenever a user has logged in." Authentication function.'''

@@ -7,11 +7,10 @@ import flask_login
 
 from predict import app, login_manager
 import predict.cve
+import predict.auth
 import predict.github
 import predict.conflict_resolution
-from predict import db
-from predict.models import User
-import predict.auth
+# from predict.models import User
 
 # Constants for database entry indices.
 # May not be accurate, update later as necessary.
@@ -24,11 +23,12 @@ import predict.auth
 # INTRO_COMMIT_INDEX = 4
 # INTRO_FILE_INDEX = 5
 
+
 @app.route("/")
 def base():
     # If they're logged in direct to dashboard, if not direct to login
     # stop requiring me to log in grr!!
-    logged_in = True # flask_login.current_user.is_authenticated
+    logged_in = True  # flask_login.current_user.is_authenticated
     if logged_in:
         return flask.redirect(flask.url_for("dashboard"))
     else:
@@ -40,10 +40,13 @@ def login():
     # If the information is a GET, then return the form.
     if flask.request.method == "GET":
         return flask.render_template("login.html")
-    elif flask.request.method == 'POST':
-        username = flask.request.form['username']
-        password = flask.request.form['password']
-        print("Here are the currently known users when the user tried to login: " + str(User.query.all()))
+    elif flask.request.method == "POST":
+        username = flask.request.form["username"]
+        password = flask.request.form["password"]
+        print(
+            "Here are the currently known users when the user tried to login: "
+            + str(User.query.all())
+        )
         current_user = User.query.filter_by(name=username).first()
         if current_user:
             print("logging in current user" + str(current_user))
@@ -51,7 +54,7 @@ def login():
             return flask.redirect(
                 flask.url_for("dashboard")
             )  # If valid, send the user to the dashboard
-        #if username in users:
+        # if username in users:
         #    flask_login.login_user(users[username])
         #    return flask.redirect(flask.url_for("dashboard")) #If valid, send the user to the dashboard
         else:
@@ -82,19 +85,18 @@ def register():
             return "User Already Exists"
         # Ensure there is not a user like this in the hash #TODO: ensure there is not a user like this in the database
         else:
-            new_user = User(name = username, password = password)
-            db.session.add(new_user)
-            db.session.commit()
-            return flask.redirect(
-                flask.url_for("login")
-            )
+            # new_user = User(name=username, password=password)
+            # db.session.add(new_user)
+            # db.session.commit()
+            return flask.redirect(flask.url_for("login"))
     else:
         # TODO: Return a 400 error
         return "How did you get in here!?"
 
+
 @app.route("/dashboard")
 def dashboard():
-    is_logged_in = True # flask_login.current_user.is_authenticated
+    is_logged_in = True  # flask_login.current_user.is_authenticated
     if is_logged_in:
         return flask.render_template("dashboard.html")
     else:
@@ -104,7 +106,7 @@ def dashboard():
 @app.route("/resolution")
 def conflict_resolution():
     # Login required:
-    #if not flask_login.current_user.is_authenticated:
+    # if not flask_login.current_user.is_authenticated:
     #    return flask.redirect(flask.url_for("login"))
 
     # try:
@@ -158,7 +160,8 @@ def conflict_resolution():
             "ihg6yhud",
             "fix_file2.cpp",
             "21b9de987ac",
-            "intro_file1.cpp"),
+            "intro_file1.cpp",
+        ),
         (
             "8765-4321",
             "elin",
@@ -167,7 +170,8 @@ def conflict_resolution():
             "123485",
             "fix_file3.py",
             "21b9de9erwe",
-            "intro_file58.fortranlol"),
+            "intro_file58.fortranlol",
+        ),
         (
             "8765-4321",
             "cwolff",
@@ -176,7 +180,8 @@ def conflict_resolution():
             "ihg6yhud",
             "fix_file2.cpp",
             "21b9de987ac",
-            "intro_file1.cpp"),
+            "intro_file1.cpp",
+        ),
         (
             "8765-4321",
             "jbelke",
@@ -185,7 +190,8 @@ def conflict_resolution():
             "123485",
             "lolXD.py",
             "4206969",
-            "elonmuskrat.cobal"),
+            "elonmuskrat.cobal",
+        ),
         (
             "867-5309",
             "thenson",
@@ -194,7 +200,8 @@ def conflict_resolution():
             "ab73b9b",
             "jennyigoturnumber.onehitwonder",
             "3jd9983",
-            "g**gleisabadword.purtilo"),
+            "g**gleisabadword.purtilo",
+        ),
         (
             "867-5309",
             "ckruskal",
@@ -203,7 +210,8 @@ def conflict_resolution():
             "ab73b9b",
             "kruskalkrab.clyde",
             "3jd9983",
-            "krabbypatty.recipe"),
+            "krabbypatty.recipe",
+        ),
         (
             "867-5309",
             "mzuckerberg",
@@ -212,7 +220,8 @@ def conflict_resolution():
             "7538938",
             "hellofellow.humans",
             "3jd9983",
-            "notarobot.beepboop"),
+            "notarobot.beepboop",
+        ),
         (
             "867-5309",
             "jbelke",
@@ -221,7 +230,8 @@ def conflict_resolution():
             "7538938",
             "area51.raid",
             "3jd9983",
-            "daniel.san"),
+            "daniel.san",
+        ),
         (
             "867-5309",
             "esnowden",
@@ -230,8 +240,8 @@ def conflict_resolution():
             "3209dbce9",
             "turnoffyourwebcam.nsa",
             "0932840293",
-            "myfbiagent.lol")
-
+            "myfbiagent.lol",
+        ),
     ]
 
     currentUser = "jbelke"  # TODO: Replace with get_current_user
@@ -243,7 +253,9 @@ def conflict_resolution():
         for i in range(0, len(block)):
             block[i] = predict.conflict_resolution.appendURLs(block[i])
             if i != 0:
-                block[i] = predict.conflict_resolution.insertAgreements(block[i], currUserEntry)
+                block[i] = predict.conflict_resolution.insertAgreements(
+                    block[i], currUserEntry
+                )
         block = predict.conflict_resolution.insertPercentages(block)
         newEntries.extend(block)
     print(newEntries)
