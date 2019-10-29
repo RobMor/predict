@@ -123,7 +123,7 @@ def conflict_resolution():
     # TODO: Replace this with above code!
     entries = [
         (
-            "1234-5678",
+            "CVE-1234-5678",
             "tgiddings",
             "thisisareponame",
             "thisisarepouser",
@@ -133,7 +133,7 @@ def conflict_resolution():
             "intro_file2.cpp",
         ),
         (
-            "1234-5678",
+            "CVE-1234-5678",
             "jbelke",
             "thisisareponame",
             "thisisarepouser",
@@ -143,7 +143,7 @@ def conflict_resolution():
             "intro_file1.cpp",
         ),
         (
-            "1234-5678",
+            "CVE-1234-5678",
             "rmorrison",
             "thisisareponame",
             "thisisarepouser",
@@ -153,7 +153,7 @@ def conflict_resolution():
             "intro_file1.cpp",
         ),
         (
-            "1234-5678",
+            "CVE-1234-5678",
             "cwolff",
             "thisisareponame",
             "thisisarepouser",
@@ -163,7 +163,7 @@ def conflict_resolution():
             "intro_file1.cpp",
         ),
         (
-            "8765-4321",
+            "CVE-8765-4321",
             "elin",
             "thisisareponame",
             "thisisarepouser",
@@ -173,7 +173,7 @@ def conflict_resolution():
             "intro_file58.fortranlol",
         ),
         (
-            "8765-4321",
+            "CVE-8765-4321",
             "cwolff",
             "thisisareponame",
             "thisisarepouser",
@@ -183,7 +183,7 @@ def conflict_resolution():
             "intro_file1.cpp",
         ),
         (
-            "8765-4321",
+            "CVE-8765-4321",
             "jbelke",
             "thisisareponame",
             "thisisarepouser",
@@ -193,7 +193,7 @@ def conflict_resolution():
             "elonmuskrat.cobal",
         ),
         (
-            "867-5309",
+            "CVE-867-5309",
             "thenson",
             "thisisareponame",
             "thisisarepouser",
@@ -203,7 +203,7 @@ def conflict_resolution():
             "g**gleisabadword.purtilo",
         ),
         (
-            "867-5309",
+            "CVE-867-5309",
             "ckruskal",
             "isthisthekrustykrab",
             "nothisispatrick",
@@ -213,7 +213,7 @@ def conflict_resolution():
             "krabbypatty.recipe",
         ),
         (
-            "867-5309",
+            "CVE-867-5309",
             "mzuckerberg",
             "robotrepo",
             "robotuser",
@@ -223,7 +223,7 @@ def conflict_resolution():
             "notarobot.beepboop",
         ),
         (
-            "867-5309",
+            "CVE-867-5309",
             "jbelke",
             "thisisareponame",
             "thisisarepouser",
@@ -233,7 +233,7 @@ def conflict_resolution():
             "daniel.san",
         ),
         (
-            "867-5309",
+            "CVE-867-5309",
             "esnowden",
             "thisisareponame",
             "thisisarepouser",
