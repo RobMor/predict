@@ -209,8 +209,11 @@ def get_blame_page(cve_id, repo_user, repo_name, comm_hash, file_name_ref):
 
         our_link_format = "/cve/{}/blame".format(cve_id)  # If we change our link format, change this
 
-        blame_commit_link = "{}{}".format(our_link_format, code_hunk.find("div", {"class": "blob-reblame pl-1 pr-1"}).find("a").get("href").replace("blame/",""))
-
+        a_tag = code_hunk.find("div", {"class": "blob-reblame pl-1 pr-1"}).find("a")
+        link_base = ""
+        if a_tag is not None:
+            link_base = a_tag.get("href").replace("blame/", "")
+        blame_commit_link = "{}{}".format(our_link_format, link_base)
         master_dictionary["block_representation"][x] ={
             "blame_commit_message": blame_commit_message,
             "blame_commit_time": blame_commit_time,
@@ -219,7 +222,7 @@ def get_blame_page(cve_id, repo_user, repo_name, comm_hash, file_name_ref):
         }
 
         # Now we need to create a dictionary for each line, and then add those to the lines field
-
+        print(code_hunk.find_all("div", {"class": "d-flex flex-justify-start flex-items-start"}))
         for blame_line in code_hunk.find_all("div", {"class": "d-flex flex-justify-start flex-items-start"}):
             line_number = int(blame_line.find("div", {"class": "blob-num blame-blob-num bg-gray-light js-line-number"}).text.strip())
             line_text = blame_line.find("div", {"class": "blob-code blob-code-inner js-file-line"}).text.strip()
