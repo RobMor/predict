@@ -84,7 +84,10 @@
 
     <div id="conflict-resolution" class="card">
         <div class="card-body">
-            <h3 class="card-title">Review</h3>
+            <div class="card-title d-flex w-100 justify-content-between">
+                <h3>Review</h3>
+                <a href="{{ url_for('conflict_resolution') }}">Resolve Conflicts</a>
+            </div>
             <p class="card-text">Review your past labels.</p>
 
             {% for cve_id, cve_link, date, labels in [("CVE-2014-4014", "/cve/CVE-2014-4014", "2019-10-28", [(True, "file.c", "abcdef", "file.c", "123456"), (False, "file.c", "abcdef", "file.c", "123456")]), ("CVE-2014-4014", "/cve/CVE-2014-4014", "2019-10-28", [(True, "file.c", "abcdef", "file.c", "123456"), (False, "file.c", "abcdef", "file.c", "123456")])] %}
