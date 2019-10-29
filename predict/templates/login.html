@@ -1,26 +1,25 @@
 {% extends "base.html" %}
 
-{% block head %}
-{{ super() }}
-<title>Login</title>
-{% endblock %}
+{% block title %}Login{% endblock %}
 
 {% block body %}
-<div class = "jumbotron">
-    <h1>Predict Login Page</h1>
-</div>
+<div class="container">
+    <div class="jumbotron">
+        <h1>Predict Login Page</h1>
+    </div>
 
-<form method = "POST">
-    <div class="form-group">
-        <label for="username">Username:</label>
-        <input class="form-control" name="username" id="username" placeholder="some_username_here">
-    </div>
-    <div class="form-group">
-        <label for="password">Password:</label>
-        <input type="password" class="form-control" name="password" id="password" placeholder="password">
-    </div>
-    <a href ="{{ url_for('register') }}">No account? Click here to register!</a>
-    <br>
-    <button type="submit" class="btn btn-primary">Login!</button>
-</form>
+    <form method="POST">
+        <div class="form-group">
+            <label for="username">Username:</label>
+            <input class="form-control" name="username" id="username" placeholder="some_username_here">
+        </div>
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" class="form-control" name="password" id="password" placeholder="password">
+        </div>
+        <a href="{{ url_for('register') }}">No account? Click here to register!</a>
+        <br>
+        <button type="submit" class="btn btn-primary">Login!</button>
+    </form>
+</div>
 {% endblock %}
