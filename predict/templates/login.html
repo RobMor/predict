@@ -1,25 +1,63 @@
 {% extends "base.html" %}
 
 {% block title %}Login{% endblock %}
+{% block head%}
+    {{ super() }}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='auth.css') }}">
+{% endblock %}
+
 
 {% block body %}
+
+
 <div class="container">
+    
     <div class="jumbotron">
-        <h1>Predict Login Page</h1>
+         <h1>Predict Login Page</h1>
     </div>
 
     <form method="POST">
-        <div class="form-group">
-            <label for="username">Username:</label>
-            <input class="form-control" name="username" id="username" placeholder="some_username_here">
+        <div class="row">
+            <div class ="col-6">
+                <div class="form-group">
+                    <label for="username">Username:</label>
+                    <input class="form-control" name="username" id="username" placeholder="some_username_here">
+                </div>
+            </div>
         </div>
-        <div class="form-group">
-            <label for="password">Password:</label>
-            <input type="password" class="form-control" name="password" id="password" placeholder="password">
+
+        <div class ="row">
+            <div class ="col-6">
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" class="form-control" name="password" id="password" placeholder="password">
+                </div>
+            </div>
         </div>
-        <a href="{{ url_for('register') }}">No account? Click here to register!</a>
-        <br>
-        <button type="submit" class="btn btn-primary">Login!</button>
+
+        <div class ="row">
+            <div class ="col-6">
+                <a href="{{ url_for('register') }}">No account? No problem. Click here to register!</a>
+            </div>
+        </div>
+
+        <div class ="row">
+            <div class ="col-6">
+                <button type="submit" class="btn btn-primary">Login!</button> 
+            </div>
+        </div>
+
     </form>
-</div>
+
+    <div id="bottom-alert">
+            {% if invalidLogin %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    Invalid username or password! Please try again!
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>    
+                </div>
+            {% endif %}
+    <div><!--alert row end-->
+</div><!--Container-->
 {% endblock %}

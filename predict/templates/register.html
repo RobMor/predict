@@ -1,39 +1,72 @@
 {% extends "base.html" %}
 
-{% block head %}
-{{ super() }}
-<title>Register</title>
+{% block title %}Login{% endblock %}
+{% block head%}
+    {{ super() }}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='auth.css') }}">
 {% endblock %}
 
+
 {% block body %}
+
+
 <div class="container">
+    
     <div class="jumbotron">
-        <h1>Predict Registration Page</h1>
+         <h1>Predict Registration Page</h1>
     </div>
 
     <form method="POST">
-        <div class="form-group">
-            <label for="username">Username:</label>
-            <input class="form-control" id="username" name="username" placeholder="some_username_here">
+        <div class="row">
+            <div class ="col-6">
+                <div class="form-group">
+                    <label for="username">Username:</label>
+                    <input class="form-control" name="username" id="username" placeholder="some_username_here">
+                </div>
+            </div>
         </div>
 
-        <!--TODO: According to the requirements spec:
+        <div class ="row">
+            <div class ="col-6">
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" class="form-control" name="password" id="password" placeholder="password">
+                </div>
+            </div>
+        </div>
+        
+        <div class ="row">
+            <div class ="col-6">
+                <div class="form-group">
+                    <label for="password">Confirm Password:</label>
+                    <input type="password" class="form-control" name="confirm_password" id="confirm_password" placeholder="confirm password">
+                </div>
+            </div>
+        </div>
+            
+        <div class ="row">
+            <div class ="col-6">
+                <button type="submit" class="btn btn-primary">Register!</button> 
+            </div>
+        </div>
+    </form>
+
+    <div id="bottom-alert">
+        {% if userExists %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                An account with the username <b>{{username}}</b> already exists!
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>    
+            </div>
+        {% endif %}
+    <div><!--alert row end-->
+</div><!--Container-->
+{% endblock %}
+
+<!--TODO: According to the requirements spec:
     Upon entry of a “Password” and “Confirm Password” that do not match, the system shall not register the user, and shall display 
     “Passwords do not match” in red above the text boxes, and shall clear the “Password” and “Confirm Password” text boxes, 
-    but shall not clear the “Username” text box. But this can be done after greenlighting.
-    -->
-        <div class="form-group">
-            <label for="password">Password:</label>
-            <input type="password" class="form-control" name="password" id="password" placeholder="password">
-        </div>
-        <div class="form-group">
-            <label for="password">Confirm Password:</label>
-            <input type="password" class="form-control" id="password_confirm" placeholder="confirm password">
-        </div>
-        <a href="{{ url_for('login') }}">Already have an account? Click here to login!</a>
-        <br>
+    but shall not clear the “Username” text box. But this can be done after greenlighting. -->
 
-        <button type="submit" class="btn btn-primary">Create account!</button>
-    </form>
-</div>
-{% endblock %}
+

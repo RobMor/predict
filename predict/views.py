@@ -39,7 +39,8 @@ def base():
 def login():
     # If the information is a GET, then return the form.
     if flask.request.method == "GET":
-        return flask.render_template("login.html")
+        return flask.render_template("login.html", invalidLogin = False)
+    # If the information is a POST, then validate the data that is passed in
     elif flask.request.method == "POST":
         username = flask.request.form["username"]
         password = flask.request.form["password"]
@@ -48,31 +49,25 @@ def login():
             + str(sql3h.display_AllUsers())
         )
         current_user = sql3h.check_UserExists(username, password)
+        # If valid, send the user to the dashboard
         if current_user:
             print("logging in current user " + str(current_user) + " "+ str(username))
             current_user_obj = User(username, password)
             flask_login.login_user(current_user_obj)
             return flask.redirect(
                 flask.url_for("dashboard")
-            )  # If valid, send the user to the dashboard
-        # if username in users:
-        #    flask_login.login_user(users[username])
-        #    return flask.redirect(flask.url_for("dashboard")) #If valid, send the user to the dashboard
+            )  
         else:
-            # TODO: Return an appended version of the login page asking to try again, and should
-            # probably wipe the form data as well.
-            return "Invalid login! Please try again! (In the future this should get appended to the login page.)"
-
-        # If the information is a POST, then validate the data that is passed in
+            return flask.render_template("login.html", invalidLogin = True), 422
     else:
-        print("wrong kind of request got routed here somehow.")
+        flask.abort(400) #Login should only handle GET and POST requests.
 
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
     print("register function")
     if flask.request.method == "GET":
-        return flask.render_template("register.html")
+        return flask.render_template("register.html", userExists = False, username = "")
     if flask.request.method == "POST":
 
         # TODO: Sanitize input.
@@ -80,21 +75,14 @@ def register():
         username = flask.request.form["username"]
         password = flask.request.form["password"]
 
-        print("username: " + username)
-        print("password: " + password)
         if sql3h.check_UserNameExists(username):
-            return "User Already Exists"
-        # Ensure there is not a user like this in the hash #TODO: ensure there is not a user like this in the database
+            return flask.render_template("register.html", userExists = True, username = username)
+        # Ensure there is not a user like this in the database
         else:
-            # new_user = User(name=username, password=password)
-            # db.session.add(new_user)
-            # db.session.commit()
             sql3h.insert_User(username, password)
-            print("inserted user: " + str(username))
             return flask.redirect(flask.url_for("login"))
     else:
-        # TODO: Return a 400 error
-        return "How did you get in here!?"
+        error(400)
 
 
 @app.route("/dashboard")
