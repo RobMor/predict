@@ -56,7 +56,7 @@ def login():
             flask_login.login_user(current_user_obj)
             return flask.redirect(
                 flask.url_for("dashboard")
-            )  
+            )
         else:
             return flask.render_template("login.html", invalidLogin = True), 422
     else:
@@ -233,6 +233,36 @@ def conflict_resolution():
             "0932840293",
             "myfbiagent.lol",
         ),
+        (
+            "CVE-2020-2020",
+            "jbelke",
+            "thisisareponame",
+            "thisisarepouser",
+            "123485",
+            "lolXD.py",
+            "4206969",
+            "elonmuskrat.cobal",
+        ),
+        (
+            "CVE-2020-2020",
+            "lebronshairline",
+            "thisisareponame",
+            "thisisarepouser",
+            "123485",
+            "lolXD.py",
+            "4206969",
+            "elonmuskrat.cobal",
+        ),
+        (
+            "CVE-2020-2020",
+            "bgates",
+            "thisisareponame",
+            "thisisarepouser",
+            "123485",
+            "lolXD.py",
+            "4206969",
+            "elonmuskrat.cobal",
+        )
     ]
 
     currentUser = "jbelke"  # TODO: Replace with flask_login.current_user.username
@@ -242,16 +272,12 @@ def conflict_resolution():
         block = predict.conflict_resolution.moveUserToFront(block, currentUser)
         currUserEntry = block[0]
         for i in range(0, len(block)):
-            print(block[i])
             block[i] = predict.conflict_resolution.appendURLs(block[i])
-            print(block[i])
             if block[0][1] == currentUser:
                 if i != 0:
-                    print(block[i])
                     block[i] = predict.conflict_resolution.insertAgreements(
                         block[i], currUserEntry
                         )
-                    print(block[i])
             else:
                 block[i] = predict.conflict_resolution.insertAgreements(
                     block[i], None
@@ -260,7 +286,6 @@ def conflict_resolution():
             block = predict.conflict_resolution.insertPercentages(block)
         if block is not None:
             newBlocks.append(block)
-    print(newBlocks)
     return flask.render_template(
         "conflict_resolution.html", blocks=newBlocks, current_user=currentUser
     )  # TODO: Replace with get_current_user

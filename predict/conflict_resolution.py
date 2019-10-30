@@ -74,7 +74,6 @@ def insertPercentages(block):
     newBlock = block
     for entry in block:
         if entry != block[0]:
-            print(entry)
             if entry[USERNAME_INDEX] != userEntry[USERNAME_INDEX] and entry[3] == "Match":
                 fixCommitCount += 1
             if entry[USERNAME_INDEX] != userEntry[USERNAME_INDEX] and entry[5] == "Match":
