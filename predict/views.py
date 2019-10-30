@@ -44,6 +44,9 @@ def login():
     elif flask.request.method == "POST":
         username = flask.request.form["username"]
         password = flask.request.form["password"]
+
+        #TODO: sanitize input further?
+
         print(
             "Here are the currently known users when the user tried to login: "
             + str(sql3h.display_AllUsers())
@@ -70,7 +73,7 @@ def register():
         return flask.render_template("register.html", userExists = False, username = "")
     if flask.request.method == "POST":
 
-        # TODO: Sanitize input.
+        # TODO: Sanitize input further?
 
         username = flask.request.form["username"]
         password = flask.request.form["password"]

@@ -9,6 +9,5 @@ function arePassAndConfirmIdentical(confirm_ele) {
 }
 
 function clearPass(){
-    document.getElementById("password").value = ""
     document.getElementById("confirm_password").value = ""
 }

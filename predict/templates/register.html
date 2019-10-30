@@ -23,7 +23,8 @@
             <div class ="col-6">
                 <div class="form-group">
                     <label for="username">Username:</label>
-                    <input class="form-control" name="username" id="username" placeholder="some_username_here" required>
+                    <input class="form-control" name="username" id="username" placeholder="Some_user_123" title="Usernames must consist of 
+                    any combination of uppercase or lowercase letters and numbers, and may contain underscores. 6-18 character." pattern="^[\w]{6,18}$"required>
                 </div>
             </div>
         </div>
@@ -32,9 +33,9 @@
             <div class ="col-6">
                 <div class="form-group">
                     <label for="password">Password:</label>
-                    <input  class="form-control" name="password" id="password" title="Password must contain a minimum of 
-                    eight characters, at least one letter, one number and one special character." placeholder="password" 
-                    pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$">
+                    <input  class="form-control" name="password" id="password" title="Password must contain between 8 and 24 
+                    characters, at least one letter, one number, and one special character (@$!%*#?&)." placeholder="password123!" 
+                    pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,24}$" type="password">
                 </div>
             </div>
         </div>
@@ -43,17 +44,23 @@
             <div class ="col-6">
                 <div class="form-group">
                     <label for="confirm_password">Confirm Password:</label>
-                    <input class="form-control" name="confirm_password" id="confirm_password" placeholder="confirm password" oninput="arePassAndConfirmIdentical(this)">
+                    <input type="password" class="form-control" name="confirm_password" id="confirm_password" placeholder="password123!" oninput="arePassAndConfirmIdentical(this)">
                 </div>
             </div>
         </div>
             
         <div class ="row">
             <div class ="col-6">
-                <button type="submit" onclick="clearPass()" class="btn btn-primary">Register!</button> 
+                <button type="submit" onclick="clearPass()" class="btn btn-success btn-lg">Register!</button> 
             </div>
         </div>
     </form>
+
+    <div class ="row">
+            <div class ="col-6">
+                <a href="{{ url_for('login') }}">Already have an account? Take me to the login page!</a>
+            </div>
+    </div>
 
     <div id="bottom-alert">
         {% if userExists %}

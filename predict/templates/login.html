@@ -19,9 +19,10 @@
     <form method="POST">
         <div class="row">
             <div class ="col-6">
-                <div class="form-group">
+                 <div class="form-group">
                     <label for="username">Username:</label>
-                    <input class="form-control" name="username" id="username" placeholder="some_username_here" required>
+                    <input class="form-control" name="username" id="username" placeholder="Some_user_123" title="Usernames must consist of 
+                    any combination of uppercase or lowercase letters and numbers, and may contain underscores. 6-18 characters." pattern="^[\w]{6,18}$"required>
                 </div>
             </div>
         </div>
@@ -30,22 +31,25 @@
             <div class ="col-6">
                 <div class="form-group">
                     <label for="password">Password:</label>
-                    <input type="password" class="form-control" name="password" id="password" placeholder="password" required>
+                    <input type="password" class="form-control" name="password" id="password" title="Password must contain between 8 and 24 
+                        characters, at least one letter, one number, and one special character (@$!%*#?&)." placeholder="password123!" 
+                    pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,24}$">
                 </div>
             </div>
         </div>
 
         <div class ="row">
             <div class ="col-6">
-                <a href="{{ url_for('register') }}">No account? No problem. Click here to register!</a>
+                <button type="submit" class="btn btn-success btn-lg">Login!</button> 
             </div>
         </div>
 
         <div class ="row">
-            <div class ="col-6">
-                <button type="submit" class="btn btn-primary">Login!</button> 
-            </div>
+                <div class ="col-6">
+                    <a href="{{ url_for('register') }}">No account? No problem. Click here to register!</a>
+                </div>
         </div>
+    
 
     </form>
 
