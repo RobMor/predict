@@ -43,7 +43,7 @@
               </tr>
             </thead>
             <tbody>
-              {% for entry in entries %}
+              {% for entry in block %}
                 {% if entry[1] == current_user %}
                   <tr class="table-primary">
                 {% else %}
@@ -93,5 +93,6 @@
   </div>
   {% endfor %}
 </div>
+
 
 {% endblock %}

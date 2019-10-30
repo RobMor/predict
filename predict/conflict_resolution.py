@@ -30,10 +30,16 @@ INTRO_FILE_URL_INDEX = 11
 ## *** TODO: FIgure out hwo to clean up these long-ass lines of code without screwing up python indenting!
 
 def insertAgreements(entry, currUserEntry):
-    fixCommitAgree = "Match" if entry[FIX_COMMIT_INDEX] == currUserEntry[FIX_COMMIT_INDEX] else "Conflict"
-    fixFileAgree = "Match" if entry[FIX_FILE_INDEX] == currUserEntry[FIX_FILE_INDEX] else "Conflict"
-    introCommitAgree = "Match" if entry[INTRO_COMMIT_INDEX] == currUserEntry[INTRO_COMMIT_INDEX] else "Conflict"
-    introFileAgree = "Match" if entry[INTRO_FILE_INDEX] == currUserEntry[INTRO_FILE_INDEX] else "Conflict"
+    if currUserEntry is not None:
+        fixCommitAgree = "Match" if entry[FIX_COMMIT_INDEX] == currUserEntry[FIX_COMMIT_INDEX] else "Conflict"
+        fixFileAgree = "Match" if entry[FIX_FILE_INDEX] == currUserEntry[FIX_FILE_INDEX] else "Conflict"
+        introCommitAgree = "Match" if entry[INTRO_COMMIT_INDEX] == currUserEntry[INTRO_COMMIT_INDEX] else "Conflict"
+        introFileAgree = "Match" if entry[INTRO_FILE_INDEX] == currUserEntry[INTRO_FILE_INDEX] else "Conflict"
+    else:
+        fixCommitAgree = "N/A"
+        fixFileAgree = "N/A"
+        introCommitAgree = "N/A"
+        introFileAgree = "N/A"
     return (entry[CVE_ID_INDEX], entry[USERNAME_INDEX], entry[FIX_COMMIT_INDEX],
         fixCommitAgree, entry[FIX_FILE_INDEX], fixFileAgree,
         entry[INTRO_COMMIT_INDEX], introCommitAgree, entry[INTRO_FILE_INDEX],
@@ -67,14 +73,16 @@ def insertPercentages(block):
     userEntry = block[0]
     newBlock = block
     for entry in block:
-        if entry[USERNAME_INDEX] != userEntry[USERNAME_INDEX] and entry[3] == "Match":
-            fixCommitCount += 1
-        if entry[USERNAME_INDEX] != userEntry[USERNAME_INDEX] and entry[5] == "Match":
-            fixFileCount += 1
-        if entry[USERNAME_INDEX] != userEntry[USERNAME_INDEX] and entry[7] == "Match":
-            introCommitCount += 1
-        if entry[USERNAME_INDEX] != userEntry[USERNAME_INDEX] and entry[9] == "Match":
-            introFileCount += 1
+        if entry != block[0]:
+            print(entry)
+            if entry[USERNAME_INDEX] != userEntry[USERNAME_INDEX] and entry[3] == "Match":
+                fixCommitCount += 1
+            if entry[USERNAME_INDEX] != userEntry[USERNAME_INDEX] and entry[5] == "Match":
+                fixFileCount += 1
+            if entry[USERNAME_INDEX] != userEntry[USERNAME_INDEX] and entry[7] == "Match":
+                introCommitCount += 1
+            if entry[USERNAME_INDEX] != userEntry[USERNAME_INDEX] and entry[9] == "Match":
+                introFileCount += 1
     if length > 0:
         newBlock[0] =(newBlock[0][CVE_ID_INDEX], newBlock[0][USERNAME_INDEX],
             newBlock[0][FIX_COMMIT_INDEX], str(round(fixCommitCount/length*100)) + "%",

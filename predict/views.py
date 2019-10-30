@@ -215,11 +215,11 @@ def conflict_resolution():
         ),
         (
             "CVE-867-5309",
-            "jbelke",
+            "MrMiyagi",
             "thisisareponame",
             "thisisarepouser",
             "7538938",
-            "area51.raid",
+            "crane.kick",
             "3jd9983",
             "daniel.san",
         ),
@@ -235,19 +235,29 @@ def conflict_resolution():
         ),
     ]
 
-    currentUser = "jbelke"  # TODO: Replace with get_current_user
+    currentUser = "jbelke"  # TODO: Replace with flask_login.current_user.username
     blocks = predict.conflict_resolution.splitByCveId(entries)
     newBlocks = []
     for block in blocks:
         block = predict.conflict_resolution.moveUserToFront(block, currentUser)
         currUserEntry = block[0]
         for i in range(0, len(block)):
+            print(block[i])
             block[i] = predict.conflict_resolution.appendURLs(block[i])
-            if i != 0:
+            print(block[i])
+            if block[0][1] == currentUser:
+                if i != 0:
+                    print(block[i])
+                    block[i] = predict.conflict_resolution.insertAgreements(
+                        block[i], currUserEntry
+                        )
+                    print(block[i])
+            else:
                 block[i] = predict.conflict_resolution.insertAgreements(
-                    block[i], currUserEntry
-                )
-        block = predict.conflict_resolution.insertPercentages(block)
+                    block[i], None
+                    )
+        if block[0][1] == currentUser:
+            block = predict.conflict_resolution.insertPercentages(block)
         if block is not None:
             newBlocks.append(block)
     print(newBlocks)
