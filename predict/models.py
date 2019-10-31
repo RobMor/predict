@@ -1,14 +1,30 @@
 from flask_login import UserMixin
 
-class User(UserMixin):
-#    __tablename__ = 'users_table'
-#    id =  db.Column(db.Integer, primary_key=True)
-#    name =  db.Column(db.String,nullable=False,unique=False)
-#    password = db.Column(db.String,primary_key=False, unique=False,nullable=False)
+from predict import db
 
-    def __init__(self, name, password):
-         self.name = name
-         self.password = password
 
-    def get_id(self):
-      return self.name
+class User(UserMixin, db.Model):
+     username = db.Column(db.String, primary_key=True)
+     password = db.Column(db.String, nullable=False)
+     salt = db.Column(db.String, nullable=False)
+
+     def __repr__(self):
+          return f"<User username={self.username}>"
+
+     def get_id(self):
+          return self.username
+
+
+class Label(db.Model):
+     cve = db.Column(db.String, primary_key=True)
+     username = db.Column(db.String, db.ForeignKey("user.username"), primary_key=True)
+     fix_file = db.Column(db.String, primary_key=True)
+     intro_file = db.Column(db.String, primary_key=True, nullable=True)
+
+     fix_hash = db.Column(db.String)
+     intro_hash = db.Column(db.String)
+
+     repo_user = db.Column(db.String)
+     repo_name = db.Column(db.String)
+
+     edit_date = db.Column(db.DateTime)

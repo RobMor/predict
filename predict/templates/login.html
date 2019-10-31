@@ -21,8 +21,7 @@
             <div class ="col-6">
                  <div class="form-group">
                     <label for="username">Username:</label>
-                    <input class="form-control" name="username" id="username" placeholder="Some_user_123" title="Usernames must consist of 
-                    any combination of uppercase or lowercase letters and numbers, and may contain underscores. 6-18 characters." pattern="^[\w]{6,18}$"required>
+                    <input class="form-control" name="username" id="username" placeholder="Username" required>
                 </div>
             </div>
         </div>
@@ -31,16 +30,14 @@
             <div class ="col-6">
                 <div class="form-group">
                     <label for="password">Password:</label>
-                    <input type="password" class="form-control" name="password" id="password" title="Password must contain between 8 and 24 
-                        characters, at least one letter, one number, and one special character (@$!%*#?&)." placeholder="password123!" 
-                    pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,24}$">
+                    <input class="form-control" name="password" id="password" type="password" placeholder="Password" required>
                 </div>
             </div>
         </div>
 
         <div class ="row">
             <div class ="col-6">
-                <button type="submit" class="btn btn-success btn-lg">Login!</button> 
+                <button type="submit" class="btn btn-primary">Login!</button> 
             </div>
         </div>
 

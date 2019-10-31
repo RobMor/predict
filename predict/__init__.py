@@ -1,17 +1,32 @@
-from flask import Flask
-import flask_login
-import predict.sqlite3_helper as sql3h
 import sqlite3
 
-# Set app in __init__ so it's easily accessible throughout the app
-app = Flask("predict", template_folder="templates")
+from flask import Flask
+import flask_login
+import flask_sqlalchemy
 
-login_manager = flask_login.LoginManager()
-login_manager.init_app(app)
+
+# Configure App
+app = Flask("predict")
+
+# Configure SQLAlchemy
+# TODO get database location from config...
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///db.sqlite"
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+db = flask_sqlalchemy.SQLAlchemy(app)
+
+# Configure LoginManager
+login_manager = flask_login.LoginManager(app)
 login_manager.login_view = "login"
+# TODO might want to get this key from a config file...
+app.config["SECRET_KEY"] = "secret_xxx"
 
-app.config.update(SECRET_KEY="secret_xxx")  # TODO
+import predict.auth
+login_manager.user_loader(predict.auth.load_user)
 
-sql3h.init_UserTable()
-# need to import after creating app so that the view definitions run
+# Configure Data Models
+import predict.models
+db.create_all()
+
+# Configure Views
 import predict.views

@@ -5,99 +5,79 @@ import flask
 import requests
 import flask_login
 
-from predict import app, login_manager
+from predict import app
 import predict.cve
 import predict.auth
 import predict.github
 import predict.conflict_resolution
-import predict.sqlite3_helper as sql3h
-from predict.models import User
-# Constants for database entry indices.
-# May not be accurate, update later as necessary.
-# Haven't yet figured out how to use these values in templates without passing them all in
-# as render_template arguments, which feels messy. May just get rid of these later, we'll see.
-# CVE_ID_INDEX = 0
-# USERNAME_INDEX = 1
-# FIX_COMMIT_INDEX = 2
-# FIX_FILE_INDEX = 3
-# INTRO_COMMIT_INDEX = 4
-# INTRO_FILE_INDEX = 5
 
 
 @app.route("/")
+# @flask_login.login_required
 def base():
-    # If they're logged in direct to dashboard, if not direct to login
-    # stop requiring me to log in grr!!
-    logged_in = True  # flask_login.current_user.is_authenticated
-    if logged_in:
-        return flask.redirect(flask.url_for("dashboard"))
-    else:
-        return flask.redirect(flask.url_for("login"))
+    return flask.redirect(flask.url_for("dashboard"))
 
 
-@app.route("/login", methods=["GET", "POST"])
+@app.route("/login", methods=["GET"])
 def login():
-    # If the information is a GET, then return the form.
-    if flask.request.method == "GET":
-        return flask.render_template("login.html", invalidLogin = False)
-    # If the information is a POST, then validate the data that is passed in
-    elif flask.request.method == "POST":
-        username = flask.request.form["username"]
-        password = flask.request.form["password"]
+    return flask.render_template("login.html", invalidLogin=False)
 
-        #TODO: sanitize input further?
 
-        print(
-            "Here are the currently known users when the user tried to login: "
-            + str(sql3h.display_AllUsers())
-        )
-        current_user = sql3h.check_UserExists(username, password)
-        # If valid, send the user to the dashboard
-        if current_user:
-            print("logging in current user " + str(current_user) + " "+ str(username))
-            current_user_obj = User(username, password)
-            flask_login.login_user(current_user_obj)
-            return flask.redirect(
-                flask.url_for("dashboard")
-            )
-        else:
-            return flask.render_template("login.html", invalidLogin = True), 422
+@app.route("/login", methods=["POST"])
+def login_post():
+    username = flask.request.form["username"]
+    password = flask.request.form["password"]
+
+    # TODO: sanitize input further? yes
+
+    authorized = predict.auth.authenticate_user(username, password)
+
+    # If valid send the user to the dashboard
+    if authorized:
+        # TODO test this...
+        return flask.redirect(flask.request.args.get("next", flask.url_for("dashboard")))
     else:
-        flask.abort(400) #Login should only handle GET and POST requests.
+        flask.flash("Please check your login details and try again.")
+        return flask.render_template("login.html")
 
 
-@app.route("/register", methods=["GET", "POST"])
+@app.route("/logout")
+@flask_login.login_required
+def logout():
+    flask_login.logout_user()
+
+    return flask.redirect(flask.url_for("base"))
+
+
+@app.route("/register", methods=["GET"])
 def register():
-    print("register function")
-    if flask.request.method == "GET":
-        return flask.render_template("register.html", userExists = False, username = "")
-    if flask.request.method == "POST":
+    return flask.render_template("register.html")
 
-        # TODO: Sanitize input further?
 
-        username = flask.request.form["username"]
-        password = flask.request.form["password"]
+@app.route("/register", methods=["POST"])
+def register_post():
+    username = flask.request.form["username"]
+    password = flask.request.form["password"]
 
-        if sql3h.check_UserNameExists(username):
-            return flask.render_template("register.html", userExists = True, username = username)
-        # Ensure there is not a user like this in the database
-        else:
-            sql3h.insert_User(username, password)
-            return flask.redirect(flask.url_for("login"))
+    # TODO: Sanitize input further? yes
+
+    created = predict.auth.create_user(username, password)
+
+    if created:
+        return flask.redirect(flask.url_for("login"))
     else:
-        error(400)
+        flask.flash("That username already exists! Please choose another one")
+        return flask.render_template("register.html")
 
 
 @app.route("/dashboard")
+# @flask_login.login_required
 def dashboard():
-    is_logged_in = True  # flask_login.current_user.is_authenticated
-    if is_logged_in:
-        return flask.render_template("dashboard.html")
-    else:
-        return flask.redirect(flask.url_for("login"))
+    return flask.render_template("dashboard.html")
 
 
 @app.route("/resolution")
+# @flask_login.login_required
 def conflict_resolution():
     # Login required:
     # if not flask_login.current_user.is_authenticated:
@@ -265,7 +245,7 @@ def conflict_resolution():
             "lolXD.py",
             "4206969",
             "elonmuskrat.cobal",
-        )
+        ),
     ]
 
     currentUser = "jbelke"  # TODO: Replace with flask_login.current_user.username
@@ -280,11 +260,9 @@ def conflict_resolution():
                 if i != 0:
                     block[i] = predict.conflict_resolution.insertAgreements(
                         block[i], currUserEntry
-                        )
-            else:
-                block[i] = predict.conflict_resolution.insertAgreements(
-                    block[i], None
                     )
+            else:
+                block[i] = predict.conflict_resolution.insertAgreements(block[i], None)
         if block[0][1] == currentUser:
             block = predict.conflict_resolution.insertPercentages(block)
         if block is not None:
@@ -295,7 +273,7 @@ def conflict_resolution():
 
 
 @app.route("/cve/<cve_id>")
-@flask_login.login_required
+# @flask_login.login_required
 def cve_base(cve_id):
     cve_data = predict.cve.get_cve(cve_id)
 
@@ -306,25 +284,24 @@ def cve_base(cve_id):
 
 
 @app.route("/cve/<cve_id>/info/<repo_user>/<repo_name>/<commit>")
+# @flask_login.login_required
 def info_page(cve_id, repo_user, repo_name, commit):
-    # Possibly collect these in parallel?
     cve_data = predict.cve.get_cve(cve_id)
     github_data = predict.github.retrieve_commit_page(
         cve_id, repo_user, repo_name, commit
     )
-    print(json.dumps(github_data, indent=4))
+
     return flask.render_template(
         "commit_info.html", cve_data=cve_data, github_data=github_data
     )
 
 
 @app.route("/cve/<cve_id>/blame/<repo_user>/<repo_name>/<commit>/<file_name>")
+# @flask_login.login_required
 def blame_page(cve_id, repo_user, repo_name, commit, file_name):
+    cve_data = predict.cve.get_cve(cve_id)
     result = predict.github.get_blame_page(
         cve_id, repo_user, repo_name, commit, file_name
     )
-    cve_data = predict.cve.get_cve(cve_id)
-    print(json.dumps(result, indent=4))
-    return flask.render_template("blame.html", cve_data=cve_data, github_data=result)
 
-    return "TODO"
+    return flask.render_template("blame.html", cve_data=cve_data, github_data=result)
