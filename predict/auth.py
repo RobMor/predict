@@ -1,6 +1,7 @@
+import flask
 import flask_login
 
-from predict import db
+from predict import app, db
 import predict.models
 
 

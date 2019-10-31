@@ -13,7 +13,7 @@ import predict.conflict_resolution
 
 
 @app.route("/")
-# @flask_login.login_required
+@flask_login.login_required
 def base():
     return flask.redirect(flask.url_for("dashboard"))
 
@@ -71,13 +71,13 @@ def register_post():
 
 
 @app.route("/dashboard")
-# @flask_login.login_required
+@flask_login.login_required
 def dashboard():
     return flask.render_template("dashboard.html")
 
 
 @app.route("/resolution")
-# @flask_login.login_required
+@flask_login.login_required
 def conflict_resolution():
     # Login required:
     # if not flask_login.current_user.is_authenticated:
@@ -273,7 +273,7 @@ def conflict_resolution():
 
 
 @app.route("/cve/<cve_id>")
-# @flask_login.login_required
+@flask_login.login_required
 def cve_base(cve_id):
     cve_data = predict.cve.get_cve(cve_id)
 
@@ -284,7 +284,7 @@ def cve_base(cve_id):
 
 
 @app.route("/cve/<cve_id>/info/<repo_user>/<repo_name>/<commit>")
-# @flask_login.login_required
+@flask_login.login_required
 def info_page(cve_id, repo_user, repo_name, commit):
     cve_data = predict.cve.get_cve(cve_id)
     github_data = predict.github.retrieve_commit_page(
@@ -297,7 +297,7 @@ def info_page(cve_id, repo_user, repo_name, commit):
 
 
 @app.route("/cve/<cve_id>/blame/<repo_user>/<repo_name>/<commit>/<file_name>")
-# @flask_login.login_required
+@flask_login.login_required
 def blame_page(cve_id, repo_user, repo_name, commit, file_name):
     cve_data = predict.cve.get_cve(cve_id)
     result = predict.github.get_blame_page(
