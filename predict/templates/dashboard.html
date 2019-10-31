@@ -13,11 +13,13 @@
     <h1>Predict Dashboard</h1>
 </div>
 
-<form id="cve-query" class="sidebar-element" onsubmit="return goto_cve('cve-input-main')()">
+<form id="main-query" class="sidebar-element" onsubmit="return goto_cve('main-input', 'main-button')()">
     <div class="input-group">
-        <input type="text" id="cve-input-main" class="form-control" placeholder="CVE ID">
+        <input type="text" id="main-input" class="form-control" placeholder="CVE ID">
         <div class="input-group-append">
-            <input class="btn btn-outline-dark" type="submit" value="Analyze">
+            <button id="main-button" class="btn btn-outline-dark" type="submit">
+                Analyze
+            </button>
         </div>
     </div>
 </form>
