@@ -1,5 +1,9 @@
+#main-form {
+    max-width: 30rem;
+    margin: auto;
+}
 
-#bottom-alert{
+#bottom-alert {
     margin-top: 1%;
 }
 

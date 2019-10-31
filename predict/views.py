@@ -37,7 +37,7 @@ def login_post():
         # TODO test this...
         return flask.redirect(flask.request.args.get("next", flask.url_for("dashboard")))
     else:
-        flask.flash("Please check your login details and try again.")
+        flask.flash("Unrecognized credentials")
         return flask.render_template("login.html")
 
 
@@ -66,7 +66,7 @@ def register_post():
     if created:
         return flask.redirect(flask.url_for("login"))
     else:
-        flask.flash("That username already exists! Please choose another one")
+        flask.flash("That username already exists")
         return flask.render_template("register.html")
 
 

@@ -4,7 +4,6 @@
 {% block head%}
     {{ super() }}
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='auth.css') }}">
-    
     <script type="text/javascript" src="{{ url_for('static', filename='register.js') }}"></script>
 {% endblock %}
 
@@ -18,59 +17,37 @@
          <h1>Predict Registration Page</h1>
     </div>
 
-    <form method="POST">
-        <div class="row">
-            <div class ="col-6">
-                <div class="form-group">
-                    <label for="username">Username:</label>
-                    <input class="form-control" name="username" id="username" placeholder="Username" pattern="\w+" required>
-                </div>
-            </div>
+    <form method="POST" id="main-form">
+        <div class="form-group">
+            <label for="username">Username:</label>
+            <input class="form-control" name="username" id="username" placeholder="Username" pattern="\w+" required>
         </div>
 
-        <div class ="row">
-            <div class ="col-6">
-                <div class="form-group">
-                    <label for="password">Password:</label>
-                    <input  class="form-control" name="password" id="password" placeholder="Password" pattern="\w{8,}" type="password">
-                </div>
-            </div>
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input class="form-control" name="password" id="password" type="password" placeholder="Password" pattern="\w{8,}" required>
         </div>
-        
-        <div class ="row">
-            <div class ="col-6">
-                <div class="form-group">
-                    <label for="confirm_password">Confirm Password:</label>
-                    <input type="password" class="form-control" name="confirm_password" id="confirm_password" placeholder="Confirm Password" oninput="arePassAndConfirmIdentical(this)">
-                </div>
-            </div>
+
+        <div class="form-group">
+            <label for="password">Confirm Password:</label>
+            <input class="form-control" name="password" id="password" type="password" placeholder="Confirm Password" pattern="\w{8,}" required>
         </div>
-            
-        <div class ="row">
-            <div class ="col-6">
-                <button type="submit" onclick="clearPass()" class="btn btn-success btn-lg">Register!</button> 
-            </div>
-        </div>
+
+        <input type="submit" class="btn btn-primary" value="Register">
     </form>
+    <!-- <a class="dropdown-item" href="#">Forgot password?</a> -->
 
-    <div class ="row">
-            <div class ="col-6">
-                <a href="{{ url_for('login') }}">Already have an account? Take me to the login page!</a>
-            </div>
-    </div>
-
-    <div id="bottom-alert">
-        {% if userExists %}
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div id="bottom-alert">
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                An account with the username <b>{{username}}</b> already exists!
+                {{ messages[0] }}! Please try again!
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
                 </button>    
             </div>
+        </div>
         {% endif %}
-    <div><!--alert row end-->
-</div><!--Container-->
-
+    {% endwith %}
+</div>
 {% endblock %}
-
-

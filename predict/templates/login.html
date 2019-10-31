@@ -16,49 +16,33 @@
          <h1>Predict Login Page</h1>
     </div>
 
-    <form method="POST">
-        <div class="row">
-            <div class ="col-6">
-                 <div class="form-group">
-                    <label for="username">Username:</label>
-                    <input class="form-control" name="username" id="username" placeholder="Username" required>
-                </div>
-            </div>
+    <form method="POST" id="main-form">
+        <div class="form-group">
+            <label for="username">Username:</label>
+            <input class="form-control" name="username" id="username" placeholder="Username" required>
         </div>
 
-        <div class ="row">
-            <div class ="col-6">
-                <div class="form-group">
-                    <label for="password">Password:</label>
-                    <input class="form-control" name="password" id="password" type="password" placeholder="Password" required>
-                </div>
-            </div>
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input class="form-control" name="password" id="password" type="password" placeholder="Password" required>
         </div>
 
-        <div class ="row">
-            <div class ="col-6">
-                <button type="submit" class="btn btn-primary">Login!</button> 
-            </div>
-        </div>
-
-        <div class ="row">
-                <div class ="col-6">
-                    <a href="{{ url_for('register') }}">No account? No problem. Click here to register!</a>
-                </div>
-        </div>
-    
-
+        <input type="submit" class="btn btn-primary" value="Login">
+        <input type="button" class="btn btn-link" href="{{ url_for("register") }}" value="Sign Up">
     </form>
+    <!-- <a class="dropdown-item" href="#">Forgot password?</a> -->
 
-    <div id="bottom-alert">
-            {% if invalidLogin %}
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    Invalid username or password! Please try again!
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                    </button>    
-                </div>
-            {% endif %}
-    <div><!--alert row end-->
-</div><!--Container-->
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div id="bottom-alert">
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{ messages[0] }}! Please try again!
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>    
+            </div>
+        </div>
+        {% endif %}
+    {% endwith %}
+</div>
 {% endblock %}
