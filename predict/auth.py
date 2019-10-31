@@ -1,6 +1,7 @@
 import flask
 import flask_login
 import werkzeug.security
+
 from predict import app, db
 import predict.models
 
