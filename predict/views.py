@@ -17,7 +17,7 @@ import predict.conflict_resolution
 def base():
     return flask.redirect(flask.url_for("dashboard"))
 
-current_user_obj = None
+
 @app.route("/login", methods=["GET"])
 def login():
     return flask.render_template("login.html", invalidLogin=False)
