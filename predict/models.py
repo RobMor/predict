@@ -1,12 +1,10 @@
 from flask_login import UserMixin
-
 from predict import db
 
 
 class User(UserMixin, db.Model):
      username = db.Column(db.String, primary_key=True)
-     password = db.Column(db.String, nullable=False)
-     salt = db.Column(db.String, nullable=False)
+     password_hash = db.Column(db.String, nullable=False)
 
      def __repr__(self):
           return f"<User username={self.username}>"

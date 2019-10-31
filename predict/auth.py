@@ -1,15 +1,24 @@
 import flask
 import flask_login
-
+from werkzeug.security import generate_password_hash, check_password_hash
 from predict import app, db
 import predict.models
 
 
-def process_password(password, salt):
-    """Processes the password by applying a salt and hash
-    TODO
+def process_password(password, password_hash):
+    """Processes the password by using werkzeug generated hash
+    and check hash functionality.
+
+    Args:
+        password (str): The password the user entered to login
+        password_hash (str): The generated password hash stored
+        for the user
+    Returns:
+        True if the password_hash matches the input password
+        False if password_hash doesn't match input password
     """
-    return password
+
+    return check_password_hash(password_hash, password)
 
 
 def create_user(username, password):
@@ -24,9 +33,8 @@ def create_user(username, password):
     user = predict.models.User.query.filter_by(username=username).scalar()
 
     if user is None:
-        salt = "qwerty" # TODO
-        password = process_password(password, salt)
-        new_user = predict.models.User(username=username, password=password, salt=salt)
+        password_hash = generate_password_hash(password)
+        new_user = predict.models.User(username=username, password_hash=password_hash)
         db.session.add(new_user)
         db.session.commit()
 
@@ -47,9 +55,9 @@ def authenticate_user(username, password):
     user = load_user(username)
 
     if user is not None:
-        password = process_password(password, user.salt)
+        auth = process_password(password, user.password_hash)
 
-        if user.password == password:
+        if auth:
             flask_login.login_user(user)
             return True
 
