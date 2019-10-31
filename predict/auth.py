@@ -39,7 +39,7 @@ def authenticate_user(username, password):
     user = load_user(username)
 
     if user is not None:
-        auth = werkzeug.security.check_password_hash(password_hash, user.password_hash)
+        auth = werkzeug.security.check_password_hash(user.password_hash, password)
 
         if auth:
             flask_login.login_user(user)
