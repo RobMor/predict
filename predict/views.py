@@ -305,3 +305,7 @@ def blame_page(cve_id, repo_user, repo_name, commit, file_name):
     )
 
     return flask.render_template("blame.html", cve_data=cve_data, github_data=result)
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return flask.render_template("error.html", error=e)
