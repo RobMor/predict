@@ -111,10 +111,10 @@ def retrieve_commit_page(cve_id, repo_user, repo_name, comm_hash):
             link_prefix = "https://github.com/{}/{}/commits/{}/".format(master_dictionary["user_name"], master_dictionary["repository_name"], master_dictionary["commit_hash"])  # Replace this prefix with our version at some point
             file_data["history_link"] = "{}{}".format(link_prefix, file_data["file_path"])
 
-            #  Find the blame link...TODO convert to our blame link.
+            #  Find the blame link...
 
             link_prefix= "{}/{}/{}/{}/".format(our_link_format, master_dictionary["user_name"], master_dictionary["repository_name"], master_dictionary["commit_hash"])  # Replace this prefix with our version at some point
-            file_data["blame_link"] = "{}{}".format(link_prefix, file_data["file_path"].replace("/", "$"))
+            file_data["blame_link"] = "{}{}".format(link_prefix, file_data["file_path"])
 
             #  Create line dictionaries and inline diff
             code_body = file_div.find("table")
@@ -145,10 +145,8 @@ def retrieve_commit_page(cve_id, repo_user, repo_name, comm_hash):
 
     return master_dictionary
 
-def get_blame_page(cve_id, repo_user, repo_name, comm_hash, file_name_ref):
+def get_blame_page(cve_id, repo_user, repo_name, comm_hash, file_name):
     # Initialize variables
-    file_name = file_name_ref.replace("$", "/")
-
     master_dictionary = {
         "user_name": repo_user,
         "repository_name": repo_name,

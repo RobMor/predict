@@ -296,7 +296,7 @@ def info_page(cve_id, repo_user, repo_name, commit):
     )
 
 
-@app.route("/cve/<cve_id>/blame/<repo_user>/<repo_name>/<commit>/<file_name>")
+@app.route("/cve/<cve_id>/blame/<repo_user>/<repo_name>/<commit>/<path:file_name>")
 @flask_login.login_required
 def blame_page(cve_id, repo_user, repo_name, commit, file_name):
     cve_data = predict.cve.get_cve(cve_id)
@@ -305,6 +305,7 @@ def blame_page(cve_id, repo_user, repo_name, commit, file_name):
     )
 
     return flask.render_template("blame.html", cve_data=cve_data, github_data=result)
+
 
 @app.errorhandler(404)
 def page_not_found(e):
