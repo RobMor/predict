@@ -64,7 +64,7 @@
 
 #sidebar-content {
     /* Space for the sidebar-query */
-    padding-bottom: 3em; /* A bit of a hack but there's no better way */
+    padding-bottom: 4em; /* A bit of a hack but there's no better way */
     padding-left: 1rem;
     padding-right: 1rem;
 

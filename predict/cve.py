@@ -153,6 +153,7 @@ def convert_github_link(cve_id: str, parsed_link: urllib.parse.ParseResult) -> s
     )
 
 
+# TODO
 # A dictionary mapping known repositories to their github mirrors.
 # Dict[URL, Tuple[repo_user, repo_name]]
 known_repositories = {"git.qemu.org": ("qemu", "qemu")}

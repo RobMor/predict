@@ -1,5 +1,10 @@
 {% extends "sidebar.html" %}
 
+{% block head %}
+{{ super() }}
+<script type="text/javascript" src="{{ url_for('static', filename='cve_sidebar.js') }}"></script>
+{% endblock %}
+
 {% block title %} {{ cve_data["id"] }} {% endblock %}
 
 {% block sidebar_content %}
@@ -8,7 +13,8 @@
     <p>{{ cve_data["desc"] }}</p>
 
     {% if cve_data["git_links"]|length > 0 %}
-        <h3>Git Links</h3> 
+        <h3>Git Links</h3>
+
         <ul>
         {% for normal, converted in cve_data["git_links"] %}
             <li>
@@ -19,9 +25,25 @@
         {% endfor %}
         </ul>
     {% endif %}
+    
+    <button class="btn btn-link mb-3 px-0" data-toggle="collapse" data-target="#git-missing">Did we miss one?</button>
+    <form id="git-missing" class="collapse mb-3" onsubmit="return goto_commit('{{ cve_data['id'] }}')()">
+        <div class="form-group">
+            <label for="repo">GitHub Repository Path:</label>
+            <input class="form-control" name="repo" id="repo" type="text" placeholder="Username/Repository" required>
+        </div>
+
+        <div class="form-group">
+            <label for="commit">Commit:</label>
+            <input class="form-control" name="commit" id="commit" type="text" placeholder="Commit" required>
+        </div>
+
+        <button id="missing-button" type="submit" class="btn btn-primary">Search</button>
+    </form>
 
     {% if cve_data["normal_links"]|length > 0 %}
         <h3>Non-Git Links</h3>
+        
         <ul>
         {% for link in cve_data["normal_links"] %}
             <li>
@@ -32,4 +54,6 @@
         {% endfor %}
         </ul>
     {% endif %}
+
+    
 {% endblock %}
