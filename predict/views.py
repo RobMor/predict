@@ -5,25 +5,27 @@ import flask
 import requests
 import flask_login
 
-from predict import app
 import predict.cve
 import predict.auth
 import predict.github
 import predict.conflict_resolution
 
 
-@app.route("/")
+blueprint = flask.Blueprint("main", __name__)
+
+
+@blueprint.route("/")
 @flask_login.login_required
 def base():
-    return flask.redirect(flask.url_for("dashboard"))
+    return flask.redirect(flask.url_for("main.dashboard"))
 
 
-@app.route("/login", methods=["GET"])
+@blueprint.route("/login", methods=["GET"])
 def login():
     return flask.render_template("login.html", invalidLogin=False)
 
 
-@app.route("/login", methods=["POST"])
+@blueprint.route("/login", methods=["POST"])
 def login_post():
     username = flask.request.form["username"]
     password = flask.request.form["password"]
@@ -35,26 +37,26 @@ def login_post():
     # If valid send the user to the dashboard
     if authorized:
         # TODO test this...
-        return flask.redirect(flask.request.args.get("next", flask.url_for("dashboard")))
+        return flask.redirect(flask.request.args.get("next", flask.url_for("main.dashboard")))
     else:
         flask.flash("Unrecognized credentials! Please try again.")
         return flask.render_template("login.html")
 
 
-@app.route("/logout")
+@blueprint.route("/logout")
 @flask_login.login_required
 def logout():
     flask_login.logout_user()
 
-    return flask.redirect(flask.url_for("base"))
+    return flask.redirect(flask.url_for("main.base"))
 
 
-@app.route("/register", methods=["GET"])
+@blueprint.route("/register", methods=["GET"])
 def register():
     return flask.render_template("register.html")
 
 
-@app.route("/register", methods=["POST"])
+@blueprint.route("/register", methods=["POST"])
 def register_post():
     username = flask.request.form["username"]
     password = flask.request.form["password"]
@@ -64,19 +66,19 @@ def register_post():
     created = predict.auth.create_user(username, password)
 
     if created:
-        return flask.redirect(flask.url_for("login"))
+        return flask.redirect(flask.url_for("main.login"))
     else:
         flask.flash("That username already exists! Please try again.")
         return flask.render_template("register.html")
 
 
-@app.route("/dashboard")
+@blueprint.route("/dashboard")
 @flask_login.login_required
 def dashboard():
     return flask.render_template("dashboard.html")
 
 
-@app.route("/resolution")
+@blueprint.route("/resolution")
 @flask_login.login_required
 def conflict_resolution():
     # Login required:
@@ -272,7 +274,7 @@ def conflict_resolution():
     )  # TODO: Replace with get_current_user
 
 
-@app.route("/cve/<cve_id>")
+@blueprint.route("/cve/<cve_id>")
 @flask_login.login_required
 def cve_base(cve_id):
     cve_data = predict.cve.get_cve(cve_id)
@@ -283,7 +285,7 @@ def cve_base(cve_id):
     return flask.render_template("cve_sidebar.html", cve_data=cve_data)
 
 
-@app.route("/cve/<cve_id>/info/<repo_user>/<repo_name>/<commit>")
+@blueprint.route("/cve/<cve_id>/info/<repo_user>/<repo_name>/<commit>")
 @flask_login.login_required
 def info_page(cve_id, repo_user, repo_name, commit):
     cve_data = predict.cve.get_cve(cve_id)
@@ -296,7 +298,7 @@ def info_page(cve_id, repo_user, repo_name, commit):
     )
 
 
-@app.route("/cve/<cve_id>/blame/<repo_user>/<repo_name>/<commit>/<path:file_name>")
+@blueprint.route("/cve/<cve_id>/blame/<repo_user>/<repo_name>/<commit>/<path:file_name>")
 @flask_login.login_required
 def blame_page(cve_id, repo_user, repo_name, commit, file_name):
     cve_data = predict.cve.get_cve(cve_id)
@@ -307,6 +309,6 @@ def blame_page(cve_id, repo_user, repo_name, commit, file_name):
     return flask.render_template("blame.html", cve_data=cve_data, github_data=result)
 
 
-@app.errorhandler(404)
+@blueprint.errorhandler(404)
 def page_not_found(e):
     return flask.render_template("error.html", error=e)

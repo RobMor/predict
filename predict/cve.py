@@ -145,7 +145,7 @@ def convert_github_link(cve_id: str, parsed_link: urllib.parse.ParseResult) -> s
     match = github_pattern.match(parsed_link.path)
 
     return flask.url_for(
-        "info_page",
+        "main.info_page",
         cve_id=cve_id,
         repo_user=match.group(1),
         repo_name=match.group(2),
@@ -189,7 +189,7 @@ def convert_git_link(cve_id: str, parsed_link: urllib.parse.ParseResult) -> str:
     commit = query["h"][0]
 
     return flask.url_for(
-        "info_page",
+        "main.info_page",
         cve_id=cve_id,
         repo_user=repo_user,
         repo_name=repo_name,

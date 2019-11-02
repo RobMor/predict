@@ -31,13 +31,13 @@ def load_plugins():
     for entrypoint in entrypoints.get_group_named("predict.plugins").values():
         source = entrypoint.load()
         
-        if isinstance(source, FilterPlugin):
+        if issubclass(source, FilterPlugin):
             plugins["filter"] = plugins.get("filter", []) + [source]
-        elif isinstance(source, DataPlugin):
+        elif issubclass(source, DataPlugin):
             plugins["data"] = plugins.get("data", []) + [source]
-        elif isinstance(source, ConflictPlugin):
+        elif issubclass(source, ConflictPlugin):
             plugins["conflict"] = plugins.get("conflict", []) + [source]
-        elif isinstance(source, FormatPlugin):
+        elif issubclass(source, FormatPlugin):
             plugins["format"] = plugins.get("format", []) + [source]
 
     return plugins

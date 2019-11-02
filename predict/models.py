@@ -1,11 +1,16 @@
 from flask_login import UserMixin
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Column, String, ForeignKey, DateTime
 
-from predict import db
+
+Model = declarative_base()
 
 
-class User(UserMixin, db.Model):
-     username = db.Column(db.String, primary_key=True)
-     password_hash = db.Column(db.String, nullable=False)
+class User(UserMixin, Model):
+     __tablename__ = "users"
+
+     username = Column(String, primary_key=True)
+     password_hash = Column(String, nullable=False)
 
      def __repr__(self):
           return f"<User username={self.username}>"
@@ -14,16 +19,18 @@ class User(UserMixin, db.Model):
           return self.username
 
 
-class Label(db.Model):
-     cve = db.Column(db.String, primary_key=True)
-     username = db.Column(db.String, db.ForeignKey("user.username"), primary_key=True)
-     fix_file = db.Column(db.String, primary_key=True)
-     intro_file = db.Column(db.String, primary_key=True, nullable=True)
+class Label(Model):
+     __tablename__ = "labels"
 
-     fix_hash = db.Column(db.String)
-     intro_hash = db.Column(db.String)
+     cve = Column(String, primary_key=True)
+     username = Column(String, ForeignKey("users.username"), primary_key=True)
+     fix_file = Column(String, primary_key=True)
+     intro_file = Column(String, primary_key=True, nullable=True)
 
-     repo_user = db.Column(db.String)
-     repo_name = db.Column(db.String)
+     fix_hash = Column(String)
+     intro_hash = Column(String)
 
-     edit_date = db.Column(db.DateTime)
+     repo_user = Column(String)
+     repo_name = Column(String)
+
+     edit_date = Column(DateTime)

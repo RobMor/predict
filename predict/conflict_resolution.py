@@ -47,16 +47,16 @@ def insertAgreements(entry, currUserEntry):
         entry[INTRO_COMMIT_URL_INDEX], entry[INTRO_FILE_URL_INDEX])
 
 def appendURLs(entry):
-    fixCommitURL = flask.url_for("info_page", cve_id = entry[CVE_ID_INDEX],
+    fixCommitURL = flask.url_for("main.info_page", cve_id = entry[CVE_ID_INDEX],
         repo_name = entry[REPO_NAME_INDEX], repo_user = entry[REPO_USER_INDEX],
         commit = entry[FIX_COMMIT_INDEX])
-    fixFileURL = flask.url_for("info_page", cve_id = entry[CVE_ID_INDEX],
+    fixFileURL = flask.url_for("main.info_page", cve_id = entry[CVE_ID_INDEX],
         repo_name = entry[REPO_NAME_INDEX], repo_user = entry[REPO_USER_INDEX],
         commit = entry[FIX_FILE_INDEX])
-    introCommitURL = flask.url_for("info_page", cve_id = entry[CVE_ID_INDEX],
+    introCommitURL = flask.url_for("main.info_page", cve_id = entry[CVE_ID_INDEX],
         repo_name = entry[REPO_NAME_INDEX], repo_user = entry[REPO_USER_INDEX],
         commit = entry[INTRO_COMMIT_INDEX])
-    introFileURL = flask.url_for("info_page", cve_id = entry[CVE_ID_INDEX],
+    introFileURL = flask.url_for("main.info_page", cve_id = entry[CVE_ID_INDEX],
         repo_name = entry[REPO_NAME_INDEX], repo_user = entry[REPO_USER_INDEX],
         commit = entry[INTRO_FILE_INDEX])
     return (entry[CVE_ID_INDEX], entry[USERNAME_INDEX], entry[REPO_NAME_INDEX],

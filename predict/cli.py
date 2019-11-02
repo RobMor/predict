@@ -2,10 +2,14 @@ import argparse
 
 
 def up(arguments):
-    from predict import app
+    import predict
 
-    # Kind of a hack. Only way to do this.
-    app.login_manager._login_disabled = not arguments.secured
+    config = {
+        "LOGIN_DISABLED": not arguments.secured
+        # TODO more config stuff...
+    }
+
+    app = predict.configure_app(config)
 
     app.run()
 
