@@ -27,9 +27,10 @@ def get_cve(cve_id: str) -> dict:
             return None
         else:
             raw_cve = scrape_cve(cve_id)
-            return process_cve(raw_cve)
-    else:
-        return None
+            if raw_cve is not None:
+                return process_cve(raw_cve)
+    
+    return None
 
 
 def scrape_cve(cve_id) -> dict:
@@ -48,6 +49,10 @@ def scrape_cve(cve_id) -> dict:
 
     response = requests.get(url)
     soup = BeautifulSoup(response.text, "html.parser")
+
+    # Non-existent CVE
+    if soup.find("p", {"data-testid": "service-unavailable-msg"}) is not None:
+        return None
 
     entry["desc"] = soup.find("p", {"data-testid": "vuln-description"}).text
 
@@ -113,7 +118,7 @@ github_pattern = re.compile(
 )
 
 
-def is_github_link(parsed_link) -> bool:
+def is_github_link(parsed_link: urllib.parse.ParseResult) -> bool:
     """Checks whether the given parsed link is a github commit link
 
     Args:
@@ -123,12 +128,12 @@ def is_github_link(parsed_link) -> bool:
         True if the given link is a github commit link, false otherwise
     """
     return (
-        parsed_link.netloc == "github.com"
+        (parsed_link.netloc == "github.com" or parsed_link.netloc == "www.github.com")
         and github_pattern.match(parsed_link.path) is not None
     )
 
 
-def convert_github_link(cve_id, parsed_link):
+def convert_github_link(cve_id: str, parsed_link: urllib.parse.ParseResult) -> str:
     """Converts the given parsed link into the format used by our system
 
     Args:
@@ -153,7 +158,7 @@ def convert_github_link(cve_id, parsed_link):
 known_repositories = {"git.qemu.org": ("qemu", "qemu")}
 
 
-def is_git_link(parsed_link):
+def is_git_link(parsed_link: urllib.parse.ParseResult) -> bool:
     """Checks whether the given parsed link is a git commit link
 
     Args:
@@ -164,10 +169,10 @@ def is_git_link(parsed_link):
     """
     query = urllib.parse.parse_qs(parsed_link.query)
 
-    return parsed_link.netloc in known_repositories and query["a"] == "commit"
+    return parsed_link.netloc in known_repositories and query["a"][0] == "commit"
 
 
-def convert_git_link(cve_id, parsed_link):
+def convert_git_link(cve_id: str, parsed_link: urllib.parse.ParseResult) -> str:
     """Converts the given parsed link into the format used by our system
 
     Args:

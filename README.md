@@ -8,17 +8,23 @@ There are also examples of the endpoints. After your template and view are all
 set up you can run the webserver and navigate to localhost:5000 in your web
 browser in order to test your stuff...
 
+## To install predict:
+
+1. `$ pip install .`
+
 ## To run the webserver:
 
 In the same folder as the `setup.py` folder, which is `\prod\` run: 
 
-1. `$ pip install .`
-2. `$ predict`
+1. `$ predict`
 
 ## To run the webserver in secured mode:
 
-1. `$ pip install .`
-2. `$ predict up --secured`
+1. `$ predict up --secured`
+
+## To run the tests:
+
+1. `$ python -m unittest`
 
 ## To configure flask to to run in debug mode:
 

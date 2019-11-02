@@ -162,9 +162,6 @@ def get_blame_page(cve_id, repo_user, repo_name, comm_hash, file_name):
         "sorted_block_numbers":[],
         "page_html": ""
     }  # Create a dictionary that we will return, containing the important information on the page
-    # Our file name should come to us with $ replacing the / characters, because we cannot put it in a link otherwise. So we replace those
-
-
 
     link = "https://github.com/{}/{}/blame/{}/{}".format(repo_user, repo_name, comm_hash, file_name)
 
