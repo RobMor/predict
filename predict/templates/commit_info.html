@@ -17,6 +17,9 @@
         {% for diff_line in github_data["files"][file].get("sorted_line_numbers") %}
             <li>
             <div>
+              <! want to represent altered code lines with a more readily interpreted color scheme currently expressed
+                as red## | blue * being the deleted line and red* | blue## as the changed line>
+                <! keep the numbers but change the text color, possibly yellow for change, red for delete. how to find which is which though>
                 <span style="color:red; width: 20%" align="left">
                     {{ github_data["files"][file]["inline_diff"][diff_line]["old_text_line_number"] }} |
                 </span>
@@ -31,8 +34,9 @@
             </li>
         {% endfor %}
     </ul>
-
+    <br/>
 </li>
+<br/>
 {% endfor %}
 </ul>
 {% endblock %}
