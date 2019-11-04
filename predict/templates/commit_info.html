@@ -41,9 +41,23 @@
                   <span style="color:blue; width: 20%" align="left">
                       {{ github_data["files"][file]["inline_diff"][diff_line]["new_text_line_number"] }}
                   </span>
-                  <span>
+                  <! for line links to blame line number 116 in github.py will have to change to accept another variable>
+                  <! or I make this box a form field and just alter the blame page a little.>
+
+                  {% if github_data["files"][file]["inline_diff"][diff_line]["old_text_line_number"] == "*" %}
+
+                    <span style="color: green;">
                       {{ github_data["files"][file]["inline_diff"][diff_line]["text"] }}
-                  </span>
+                    </span>
+                  {% elif github_data["files"][file]["inline_diff"][diff_line]["new_text_line_number"] == "*" %}
+                    <span style="color: orange;">
+                      {{ github_data["files"][file]["inline_diff"][diff_line]["text"] }}
+                    </span>
+                  {% else %}
+                    <span>
+                      {{ github_data["files"][file]["inline_diff"][diff_line]["text"] }}
+                    </span>
+                  {% endif %}
               </div>
               </li>
           {% endfor %}

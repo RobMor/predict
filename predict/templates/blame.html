@@ -9,7 +9,7 @@
 	  border-style: solid;
 	  background-color: white;
 	  position: fixed;
-	  top: 0; 
+	  top: 0;
 	  width: 100%; /* Full width */
 	}
 	.main {
@@ -34,7 +34,7 @@
 </div>
 <a href="dashboard.html" class="btn btn-primary" role="button">Dashboard</a>
 <hr>
-<div class="container">           
+<div class="container">
   <table class="table table-bordered">
     <thead>
       <tr>
@@ -66,6 +66,8 @@
         </td>
         <td>
             {% for blame_line in github_data.get("sorted_blame_line_numbers") %}
+								<! collapse code prior to line sent if selecting blame by line, default line 1, may also collapse by default
+										when compared to diff in left table, tbd>
                 <div>
                     <span style="color: gray">
                         {{ github_data["line_representation"][blame_line].get("line_number")}}
