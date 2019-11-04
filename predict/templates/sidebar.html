@@ -13,11 +13,11 @@
     <div id="sidebar-controls" class="sidebar-element bg-light">
         <a class="sidebar-control btn btn-outline-dark" role="button" href="{{ url_for("main.dashboard") }}"> <i class="fas fa-home"></i> Dashboard </a>
         <a class="sidebar-control btn btn-outline-dark" role="button" href="{{ url_for("main.logout") }}"> <i class="fas fa-sign-out-alt"></i> Log Out </a>
+        <a>Logged In As {{ current_user.username }}</a>
         <a id="sidebar-close" class="sidebar-control btn btn-outline-dark" role="button" onclick="toggleSidebar()"> <i class="fas fa-times"></i> </a>
     </div>
 
     <div id="sidebar-content" class="sidebar-element">
-        Current User: {{username_sidebar}}
         {% block sidebar_content %}
         {% endblock %}
     </div>
