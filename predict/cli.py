@@ -11,7 +11,8 @@ def up(arguments):
 
     app = predict.configure_app(config)
 
-    app.run()
+    # TODO remove `debug` later
+    app.run(debug=True)
 
 
 def config_set(arguments):
