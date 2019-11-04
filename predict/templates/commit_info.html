@@ -7,14 +7,18 @@
 
 {% block title %}Git Commit Info{% endblock %}
 {% block body %}
-<center><h1>{{ github_data["commit_hash"] }}</h1></center>
-<center><pre>{{ github_data["commit_description"] }}</pre></center>
+<div style="text-align: center;">
+  <div style="display: inline-block; text-align: left;">
+    <h1>{{ github_data["commit_hash"] }}</h1>
+    <pre>{{ github_data["commit_description"] }}</pre>
+  </div>
+</div>
 <! making grid system to hold files>
-
-  <ul class="remove-bullet-list hanging">
+<div class="container">
+  <div class="row">
     {% for file in github_data["files"].keys() %}
-    <li>
-      <div class="file">
+    <div class="col-xl-6">
+      <div>
         <a href="{{ github_data["files"][file].get("file_link") }}"><b>{{ file }}</b></a>
         <a href="{{ github_data["files"][file].get("history_link") }}">HISTORY</a>
         <a href="{{ github_data["files"][file].get("blame_link") }}">BLAME</a>
@@ -47,7 +51,8 @@
 
       </div>
       <br/>
-    </li>
+    </div>
    {% endfor %}
- </ul>
+ </div>
+</div>
 {% endblock %}
