@@ -55,19 +55,18 @@
                         <span style="color:blue; width: 20%" align="left">
                             {{ github_data["inline_diff"][diff_line]["new_text_line_number"] }}
                         </span>
-												<! change lines coloring, orange for prev lines that got changed. Green for new lines>
-												{% if github_data["files"][file]["inline_diff"][diff_line]["old_text_line_number"] == "*" %}
-
+												<! diff color coding; orange for changed lines, green for new lines>
+												{% if github_data["inline_diff"][diff_line]["old_text_line_number"] == "*" %}
 			                    <span style="color: green;">
-			                      {{ github_data["files"][file]["inline_diff"][diff_line]["text"] }}
+			                      {{ github_data["inline_diff"][diff_line]["text"] }}
 			                    </span>
-			                  {% elif github_data["files"][file]["inline_diff"][diff_line]["new_text_line_number"] == "*" %}
+			                  {% elif github_data["inline_diff"][diff_line]["new_text_line_number"] == "*" %}
 			                    <span style="color: orange;">
-			                      {{ github_data["files"][file]["inline_diff"][diff_line]["text"] }}
+			                      {{ github_data["inline_diff"][diff_line]["text"] }}
 			                    </span>
 			                  {% else %}
 			                    <span>
-			                      {{ github_data["files"][file]["inline_diff"][diff_line]["text"] }}
+			                      {{ github_data["inline_diff"][diff_line]["text"] }}
 			                    </span>
 			                  {% endif %}
                     </div>
@@ -88,6 +87,9 @@
                         |
                     </span>
                     <a href={{ github_data["line_representation"][blame_line].get("blame_commit_link") }}>
+												<! I want to change this somehow, either truncate it or remove it entirely>
+												<! It currently makes the blame page completely unreadable with long commit msgs>
+												<! time could also be formatted to something usable>
                         <span style="color:  red">
                             {{ github_data["line_representation"][blame_line].get("blame_commit_message")}}
                         </span>
