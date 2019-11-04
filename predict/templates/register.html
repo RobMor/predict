@@ -30,7 +30,7 @@
 
         <div class="form-group">
             <label for="password">Confirm Password:</label>
-            <input class="form-control" name="password" id="password" title="Please enter a password consisting of at least 8 characters of numbers/letters/underscores."  type="password" placeholder="Confirm Password" pattern="\w{8,}" required>
+            <input class="form-control" name="password" id="password" title="Please enter a password consisting of at least 8 characters of numbers/letters/underscores." oninput="arePassAndConfirmIdentical(this)"  type="password" placeholder="Confirm Password" pattern="\w{8,}" required>
         </div>
 
         <input type="submit" class="btn btn-primary" value="Register">

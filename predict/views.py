@@ -30,13 +30,14 @@ def login_post():
     username = flask.request.form["username"]
     password = flask.request.form["password"]
 
-    # TODO: sanitize input further? yes
+    if not predict.auth.is_valid_user(username, password):
+        flask.flash("Invalid login credentials!")
+        return flask.render_template("login.html")
 
     authorized = predict.auth.authenticate_user(username, password)
 
     # If valid send the user to the dashboard
     if authorized:
-        # TODO test this...
         return flask.redirect(flask.request.args.get("next", flask.url_for("main.dashboard")))
     else:
         flask.flash("Unrecognized credentials! Please try again.")
@@ -61,7 +62,9 @@ def register_post():
     username = flask.request.form["username"]
     password = flask.request.form["password"]
 
-    # TODO: Sanitize input further? yes
+    if not predict.auth.is_valid_user(username, password):
+        flask.flash("Invalid registration credentials!")
+        return flask.render_template("register.html")
 
     created = predict.auth.create_user(username, password)
 
