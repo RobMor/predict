@@ -33,7 +33,7 @@
 	<option value="fVuln"> None</option>
   </select>
 </div>
-<a href="{{ url_for("main.dashboard") }}" class="btn btn-primary" role="button">Dashboard</a>
+
 <hr>
 <div class="container">
   <table class="table table-bordered">
@@ -44,71 +44,93 @@
       </tr>
     </thead>
     <tbody>
+	{% for line in github_data.get("sorted_blame_line_numbers") %}
       <tr>
         <td>
-            <ul>
-                {% for diff_line in github_data.get("sorted_line_numbers") %}
-                    <li>
+		{% for dline in github_data.get("sorted_line_numbers") %}
+		{% if github_data["inline_diff"][dline]["old_text_line_number"] != "*" and github_data["inline_diff"][dline]["new_text_line_number"] != "*" and github_data["inline_diff"][dline]["new_text_line_number"]|int == line %}
+            <ul>             
+                 <li>
                     <div>
                         <span style="color:red; width: 20%" align="left">
-                            {{ github_data["inline_diff"][diff_line]["old_text_line_number"] }} |
+                            {{ github_data["inline_diff"][dline]["old_text_line_number"] }} |
                         </span>
                         <span style="color:blue; width: 20%" align="left">
-                            {{ github_data["inline_diff"][diff_line]["new_text_line_number"] }}
+                            {{ github_data["inline_diff"][dline]["new_text_line_number"] }}
                         </span>
-												<! diff color coding; orange for changed lines, green for new lines>
-												{% if github_data["inline_diff"][diff_line]["old_text_line_number"] == "*" %}
-			                    <span style="color: green;">
-			                      {{ github_data["inline_diff"][diff_line]["text"] }}
-			                    </span>
-			                  {% elif github_data["inline_diff"][diff_line]["new_text_line_number"] == "*" %}
-			                    <span style="color: orange;">
-			                      {{ github_data["inline_diff"][diff_line]["text"] }}
-			                    </span>
-			                  {% else %}
-			                    <span>
-			                      {{ github_data["inline_diff"][diff_line]["text"] }}
-			                    </span>
-			                  {% endif %}
+						<span>
+						  {{ github_data["inline_diff"][dline]["text"] }}
+						</span>
                     </div>
-
-                    </li>
-                {% endfor %}
+                  </li>
             </ul>
+		{% elif github_data["inline_diff"][dline]["old_text_line_number"] == "*" and github_data["inline_diff"][dline]["new_text_line_number"]|int == line %}
+            <ul>             
+                 <li>
+                    <div>
+                        <span style="color:red; width: 20%" align="left">
+                            {{ github_data["inline_diff"][dline]["old_text_line_number"] }} |
+                        </span>
+                        <span style="color:blue; width: 20%" align="left">
+                            {{ github_data["inline_diff"][dline]["new_text_line_number"] }}
+                        </span>
+						<span style="color: green;">
+						  {{ github_data["inline_diff"][dline]["text"] }}
+						</span>
+			                  
+                    </div>
+                  </li>
+            </ul>
+		{% elif github_data["inline_diff"][dline]["new_text_line_number"] == "*" and github_data["inline_diff"][dline]["old_text_line_number"]|int == line %}
+            <ul>             
+                 <li>
+                    <div>
+                        <span style="color:red; width: 20%" align="left">
+                            {{ github_data["inline_diff"][dline]["old_text_line_number"] }} |
+                        </span>
+                        <span style="color:blue; width: 20%" align="left">
+                            {{ github_data["inline_diff"][dline]["new_text_line_number"] }}
+                        </span>
+			                    <span style="color: orange;">
+			                      {{ github_data["inline_diff"][dline]["text"] }}
+			                    </span>			              
+                    </div>
+                  </li>
+            </ul>
+			{% endif %}
+			{% endfor %}
         </td>
         <td>
-            {% for blame_line in github_data.get("sorted_blame_line_numbers") %}
 								<! collapse code prior to line sent if selecting blame by line, default line 1, may also collapse by default
 										when compared to diff in left table, tbd>
                 <div>
                     <span style="color: gray">
-                        {{ github_data["line_representation"][blame_line].get("line_number")}}
+                        {{ github_data["line_representation"][line].get("line_number")}}
                     </span>
                     <span style="color: black">
                         |
                     </span>
-                    <a href={{ github_data["line_representation"][blame_line].get("blame_commit_link") }}>
+                    <a href={{ github_data["line_representation"][line].get("blame_commit_link") }}>
 												<! I want to change this somehow, either truncate it or remove it entirely>
 												<! It currently makes the blame page completely unreadable with long commit msgs>
 												<! time could also be formatted to something usable>
                         <span style="color:  red">
-                            {{ github_data["line_representation"][blame_line].get("blame_commit_message")}}
+                            {{ github_data["line_representation"][line].get("blame_commit_message")}}
                         </span>
                         <span style="color: lightgreen">
-                            {{ github_data["line_representation"][blame_line].get("blame_commit_time")}}
+                            {{ github_data["line_representation"][line].get("blame_commit_time")}}
                         </span>
                     </a>
                     <span style="color: black;">
                         |
                     </span>
                    <span style="color: gray;">
-                        {{ github_data["line_representation"][blame_line].get("line_text")}}
+                        {{ github_data["line_representation"][line].get("line_text")}}
                    </span>
                 </div>
-
-            {% endfor %}
         </td>
       </tr>
+	 {% endfor %}
     </tbody>
   </table>
 </div>
