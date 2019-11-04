@@ -12,8 +12,19 @@
 <div id="sidebar" class="bg-light">
     <div id="sidebar-controls" class="sidebar-element bg-light">
         <a class="sidebar-control btn btn-outline-dark" role="button" href="{{ url_for("main.dashboard") }}"> <i class="fas fa-home"></i> Dashboard </a>
-        <a class="sidebar-control btn btn-outline-dark" role="button" href="{{ url_for("main.logout") }}"> <i class="fas fa-sign-out-alt"></i> Log Out </a>
-        <a>Logged In As {{ current_user.username }}</a>
+        {% if not current_user.is_anonymous %}
+            <div class="dropdown sidebar-control">
+                <a class="btn btn-outline-dark dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Logged in as: {{ current_user.username }}
+                </a>
+
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                <a class="dropdown-item" href="{{ url_for("main.logout") }}"> <i class="fas fa-sign-out-alt"></i> Log Out </a>
+                <a class="dropdown-item" href="#">Another action</a>
+                <a class="dropdown-item" href="#">Something else here</a>
+                </div>
+            </div>
+        {% endif %}
         <a id="sidebar-close" class="sidebar-control btn btn-outline-dark" role="button" onclick="toggleSidebar()"> <i class="fas fa-times"></i> </a>
     </div>
 
