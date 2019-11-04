@@ -16,18 +16,17 @@ def create_user(username, password):
     Returns:
         True if the user was successfully created, False otherwise.
     """
+    user = load_user(username)
 
-    with predict.db.create_session() as session:
-        user = session.query(predict.models.User).filter_by(username=username).scalar()
+    if user is None:
+        password_hash = werkzeug.security.generate_password_hash(password)
+        new_user = predict.models.User(username=username, password_hash=password_hash)
+        predict.db.Session.add(new_user)
+        predict.db.Session.commit()
 
-        if user is None:
-            password_hash = werkzeug.security.generate_password_hash(password)
-            new_user = predict.models.User(username=username, password_hash=password_hash)
-            session.add(new_user)
-
-            return True
-        else:
-            return False
+        return True
+    else:
+        return False
 
 
 def authenticate_user(username, password):
@@ -39,17 +38,16 @@ def authenticate_user(username, password):
     Returns:
         True if the given credentials refer to a valid user, False otherwise
     """
-    with predict.db.create_session() as session:
-        user = session.query(predict.models.User).filter_by(username=username).first()
+    user = load_user(username)
 
-        if user is not None:
-            auth = werkzeug.security.check_password_hash(user.password_hash, password)
+    if user is not None:
+        auth = werkzeug.security.check_password_hash(user.password_hash, password)
 
-            if auth:
-                flask_login.login_user(user)
-                return True
+        if auth:
+            flask_login.login_user(user)
+            return True
 
-        return False
+    return False
 
 
 def load_user(username):
@@ -60,7 +58,10 @@ def load_user(username):
     Returns:
         The user with the given username or None if the user doesn't exist.
     """
-    with predict.db.create_session() as session:
-        user = session.query(predict.models.User).filter_by(username=username).first()
+    user = (
+        predict.db.Session.query(predict.models.User)
+        .filter_by(username=username)
+        .scalar()
+    )
 
-        return user
+    return user

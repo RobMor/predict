@@ -1,19 +1,13 @@
 from contextlib import contextmanager
 
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import scoped_session
 
 
 SessionFactory = sessionmaker()
+Session = scoped_session(SessionFactory)
 
 
-@contextmanager
-def create_session():
-    session = SessionFactory()
-    try:
-        yield session
-        session.commit()
-    except:
-        session.rollback()
-        raise
-    finally:
-        session.close()
+def teardown_session(e):
+    """Tears down the thread-local DB session. Called when a request ends."""
+    Session.remove()

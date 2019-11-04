@@ -16,6 +16,7 @@ def configure_app(config):
     # TODO get database location from the config
     engine = sqlalchemy.create_engine("sqlite:///db.sqlite")
     predict.db.SessionFactory.configure(bind=engine)
+    app.teardown_appcontext(predict.db.teardown_session)
 
     # Configure LoginManager
     login_manager = flask_login.LoginManager(app)
