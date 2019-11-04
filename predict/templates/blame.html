@@ -1,8 +1,9 @@
-{% extends "base.html" %}
+{% extends "cve_sidebar.html" %}
+<! looks bad but sidebar is there>
 
 {% block title %}Git Blame {# TODO FILE NAME GOES HERE #}{% endblock %}
 
-{% block body%}
+{% block content %}
 <style>
 	.sticky {
 	  overflow: hidden;
@@ -32,7 +33,7 @@
 	<option value="fVuln"> None</option>
   </select>
 </div>
-<a href="dashboard.html" class="btn btn-primary" role="button">Dashboard</a>
+<a href="{{ url_for("main.dashboard") }}" class="btn btn-primary" role="button">Dashboard</a>
 <hr>
 <div class="container">
   <table class="table table-bordered">
