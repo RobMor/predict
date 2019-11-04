@@ -1,13 +1,9 @@
-function arePassAndConfirmIdentical(confirm_ele) {
-   
-    password_ele = document.getElementById('password')
-    if ((confirm_ele.value !== document.getElementById('password').value)) {
-        confirm_ele.setCustomValidity('The password and confirm password inputs must be matching!');
+function checkPassAndConfirm() {
+    password = document.getElementById("password")
+    confirm = document.getElementById("confirm")
+    if (password.value !== confirm.value) {
+        confirm.setCustomValidity("Your passwords do not match!");
     } else {  
-        confirm_ele.setCustomValidity('');
+        confirm.setCustomValidity("");
     }
-}
-
-function clearPass(){
-    document.getElementById("confirm_password").value = ""
 }

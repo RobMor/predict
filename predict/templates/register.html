@@ -20,23 +20,22 @@
     <form method="POST" id="main-form">
         <div class="form-group">
             <label for="username">Username:</label>
-            <input class="form-control" name="username" id="username" placeholder="Username" pattern="\w+" required>
+            <input class="form-control" name="username" id="username" title="Please enter a username consisting of at least 1 alphanumeric characters." placeholder="Username" pattern="\w+" required>
         </div>
 
         <div class="form-group">
             <label for="password">Password:</label>
-            <input class="form-control" name="password" id="password" title="Please enter a password consisting of at least 8 characters of numbers/letters/underscores." type="password" placeholder="Password" pattern="\w{8,}" required>
+            <input class="form-control" name="password" id="password" title="Please enter a password consisting of at least 8 alphanumeric characters." type="password" placeholder="Password" pattern="\w{8,}" required>
         </div>
 
         <div class="form-group">
-            <label for="password">Confirm Password:</label>
-            <input class="form-control" name="password" id="password" title="Please enter a password consisting of at least 8 characters of numbers/letters/underscores." oninput="arePassAndConfirmIdentical(this)"  type="password" placeholder="Confirm Password" pattern="\w{8,}" required>
+            <label for="confirm">Confirm Password:</label>
+            <input class="form-control" name="confirm" id="confirm" title="Please enter a password consisting of at least 8 alphanumeric chacaters." type="password" oninput="checkPassAndConfirm()" placeholder="Confirm Password" pattern="\w{8,}" required>
         </div>
 
         <input type="submit" class="btn btn-primary" value="Register">
-        <a class="btn btn-link" href="{{ url_for("main.login") }}"> Already have an account? Log In!</a>
+        <a class="btn btn-link" href="{{ url_for("main.login") }}">Already have an account? Log In!</a>
     </form>
-    <!-- <a class="dropdown-item" href="#">Forgot password?</a> -->
 
     {% with messages = get_flashed_messages() %}
         {% if messages %}

@@ -19,6 +19,7 @@ blueprint = flask.Blueprint("main", __name__)
 def base():
     return flask.redirect(flask.url_for("main.dashboard"))
 
+
 @blueprint.route("/login", methods=["GET"])
 def login():
     return flask.render_template("login.html", invalidLogin=False)
@@ -29,9 +30,13 @@ def login_post():
     username = flask.request.form["username"]
     password = flask.request.form["password"]
 
-    if not predict.auth.is_valid_user(username, password):
-        flask.flash("Invalid login credentials!")
-        return flask.render_template("login.html")
+    if not predict.auth.valid_username(username):
+        flask.flash("Your username must be one or more alphanumeric characters! Please try again.")
+        return flask.render_template("register.html")
+
+    if not predict.auth.valid_password(password):
+        flask.flash("Your password must be eight or more alphanumeric characters! Please try again.")
+        return flask.render_template("register.html")
 
     authorized = predict.auth.authenticate_user(username, password)
 
@@ -61,9 +66,18 @@ def register():
 def register_post():
     username = flask.request.form["username"]
     password = flask.request.form["password"]
+    confirm = flask.request.form["confirm"]
 
-    if not predict.auth.is_valid_user(username, password):
-        flask.flash("Invalid registration credentials!")
+    if confirm != password:
+        flask.flash("Passwords entered do not match! Please try again.")
+        return flask.render_template("register.html")
+
+    if not predict.auth.valid_username(username):
+        flask.flash("Your username must be one or more alphanumeric characters! Please try again.")
+        return flask.render_template("register.html")
+
+    if not predict.auth.valid_password(password):
+        flask.flash("Your password must be eight or more alphanumeric characters! Please try again.")
         return flask.render_template("register.html")
 
     created = predict.auth.create_user(username, password)

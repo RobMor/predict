@@ -1,9 +1,9 @@
+import re
+
 import flask
 import flask_login
 import werkzeug.security
 import sqlalchemy
-
-from re import fullmatch
 
 import predict.db
 import predict.models
@@ -30,6 +30,7 @@ def create_user(username, password):
     else:
         return False
 
+
 def authenticate_user(username, password):
     """Checks if the given credentials are correct
 
@@ -50,6 +51,7 @@ def authenticate_user(username, password):
 
     return False
 
+
 def load_user(username):
     """Loads the user object with the given username
 
@@ -66,23 +68,26 @@ def load_user(username):
 
     return user  
 
-def is_valid_user(username, password):
-        """Checks that a given username and password conform to regex 
-        authentication standards.
 
-        Args:
-            username (str): The username to be vetted
-            password (str): The password to be vetted
-        
-        Returns:
-            True if the username and password is a valid regex string, false otherwise.
+def valid_username(username):
+    """Checks that a given username conforms to our constraints.
 
-        """
-        if fullmatch("\w+", username) is not None and fullmatch("\w{8,}",password) is not None:
-            return True
-        else:
-            return False
+    Args:
+        username (str): The username to be vetted
     
-    
+    Returns:
+        True if the username is valid, False otherwise.
+    """
+    return re.fullmatch("\w+", username) is not None
 
+
+def valid_password(password):
+    """Checks that a given password conforms to our constraints.
+
+    Args:
+        password (str): The password to be vetted
     
+    Returns:
+        True if the password is valid, False otherwise.
+    """
+    return re.fullmatch("\w{8,}", password) is not None
