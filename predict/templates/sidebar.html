@@ -17,10 +17,11 @@
     </div>
 
     <div id="sidebar-content" class="sidebar-element">
+        Current User: {{username_sidebar}}
         {% block sidebar_content %}
         {% endblock %}
     </div>
-    
+
     <form id="sidebar-query" class="sidebar-element bg-light" onsubmit="return goto_cve('sidebar-input', 'sidebar-button')()">
         <div class="input-group">
             <input type="text" id="sidebar-input" class="form-control" placeholder="CVE ID">

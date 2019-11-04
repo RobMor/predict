@@ -1,5 +1,5 @@
 {% extends "sidebar.html" %}
-
+{% set username_sidebar = username %}
 {% block head %}
 {{ super() }}
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='dashboard.css') }}">
@@ -29,7 +29,7 @@
         <div class="card-body">
             <h3 class="card-title">Data Export</h3>
             <p class="card-text">Use the menu below to specify how you want your data exported.</p>
-            
+
             <form>
                 <div class="form-group">
                     <label for="filters">Filters</label>

@@ -19,7 +19,6 @@ blueprint = flask.Blueprint("main", __name__)
 def base():
     return flask.redirect(flask.url_for("main.dashboard"))
 
-
 @blueprint.route("/login", methods=["GET"])
 def login():
     return flask.render_template("login.html", invalidLogin=False)
@@ -38,6 +37,7 @@ def login_post():
 
     # If valid send the user to the dashboard
     if authorized:
+        flask.session["currentUser"] = username
         return flask.redirect(flask.request.args.get("next", flask.url_for("main.dashboard")))
     else:
         flask.flash("Unrecognized credentials! Please try again.")
@@ -78,7 +78,11 @@ def register_post():
 @blueprint.route("/dashboard")
 @flask_login.login_required
 def dashboard():
-    return flask.render_template("dashboard.html")
+    if (flask.session.get("currentUser")):
+        username = flask.session["currentUser"]
+    else:
+        username = "Not logged in "
+    return flask.render_template("dashboard.html", username = username)
 
 
 @blueprint.route("/resolution")
