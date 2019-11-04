@@ -1,42 +1,53 @@
 {% extends "cve_sidebar.html" %}
 
-{% block content %}
-<center><h1>{{ github_data["commit_hash"] }}</h1></center>
-<pre>{{ github_data["commit_description"] }}</pre>
-<ul>
-{% for file in github_data["files"].keys() %}
-<li>
-    <b>{{ file }}</b>
-    <a href="{{ github_data["files"][file].get("file_link") }}">FILE</a>
-    <a href="{{ github_data["files"][file].get("history_link") }}">HISTORY</a>
-    <a href="{{ github_data["files"][file].get("blame_link") }}">BLAME</a>
-    <p>
-        Diff:
-    </p>
-    <ul>
-        {% for diff_line in github_data["files"][file].get("sorted_line_numbers") %}
-            <li>
-            <div>
-              <! want to represent altered code lines with a more readily interpreted color scheme currently expressed
-                as red## | blue * being the deleted line and red* | blue## as the changed line>
-                <! keep the numbers but change the text color, possibly yellow for change, red for delete. how to find which is which though>
-                <span style="color:red; width: 20%" align="left">
-                    {{ github_data["files"][file]["inline_diff"][diff_line]["old_text_line_number"] }} |
-                </span>
-                <span style="color:blue; width: 20%" align="left">
-                    {{ github_data["files"][file]["inline_diff"][diff_line]["new_text_line_number"] }}
-                </span>
-                <span>
-                    {{ github_data["files"][file]["inline_diff"][diff_line]["text"] }}
-                </span>
-            </div>
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='info.css') }}">
+{% endblock %}
 
-            </li>
-        {% endfor %}
-    </ul>
-    <br/>
-</li>
-<br/>
-{% endfor %}
-</ul>
+{% block title %}Git Commit Info{% endblock %}
+{% block body %}
+<center><h1>{{ github_data["commit_hash"] }}</h1></center>
+<center><pre>{{ github_data["commit_description"] }}</pre></center>
+<! making grid system to hold files>
+
+  <ul class="remove-bullet-list hanging">
+    {% for file in github_data["files"].keys() %}
+    <li>
+      <div class="file">
+        <a href="{{ github_data["files"][file].get("file_link") }}"><b>{{ file }}</b></a>
+        <a href="{{ github_data["files"][file].get("history_link") }}">HISTORY</a>
+        <a href="{{ github_data["files"][file].get("blame_link") }}">BLAME</a>
+        <p>
+            Diff:
+        </p>
+      </div>
+
+      <div class="file-text">
+        <ul>
+          {% for diff_line in github_data["files"][file].get("sorted_line_numbers") %}
+              <li>
+              <div>
+                <! want to represent altered code lines with a more readily interpreted color scheme currently expressed
+                  as red## | blue * being the deleted line and red* | blue## as the changed line>
+                  <! keep the numbers but change the text color, possibly yellow for change, red for delete. how to find which is which though>
+                  <span style="color:red; width: 20%" align="left">
+                      {{ github_data["files"][file]["inline_diff"][diff_line]["old_text_line_number"] }} |
+                  </span>
+                  <span style="color:blue; width: 20%" align="left">
+                      {{ github_data["files"][file]["inline_diff"][diff_line]["new_text_line_number"] }}
+                  </span>
+                  <span>
+                      {{ github_data["files"][file]["inline_diff"][diff_line]["text"] }}
+                  </span>
+              </div>
+              </li>
+          {% endfor %}
+        </ul>
+
+      </div>
+      <br/>
+    </li>
+   {% endfor %}
+ </ul>
 {% endblock %}
