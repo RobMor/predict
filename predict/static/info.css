@@ -1,0 +1,16 @@
+.file {
+background-color: white;
+float: left;
+}
+.file-text {
+  background-color: pink;
+  padding-left: 14px;
+  overflow: hidden;
+  display:table-cell;
+  vertical-align:top; /* vertically align top work with display:table-cell*/
+
+}
+li {
+  overflow: hidden;
+  display:table;
+}
