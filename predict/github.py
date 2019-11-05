@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup
 import requests
 import json
 import re
-
+import difflib
 
 def retrieve_commit_page(cve_id, repo_user, repo_name, comm_hash):
     our_link_format = "/cve/{}/blame".format(cve_id)  # If we change our link format, change this
@@ -119,6 +119,7 @@ def retrieve_commit_page(cve_id, repo_user, repo_name, comm_hash):
             #  Create line dictionaries and inline diff
             code_body = file_div.find("table")
             x = 0  # Our internal line number value
+
             for code_line in [f for f in code_body.find_all("tr") if not f.get("class") == ["js-expandable-line"]]:  # We don't want to include expandable lines here, so we eliminate them and return only the lines we want via list comprehension
                 elements = code_line.find_all("td")  # Find all td elements. We then need to split this.
                 old_line_elem = elements[0].get("data-line-number", default="*")  # We find the old line number, if any
@@ -139,6 +140,9 @@ def retrieve_commit_page(cve_id, repo_user, repo_name, comm_hash):
             y = 0  # TODO Create split diff and add to file data
             # Add this processed file to our file dictionary
             master_dictionary["files"][file_data["file_path"]] = file_data
+            sequence_matcher = difflib.SequenceMatcher()
+            sequence_matcher.set_seqs("\n".join([file_data["old_lines"][j] for j in sorted(file_data["old_lines"].keys())]), "\n".join([file_data["old_lines"][j] for j in sorted(file_data["new_lines"].keys())]))
+            master_dictionary["files"][file_data["file_path"]]["delta_object"] =sequence_matcher.get_grouped_opcodes()
 
         except Exception as e:  # Catching errors and printing to console
             print(e)
@@ -287,4 +291,4 @@ def get_blame_page(cve_id, repo_user, repo_name, comm_hash, file_name):
 #     pass
 
 if __name__ == "__main__":
-    print(json.dumps(get_blame_page("CVE-2015-8474","redmine", "redmine", "032f2c9be6520d9d1a1608aa4f1d5d1f184f2472", "app$controllers$application_controller.rb"), indent=4))
+    print(json.dumps(retrieve_commit_page("CVE-2015-8474","redmine", "redmine", "032f2c9be6520d9d1a1608aa4f1d5d1f184f2472"), indent=4))
