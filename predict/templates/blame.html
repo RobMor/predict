@@ -49,7 +49,7 @@
         <td>
 		{% for dline in github_data.get("sorted_line_numbers") %}
 		{% if github_data["inline_diff"][dline]["old_text_line_number"] != "*" and github_data["inline_diff"][dline]["new_text_line_number"] != "*" and github_data["inline_diff"][dline]["new_text_line_number"]|int == line %}
-            <ul>             
+            <ul>
                  <li>
                     <div>
                         <span style="color:red; width: 20%" align="left">
@@ -65,7 +65,7 @@
                   </li>
             </ul>
 		{% elif github_data["inline_diff"][dline]["old_text_line_number"] == "*" and github_data["inline_diff"][dline]["new_text_line_number"]|int == line %}
-            <ul>             
+            <ul>
                  <li>
                     <div>
                         <span style="color:red; width: 20%" align="left">
@@ -77,12 +77,12 @@
 						<span style="color: green;">
 						  {{ github_data["inline_diff"][dline]["text"] }}
 						</span>
-			                  
+
                     </div>
                   </li>
             </ul>
 		{% elif github_data["inline_diff"][dline]["new_text_line_number"] == "*" and github_data["inline_diff"][dline]["old_text_line_number"]|int == line %}
-            <ul>             
+            <ul>
                  <li>
                     <div>
                         <span style="color:red; width: 20%" align="left">
@@ -93,7 +93,7 @@
                         </span>
 			                    <span style="color: orange;">
 			                      {{ github_data["inline_diff"][dline]["text"] }}
-			                    </span>			              
+			                    </span>
                     </div>
                   </li>
             </ul>
@@ -104,7 +104,7 @@
 								<! collapse code prior to line sent if selecting blame by line, default line 1, may also collapse by default
 										when compared to diff in left table, tbd>
                 <div>
-                    <span style="color: gray">
+                    <span id="{{ github_data["line_representation"][blame_line].get("line_number")}}" style="color: gray">
                         {{ github_data["line_representation"][line].get("line_number")}}
                     </span>
                     <span style="color: black">
@@ -124,7 +124,7 @@
                     <span style="color: black;">
                         |
                     </span>
-                   <span style="color: gray;">
+                   <span style="color: gray;" onclick=>
                         {{ github_data["line_representation"][line].get("line_text")}}
                    </span>
                 </div>
