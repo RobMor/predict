@@ -1,5 +1,6 @@
 import json
 import sqlite3
+import itertools
 from sqlite3 import Error
 
 import flask
@@ -99,22 +100,11 @@ def dashboard():
 @blueprint.route("/resolution")
 @flask_login.login_required
 def conflict_resolution():
-    # Login required:
-    if not flask_login.current_user.is_authenticated:
-        return flask.redirect(flask.url_for("main.login"))
-    connection = None
-    entries = []
-    try:
-        connection = sqlite3.connect("db.sqlite")
-        cursor = connection.cursor()
-        cursor.execute("SELECT cveid, username, fixcommit, fixfile, introcommit, introfile FROM <TABLE_NAME> ORDER BY cveid, username")
-        entries = cursor.fetchall() # Get all rows
-    except Error as e:
-        print("Connection to database failed")
-    # TODO: Handle this!
-    finally:
-        if connection:
-            connection.close()
+    
+    entries = predict.db.Session.query(predict.models.Label).all()
+    entries = itertools.groupby(entries, lambda label: label.cve)
+    entries = {cve_id: itertools.groupby(group, lambda user: user.username) for cve_id, group in entries}
+
     # TODO: Replace this with above code!
     entry1 = predict.models.Label()
     entry1one = predict.models.Label()
@@ -341,8 +331,10 @@ def conflict_resolution():
 #        if block is not None:
 #            newBlocks.append(block)
 
-    return flask.render_template(
-        "conflict_resolution.html", blocks=blocks)
+    return "hello"
+
+    # return flask.render_template(
+    #     "conflict_resolution.html", blocks=blocks)
 
 
 @blueprint.route("/cve/<cve_id>")
