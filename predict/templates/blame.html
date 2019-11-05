@@ -46,7 +46,7 @@
     <tbody>
 	{% for line in github_data.get("sorted_blame_line_numbers") %}
       <tr>
-        <td>
+        <td id = "{{line}}">
 		{% for dline in github_data.get("sorted_line_numbers") %}
 		{% if github_data["inline_diff"][dline]["old_text_line_number"] != "*" and github_data["inline_diff"][dline]["new_text_line_number"] != "*" and github_data["inline_diff"][dline]["new_text_line_number"]|int == line %}
             <ul>
