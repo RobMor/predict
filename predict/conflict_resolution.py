@@ -12,57 +12,89 @@ import flask
 import requests
 import flask_login
 
-# Need 0-7 from database query
-CVE_ID_INDEX = 0
-USERNAME_INDEX = 1
-REPO_NAME_INDEX = 2
-REPO_USER_INDEX = 3
-FIX_COMMIT_INDEX = 4
-FIX_FILE_INDEX = 5
-INTRO_COMMIT_INDEX = 6
-INTRO_FILE_INDEX = 7
-FIX_COMMIT_URL_INDEX = 8
-FIX_FILE_URL_INDEX = 9
-INTRO_COMMIT_URL_INDEX = 10
-INTRO_FILE_URL_INDEX = 11
 
 
-## *** TODO: FIgure out hwo to clean up these long-ass lines of code without screwing up python indenting!
 
-def insertAgreements(entry, currUserEntry):
-    if currUserEntry is not None:
-        fixCommitAgree = "Match" if entry[FIX_COMMIT_INDEX] == currUserEntry[FIX_COMMIT_INDEX] else "Conflict"
-        fixFileAgree = "Match" if entry[FIX_FILE_INDEX] == currUserEntry[FIX_FILE_INDEX] else "Conflict"
-        introCommitAgree = "Match" if entry[INTRO_COMMIT_INDEX] == currUserEntry[INTRO_COMMIT_INDEX] else "Conflict"
-        introFileAgree = "Match" if entry[INTRO_FILE_INDEX] == currUserEntry[INTRO_FILE_INDEX] else "Conflict"
+def processEntries(entries, currentUser):
+    blocks = splitByCveId(entries)
+    for i in range(0, len(blocks)):
+        newBlock = blocks[i]
+        newBlock = splitByUser(newBlock)
+        newBlock = moveUserToFront(newBlock, currentUser)
+        containsCurrentUser = newBlock[0][0].username == currentUser
+        currUserSubBlock = newBlock[0]
+        for j in range(0, len(newBlock)):
+            subBlock = newBlock[j]
+            subBlock = eliminateRedundancies(subBlock)
+            newSubBlock = []
+            for k in range(0, len(subBlock)):
+                subBlockEntryDict = appendURLs(subBlock[k])
+                newSubBlock.append(subBlockEntryDict)
+            if j == 0:
+                currUserSubBlock = newSubBlock
+            if containsCurrentUser:
+                if j != 0:
+                    newSubBlock = predict.conflict_resolution.insertSubBlockAgreements(
+                        newSubBlock, currUserSubBlock
+                    )
+            else:
+                newSubBlock = predict.conflict_resolution.insertSubBlockAgreements(newSubBlock, None)
+            newBlock[j] = newSubBlock
+        if containsCurrentUser:
+            newBlock = predict.conflict_resolution.insertPercentages(newBlock)
+        blocks[i] = newBlock
+    return blocks
+
+
+
+def insertSubBlockAgreements(subBlock, currUserSubBlock):
+    if currUserSubBlock is not None:
+        fixCommitAgree = "Match" if setEquality(subBlock, currUserSubBlock, "fix_hash") else "Conflict"
+        fixFileAgree = "Match" if setEquality(subBlock, currUserSubBlock, "fix_file") else "Conflict"
+        introCommitAgree = "Match" if setEquality(subBlock, currUserSubBlock, "intro_hash") else "Conflict"
+        introFileAgree = "Match" if setEquality(subBlock, currUserSubBlock, "intro_file") else "Conflict"
     else:
         fixCommitAgree = "N/A"
         fixFileAgree = "N/A"
         introCommitAgree = "N/A"
         introFileAgree = "N/A"
-    return (entry[CVE_ID_INDEX], entry[USERNAME_INDEX], entry[FIX_COMMIT_INDEX],
-        fixCommitAgree, entry[FIX_FILE_INDEX], fixFileAgree,
-        entry[INTRO_COMMIT_INDEX], introCommitAgree, entry[INTRO_FILE_INDEX],
-        introFileAgree, entry[FIX_COMMIT_URL_INDEX], entry[FIX_FILE_URL_INDEX],
-        entry[INTRO_COMMIT_URL_INDEX], entry[INTRO_FILE_URL_INDEX])
+    for i in range(0,len(subBlock)):
+        if i == 0:
+            subBlock[i] = {"cve": subBlock[i]["cve"], "username": subBlock[i]["username"],
+            "fix_hash": subBlock[i]["fix_hash"], "fix_hash_agree": fixCommitAgree,
+            "fix_file": subBlock[i]["fix_file"], "fix_file_agree": fixFileAgree,
+            "intro_hash": subBlock[i]["intro_hash"], "intro_hash_agree": introCommitAgree,
+            "intro_file": subBlock[i]["intro_file"], "intro_file_agree": introFileAgree,
+            "fix_hash_url": subBlock[i]["fix_hash_url"], "fix_file_url": subBlock[i]["fix_file_url"],
+            "intro_hash_url": subBlock[i]["intro_hash_url"], "intro_file_url": subBlock[i]["intro_file_url"]}
+        else:
+            subBlock[i] = {"cve": subBlock[i]["cve"], "username": subBlock[i]["username"],
+            "fix_hash": subBlock[i]["fix_hash"], "fix_hash_agree": "",
+            "fix_file": subBlock[i]["fix_file"], "fix_file_agree": "",
+            "intro_hash": subBlock[i]["intro_hash"], "intro_hash_agree": "",
+            "intro_file": subBlock[i]["intro_file"], "intro_file_agree": "",
+            "fix_hash_url": subBlock[i]["fix_hash_url"], "fix_file_url": subBlock[i]["fix_file_url"],
+            "intro_hash_url": subBlock[i]["intro_hash_url"], "intro_file_url": subBlock[i]["intro_file_url"]}
+
+    return subBlock
 
 def appendURLs(entry):
-    fixCommitURL = flask.url_for("main.info_page", cve_id = entry[CVE_ID_INDEX],
-        repo_name = entry[REPO_NAME_INDEX], repo_user = entry[REPO_USER_INDEX],
-        commit = entry[FIX_COMMIT_INDEX])
-    fixFileURL = flask.url_for("main.info_page", cve_id = entry[CVE_ID_INDEX],
-        repo_name = entry[REPO_NAME_INDEX], repo_user = entry[REPO_USER_INDEX],
-        commit = entry[FIX_FILE_INDEX])
-    introCommitURL = flask.url_for("main.info_page", cve_id = entry[CVE_ID_INDEX],
-        repo_name = entry[REPO_NAME_INDEX], repo_user = entry[REPO_USER_INDEX],
-        commit = entry[INTRO_COMMIT_INDEX])
-    introFileURL = flask.url_for("main.info_page", cve_id = entry[CVE_ID_INDEX],
-        repo_name = entry[REPO_NAME_INDEX], repo_user = entry[REPO_USER_INDEX],
-        commit = entry[INTRO_FILE_INDEX])
-    return (entry[CVE_ID_INDEX], entry[USERNAME_INDEX], entry[REPO_NAME_INDEX],
-        entry[REPO_USER_INDEX], entry[FIX_COMMIT_INDEX], entry[FIX_FILE_INDEX],
-        entry[INTRO_COMMIT_INDEX], entry[INTRO_FILE_INDEX], fixCommitURL,
-        fixFileURL, introCommitURL, introFileURL)
+    fixCommitURL = flask.url_for("main.info_page", cve_id = entry.cve,
+        repo_name = entry.repo_name, repo_user = entry.repo_user,
+        commit = entry.fix_hash)
+    fixFileURL = flask.url_for("main.info_page", cve_id = entry.cve,
+        repo_name = entry.repo_name, repo_user = entry.repo_user,
+        commit = entry.fix_file)
+    introCommitURL = flask.url_for("main.info_page", cve_id = entry.cve,
+        repo_name = entry.repo_name, repo_user = entry.repo_user,
+        commit = entry.intro_hash)
+    introFileURL = flask.url_for("main.info_page", cve_id = entry.cve,
+        repo_name = entry.repo_name, repo_user = entry.repo_user,
+        commit = entry.intro_file)
+    return {"cve": entry.cve, "username": entry.username, "repo_name": entry.repo_name,
+        "repo_user": entry.repo_user, "fix_hash": entry.fix_hash, "fix_file": entry.fix_file,
+        "intro_hash": entry.intro_hash, "intro_file": entry.intro_file, "fix_hash_url": fixCommitURL,
+        "fix_file_url": fixFileURL, "intro_hash_url": introCommitURL, "intro_file_url": introFileURL}
 
 def insertPercentages(block):
     length = len(block)-1
@@ -71,58 +103,144 @@ def insertPercentages(block):
     introCommitCount = 0.0
     introFileCount = 0.0
     userEntry = block[0]
-    newBlock = block
-    for entry in block:
-        if entry != block[0]:
-            if entry[USERNAME_INDEX] != userEntry[USERNAME_INDEX] and entry[3] == "Match":
+    for i in range(0,len(block)):
+        if not i == 0:
+            if block[i][0]["fix_hash_agree"] == "Match":
                 fixCommitCount += 1
-            if entry[USERNAME_INDEX] != userEntry[USERNAME_INDEX] and entry[5] == "Match":
+            if block[i][0]["fix_file_agree"] == "Match":
                 fixFileCount += 1
-            if entry[USERNAME_INDEX] != userEntry[USERNAME_INDEX] and entry[7] == "Match":
+            if block[i][0]["intro_hash_agree"] == "Match":
                 introCommitCount += 1
-            if entry[USERNAME_INDEX] != userEntry[USERNAME_INDEX] and entry[9] == "Match":
+            if block[i][0]["intro_file_agree"] == "Match":
                 introFileCount += 1
-    if length > 0:
-        newBlock[0] =(newBlock[0][CVE_ID_INDEX], newBlock[0][USERNAME_INDEX],
-            newBlock[0][FIX_COMMIT_INDEX], str(round(fixCommitCount/length*100)) + "%",
-            newBlock[0][FIX_FILE_INDEX], str(round(fixFileCount/length*100)) + "%",
-            newBlock[0][INTRO_COMMIT_INDEX], str(round(introCommitCount/length*100)) + "%",
-            newBlock[0][INTRO_FILE_INDEX], str(round(introFileCount/length*100)) + "%",
-            newBlock[0][FIX_COMMIT_URL_INDEX], newBlock[0][FIX_FILE_URL_INDEX],
-            newBlock[0][INTRO_COMMIT_URL_INDEX], newBlock[0][INTRO_FILE_URL_INDEX])
-    else:
-        newBlock[0] =(newBlock[0][CVE_ID_INDEX], newBlock[0][USERNAME_INDEX],
-        newBlock[0][FIX_COMMIT_INDEX], "N/A", newBlock[0][FIX_FILE_INDEX], "N/A",
-        newBlock[0][INTRO_COMMIT_INDEX], "N/A", newBlock[0][INTRO_FILE_INDEX], "N/A")
-    return newBlock
+    subBlock = block[0]
+    for i in range(0,len(subBlock)):
+        if length > 0:
+            if i == 0:
+                subBlock[i] = {"cve": subBlock[i]["cve"], "username": subBlock[i]["username"],
+                "fix_hash": subBlock[i]["fix_hash"], "fix_hash_agree": str(round(fixCommitCount/length*100)) + "%",
+                "fix_file": subBlock[i]["fix_file"], "fix_file_agree": str(round(fixFileCount/length*100)) + "%",
+                "intro_hash": subBlock[i]["intro_hash"], "intro_hash_agree": str(round(introCommitCount/length*100)) + "%",
+                "intro_file": subBlock[i]["intro_file"], "intro_file_agree": str(round(introFileCount/length*100)) + "%",
+                "fix_hash_url": subBlock[i]["fix_hash_url"], "fix_file_url": subBlock[i]["fix_file_url"],
+                "intro_hash_url": subBlock[i]["intro_hash_url"], "intro_file_url": subBlock[i]["intro_file_url"]}
+            else:
+                subBlock[i] = {"cve": subBlock[i]["cve"], "username": subBlock[i]["username"],
+                "fix_hash": subBlock[i]["fix_hash"], "fix_hash_agree": "",
+                "fix_file": subBlock[i]["fix_file"], "fix_file_agree": "",
+                "intro_hash": subBlock[i]["intro_hash"], "intro_hash_agree": "",
+                "intro_file": subBlock[i]["intro_file"], "intro_file_agree": "",
+                "fix_hash_url": subBlock[i]["fix_hash_url"], "fix_file_url": subBlock[i]["fix_file_url"],
+                "intro_hash_url": subBlock[i]["intro_hash_url"], "intro_file_url": subBlock[i]["intro_file_url"]}
+        else:
+            if i == 0:
+                subBlock[i] = {"cve": subBlock[i]["cve"], "username": subBlock[i]["username"],
+                "fix_hash": subBlock[i]["fix_hash"], "fix_hash_agree": "N/A",
+                "fix_file": subBlock[i]["fix_file"], "fix_file_agree": "N/A",
+                "intro_hash": subBlock[i]["intro_hash"], "intro_hash_agree": "N/A",
+                "intro_file": subBlock[i]["intro_file"], "intro_file_agree": "N/A",
+                "fix_hash_url": subBlock[i]["fix_hash_url"], "fix_file_url": subBlock[i]["fix_file_url"],
+                "intro_hash_url": subBlock[i]["intro_hash_url"], "intro_file_url": subBlock[i]["intro_file_url"]}
+            else:
+                subBlock[i] = {"cve": subBlock[i]["cve"], "username": subBlock[i]["username"],
+                "fix_hash": subBlock[i]["fix_hash"], "fix_hash_agree": "",
+                "fix_file": subBlock[i]["fix_file"], "fix_file_agree": "",
+                "intro_hash": subBlock[i]["intro_hash"], "intro_hash_agree": "",
+                "intro_file": subBlock[i]["intro_file"], "intro_file_agree": "",
+                "fix_hash_url": subBlock[i]["fix_hash_url"], "fix_file_url": subBlock[i]["fix_file_url"],
+                "intro_hash_url": subBlock[i]["intro_hash_url"], "intro_file_url": subBlock[i]["intro_file_url"]}
+    block[0] = subBlock
+    return block
 
+def eliminateRedundancies(subBlock):
+    newSubBlock = []
+    for i in range(0, len(subBlock)):
+        if i != 0:
+            subBlock[i].cve = ""
+            subBlock[i].username = ""
+            if containsOther(subBlock, subBlock[i].fix_hash, "fix_hash", i):
+                subBlock[i].fix_hash = ""
+            if containsOther(subBlock, subBlock[i].fix_file, "fix_file", i):
+                subBlock[i].fix_file = ""
+            if containsOther(subBlock, subBlock[i].intro_hash, "intro_hash", i):
+                subBlock[i].intro_hash = ""
+            if containsOther(subBlock, subBlock[i].intro_file, "intro_file", i):
+                subBlock[i].intro_file = ""
+        newSubBlock.append(subBlock[i])
+    return newSubBlock
 
-# Assumes all entries are of the same CVE_ID, and for unique users (NO DUPLICATE USERS FOR SAME CVE ENTRY SHOULD BE IN DATABASE!!!)
-def moveUserToFront(entries, user):
+def moveUserToFront(block, user):
     index = -1
-    for i in range(0,len(entries)):
-        if entries[i][USERNAME_INDEX] == user:
+    for i in range(0,len(block)):
+        if block[i][0].username == user:
             index = i
     if index == -1:
-        return entries
-    entry = entries[index]
-    entries.remove(entry)
-    newEntries = [entry]
-    newEntries.extend(entries)
-    return newEntries
+        return block
+    subBlock = block[index]
+    block.remove(subBlock)
+    newBlock = [subBlock]
+    newBlock.extend(block)
+    return newBlock
 
 # Takes in a list of entries and returns a list of lists of entries, where each inner list contains all entries of a single CVE_ID
-# ASSUMES LIST iS SORTED BY CVE_ID
+# ASSUMES LIST IS SORTED BY CVE_ID
 def splitByCveId(entries):
     currCVE = ""
     blocks = []
     blockNum = -1
-    i = 0
-    for entry in entries:
-        if entry[CVE_ID_INDEX] != currCVE:
-            currCVE = entries[i][CVE_ID_INDEX]
+    for i in range(0, len(entries)):
+        if entries[i].cve != currCVE:
+            currCVE = entries[i].cve
             blocks.append([])
             blockNum += 1
         blocks[blockNum].append(entries[i])
-        i += 1
     return blocks
+
+# Takes in a list of entries of matching cve ids and returns a list of lists of entrues, where each inner list contains all entries of a single users
+# ASSUMES LIST IS SORTED BY CVE_ID
+def splitByUser(block):
+    currUser = ""
+    blocks = []
+    blockNum = -1
+    for i in range(0, len(block)):
+        if block[i].username != currUser:
+            currUser = block[i].username
+            blocks.append([])
+            blockNum += 1
+        blocks[blockNum].append(block[i])
+    return blocks
+
+
+def setEquality(subBlock1, subBlock2, field):
+    for entry in subBlock1:
+        if not contains(subBlock2, entry[field], field):
+            return False
+
+    for entry in subBlock2:
+        if not contains(subBlock1, entry[field], field):
+            return False
+
+    return True
+
+
+def contains(subBlock, element, field):
+    for entry in subBlock:
+        if entry[field] == element:
+            return True
+    return False
+
+def containsOther(subBlock, element, field, index):
+    for i in range(0, len(subBlock)):
+        if field == "fix_hash":
+            if subBlock[i].fix_hash == element and i != index:
+                return True
+        if field == "fix_file":
+            if subBlock[i].fix_file == element and i != index:
+                return True
+        if field == "intro_hash":
+            if subBlock[i].intro_hash == element and i != index:
+                return True
+        if field == "intro_file":
+            if subBlock[i].intro_file == element and i != index:
+                return True
+    return False
