@@ -3,6 +3,7 @@
 {% block head %}
 {{ super() }}
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='info.css') }}">
+
 {% endblock %}
 
 {% block title %}Git Commit Info{% endblock %}
@@ -34,32 +35,32 @@
               <div>
                 <! want to represent altered code lines with a more readily interpreted color scheme currently expressed
                   as red## | blue * being the deleted line and red* | blue## as the changed line>
-                  <! keep the numbers but change the text color, possibly yellow for change, red for delete. how to find which is which though>
+                  <! create variables for line data>
+                  {% set oldLine = github_data["files"][file]["inline_diff"][diff_line]["old_text_line_number"] %}
+                  {% set newLine = github_data["files"][file]["inline_diff"][diff_line]["new_text_line_number"] %}
+                  {% set text = github_data["files"][file]["inline_diff"][diff_line]["text"]%}
                   <span style="color:red; width: 20%" align="left">
-                      {{ github_data["files"][file]["inline_diff"][diff_line]["old_text_line_number"] }} |
+                      {{ oldLine }} |
                   </span>
                   <span style="color:blue; width: 20%" align="left">
-                      {{ github_data["files"][file]["inline_diff"][diff_line]["new_text_line_number"] }}
+                      {{ newLine }}
                   </span>
-                  <! for line links to blame line number 116 in github.py will have to change to accept another variable>
-                  <! or I make this box a form field and just alter the blame page a little.>
 
-                  {% if github_data["files"][file]["inline_diff"][diff_line]["old_text_line_number"] == "*" %}
-
-                    <span style="color: green;">
-                      {{ github_data["files"][file]["inline_diff"][diff_line]["text"] }}
+                  {% if oldLine == "*" %}
+                    <span class="pseudolink" style="color: green;" onclick="location= '{{ github_data["files"][file].get("blame_link") }}/?line={{newLine}}'">
+                      {{ text }}
                     </span>
-                  {% elif github_data["files"][file]["inline_diff"][diff_line]["new_text_line_number"] == "*" %}
-                    <span style="color: orange;">
-                      {{ github_data["files"][file]["inline_diff"][diff_line]["text"] }}
+                  {% elif newLine == "*" %}
+                    <span class="pseudolink" style="color: orange;">
+                      {{ text }}
                     </span>
                   {% else %}
-                    <span>
-                      {{ github_data["files"][file]["inline_diff"][diff_line]["text"] }}
+                    <span class="pseudolink" >
+                      {{ text }}
                     </span>
                   {% endif %}
-              </div>
-              </li>
+            </div>
+            </li>
           {% endfor %}
         </ul>
 
