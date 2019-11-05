@@ -100,12 +100,14 @@ def dashboard():
 @blueprint.route("/resolution")
 @flask_login.login_required
 def conflict_resolution():
-    
-    entries = predict.db.Session.query(predict.models.Label).all()
-    entries = itertools.groupby(entries, lambda label: label.cve)
-    entries = {cve_id: itertools.groupby(group, lambda user: user.username) for cve_id, group in entries}
 
-    # TODO: Replace this with above code!
+    entries = predict.db.Session.query(predict.models.Label).all()
+    entries.sort(key=lambda entry:entry.username)
+    entries.sort(key=lambda entry:entry.cve)
+
+
+    # TODO: Comment these out! This is a test set!
+    # Please excuse my terrible entry names. It was a long night.
     entry1 = predict.models.Label()
     entry1one = predict.models.Label()
     entry2 = predict.models.Label()
