@@ -1,7 +1,7 @@
 {% extends "cve_sidebar.html" %}
 <! looks bad but sidebar is there>
 
-{% block title %}Git Blame {# TODO FILE NAME GOES HERE #}{% endblock %}
+{% block title %}Git Blame {{github_data["file_name"]}}{% endblock %}
 
 {% block content %}
 <style>
@@ -11,7 +11,7 @@
 	  background-color: white;
 	  position: fixed;
 	  top: 0;
-	  width: 65.5%; /* Full width */
+	  width: 65.5%;
 	}
 	.main {
 	  margin-top: 30px; /* Add a top margin to avoid content overlay */
@@ -20,6 +20,7 @@
 
 <center>
   <h1 class="main">
+    {{github_data["file_name"]}}
     Git Blame Page
   </h1>
 </center>
@@ -134,5 +135,4 @@
     </tbody>
   </table>
 </div>
-
 {% endblock%}
