@@ -333,10 +333,9 @@ def conflict_resolution():
 #        if block is not None:
 #            newBlocks.append(block)
 
-    return "hello"
 
-    # return flask.render_template(
-    #     "conflict_resolution.html", blocks=blocks)
+    return flask.render_template(
+        "conflict_resolution.html", blocks=blocks)
 
 
 @blueprint.route("/cve/<cve_id>")
