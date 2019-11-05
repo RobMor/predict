@@ -1,5 +1,6 @@
 import json
 import sqlite3
+from sqlite3 import Error
 
 import flask
 import requests
@@ -101,18 +102,19 @@ def conflict_resolution():
     # Login required:
     if not flask_login.current_user.is_authenticated:
         return flask.redirect(flask.url_for("main.login"))
-
-    # try:
-    #    connection = sqlite3.connect(db_file)
-    #    cursor = conn.cursor()
-    #    cursor.execute("SELECT cveid, username, fixcommit, fixfile, introcommit, introfile FROM <TABLE_NAME> ORDER BY cveid, username")
-    #    entries = cursor.fetchall() # Get all rows
-    # except Error as e:
-    #    print("Connection to database failed")
+    connection = None
+    entries = []
+    try:
+        connection = sqlite3.connect("db.sqlite")
+        cursor = connection.cursor()
+        cursor.execute("SELECT cveid, username, fixcommit, fixfile, introcommit, introfile FROM <TABLE_NAME> ORDER BY cveid, username")
+        entries = cursor.fetchall() # Get all rows
+    except Error as e:
+        print("Connection to database failed")
     # TODO: Handle this!
-    # finally:
-    #    if connection:
-    #        connection.close()
+    finally:
+        if connection:
+            connection.close()
     # TODO: Replace this with above code!
     entry1 = predict.models.Label()
     entry1one = predict.models.Label()
@@ -315,10 +317,10 @@ def conflict_resolution():
     entry15.intro_hash = "4206969"
     entry15.intro_file = "elonmuskrat.cobal"
 
-    entries = [entry1, entry21, entry1one, entry2, entry3, entry31, entry32, entry4, entry41, entry5, entry6, entry7, entry8,
-        entry9, entry10, entry11, entry12, entry13, entry14, entry15]
+#    entries = [entry1, entry21, entry1one, entry2, entry3, entry31, entry32, entry4, entry41, entry5, entry6, entry7, entry8,
+#        entry9, entry10, entry11, entry12, entry13, entry14, entry15]
 
-    currentUser = "jbelke"  # TODO: Replace with flask_login.current_user.get_id()
+    currentUser = flask_login.current_user.get_id()
     blocks = predict.conflict_resolution.processEntries(entries, currentUser);
 #    blocks = predict.conflict_resolution.splitByCveId(entries)
 #    newBlocks = []
@@ -340,8 +342,7 @@ def conflict_resolution():
 #            newBlocks.append(block)
 
     return flask.render_template(
-        "conflict_resolution.html", blocks=blocks, current_user=currentUser
-    )  # TODO: Replace with get_current_user
+        "conflict_resolution.html", blocks=blocks)
 
 
 @blueprint.route("/cve/<cve_id>")

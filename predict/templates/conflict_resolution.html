@@ -15,7 +15,7 @@
   <div class="card">
     <div class="card-header" id="heading{{block[0][0]['cve']}}">
       <h2 class="mb-0">
-        {% if block[0][0]["username"] == current_user %}
+        {% if block[0][0]["username"] == current_user.username %}
           {% if block[0][0]["fix_hash_agree"] != "100%" or block[0][0]["fix_file_agree"] != "100%" or block[0][0]["intro_hash_agree"] != "100%" or block[0][0]["intro_file_agree"] != "100%" %}
             <button class="btn btn-danger collapsed" type="button" data-toggle="collapse" data-target="#collapse{{block[0][0]['cve']}}" aria-expanded="false" aria-controls="collapse{{block[0][0]['cve']}}">
               {{block[0][0]['cve']}}
@@ -53,7 +53,7 @@
             <tbody>
               {% for subBlock in block %}
                 {% for entry in subBlock %}
-                  {% if subBlock[0]["username"] == current_user %}
+                  {% if subBlock[0]["username"] == current_user.username %}
                     <tr class="table-primary">
                   {% else %}
                     <tr>
