@@ -103,7 +103,7 @@ def conflict_resolution():
 
     entries = predict.db.Session.query(predict.models.Label).all()
     entries.sort(key=lambda entry:entry.username)
-    entries.sort(key=lambda entry:entry.cve)
+    entries.sort(key=lambda entry:entry.cve, reverse=True)
 
 
     # TODO: Comment these out! This is a test set!
