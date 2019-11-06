@@ -6,6 +6,7 @@ def up(arguments):
     import predict
 
     config = {
+        #Do we want this written to the config file with whitelist and stuff?
         "LOGIN_DISABLED": not arguments.secured
         # TODO more config stuff...
     }
