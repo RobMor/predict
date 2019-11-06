@@ -5,6 +5,8 @@ import datetime
 import flask
 import requests
 import pygments
+import pygments.formatters
+import pygments.lexers
 from bs4 import BeautifulSoup
 
 
@@ -173,9 +175,6 @@ def process_commit_info(cve_id, commit_info):
             commit=commit_info["hash"],
             file_name=file["path"],
         )
-
-        if file["path"] == "kernel/capability.c":
-            print(file)
 
         for group in file["groups"]:
             group["diff"] = difflib.SequenceMatcher(None, group["old_code"].splitlines(True), group["new_code"].splitlines(True)).get_opcodes()
