@@ -353,7 +353,7 @@ def cve_base(cve_id):
 @flask_login.login_required
 def info_page(cve_id, repo_user, repo_name, commit):
     cve_data = predict.cve.get_cve(cve_id)
-    github_data = predict.github.retrieve_commit_page(
+    github_data = predict.github.get_commit_info(
         cve_id, repo_user, repo_name, commit
     )
 

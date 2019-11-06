@@ -6,29 +6,29 @@
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='diff.css') }}">
 {% endblock %}
 
-{% block title %}Git Commit Info{% endblock %}
 {% block content %}
-<div style="text-align: center;">
-  <div style="display: inline-block; text-align: left;">
-    <h1>{{ github_data["commit_hash"] }}</h1>
-    <pre>{{ github_data["commit_description"] }}</pre>
-  </div>
+<div class="commit-info">
+  <h1 class="commit-title">{{ github_data["title"] }}</h1>
+  <small>{{ github_data["hash"] }}</small>
+  <pre>{{ github_data["desc"] }}</pre>
 </div>
-<! making grid system to hold files>
+
 <div class="container">
   <div class="row">
-    {% for file in github_data["files"].keys() %}
-    <div class="col-xl-6">
-      <div>
-        <a href="{{ github_data["files"][file].get("file_link") }}"><b>{{ file }}</b></a>
-        <a href="{{ github_data["files"][file].get("history_link") }}">HISTORY</a>
-        <a href="{{ github_data["files"][file].get("blame_link") }}">BLAME</a>
-        <p>
-            Diff:
-        </p>
+    {% for file in github_data["files"] %}
+    <div class="card diff-card">
+      <div class="card-header">
+        <a href="{{ file['blame_link'] }}"><b>{{ file["path"] }}</b></a>
+        <a href="{{ file['github_link'] }}">View on GitHub</a>
       </div>
 
-      <div class="overflow-auto" style="height: 400px;">
+      <div class="card-body diff-card-body">
+        {% with groups = file["groups"] %}
+          {% include "commit_diff.html" %}
+        {% endwith %}
+      </div>
+
+      {# <div class="overflow-auto" style="height: 400px;">
         <ul>
           {% for diff_line in github_data["files"][file].get("sorted_line_numbers") %}
               <li>
@@ -65,7 +65,7 @@
         </ul>
 
       </div>
-      <br/>
+      <br/> #}
     </div>
    {% endfor %}
  </div>

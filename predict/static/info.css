@@ -8,3 +8,12 @@ float: left;
   overflow: auto;
 
 }
+
+.diff-card {
+  width: 100%;
+  margin: 1rem;
+}
+
+.diff-card-body {
+  padding: 0;
+}
