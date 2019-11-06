@@ -1,12 +1,10 @@
 <table class="diff">
 {% for group in groups %}
-    {% if not loop.first %}
-        <tr class="line sep">
-            <td class="line-num sep">...</td>
-            <td class="line-num sep">...</td>
-            <td class="code sep">@@ -{{ group["diff"][0][1]+group["old_start"] }},{{ group["diff"][-1][2] - group["diff"][0][1] }} +{{ group["diff"][0][3]+group["new_start"] }},{{ group["diff"][-1][4] - group["diff"][0][3] }} @@</td>
-        </tr>
-    {% endif %}
+    <tr class="line sep">
+        <td class="line-num sep">...</td>
+        <td class="line-num sep">...</td>
+        <td class="code sep">@@ -{{ group["diff"][0][1]+group["old_start"] }},{{ group["diff"][-1][2] - group["diff"][0][1] }} +{{ group["diff"][0][3]+group["new_start"] }},{{ group["diff"][-1][4] - group["diff"][0][3] }} @@ </td>
+    </tr>
     {% for opcode, i1, i2, j1, j2 in group["diff"] %}
         {% if opcode == "equal" %}
             {% for line in range(i1, i2) %}

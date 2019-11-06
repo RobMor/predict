@@ -109,11 +109,20 @@ def scrape_commit_info(repo_user, repo_name, commit_hash):
             "@@\s+\-(\d+),\d+\s\+(\d+),\d+\s+@@",
             lines[0].find("td", {"class": "blob-code"}).text,
         )
-        current_group_old_start = int(match[1])
+
+        # If the first row is the @@ thing
+        if match is not None:
+            current_group_old_start = int(match[1])
+            current_group_new_start = int(match[2])
+            lines = lines[1:] # Skip the first row
+        else:
+            current_group_old_start = 1
+            current_group_new_start = 1
+
         current_group_old = []
-        current_group_new_start = int(match[2])
         current_group_new = []
-        for line in lines[1:]:
+        
+        for line in lines:
             if line.has_attr("data-position"):
                 file_data["groups"].append(
                     {
@@ -126,12 +135,15 @@ def scrape_commit_info(repo_user, repo_name, commit_hash):
 
                 match = re.search(
                     "@@\s+\-(\d+),\d+\s\+(\d+),\d+\s+@@",
-                    lines[0].find("td", {"class": "blob-code"}).text,
+                    line.find("td", {"class": "blob-code"}).text,
                 )
-                current_group_old_start = int(match[1])
-                current_group_old = []
-                current_group_new_start = int(match[2])
-                current_group_new = []
+
+                # The last row will not have @@ in it
+                if match is not None:
+                    current_group_old_start = int(match[1])
+                    current_group_new_start = int(match[2])
+                    current_group_old = []
+                    current_group_new = []
             else:
                 old_code, new_code = tuple(line.find_all("td", {"class": "blob-code"}))
 
@@ -148,7 +160,8 @@ def scrape_commit_info(repo_user, repo_name, commit_hash):
                     current_group_new.append(new_code)
 
         # Add the last group if it wasn't already added
-        if current_group_old or current_group_new:
+        # TODO better condition
+        if match is not None:
             file_data["groups"].append(
                     {
                         "old_start": current_group_old_start,
