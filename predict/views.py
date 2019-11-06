@@ -358,7 +358,7 @@ def info_page(cve_id, repo_user, repo_name, commit):
     )
 
     return flask.render_template(
-        "commit_info.html", cve_data=cve_data, github_data=github_data
+        "info.html", cve_data=cve_data, github_data=github_data
     )
 
 
