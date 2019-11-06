@@ -1,6 +1,10 @@
 {% extends "cve_sidebar.html" %}
 <! looks bad but sidebar is there>
 
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='diff.css') }}">
+{% endblock %}
+
 {% block title %}Git Blame {{github_data["file_name"]}}{% endblock %}
 
 {% block content %}

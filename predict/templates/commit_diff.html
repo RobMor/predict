@@ -1,0 +1,53 @@
+<table class="diff">
+{% for group in diff.get_grouped_opcodes() %}
+    {% if not loop.first %}
+        <tr class="line sep">
+            <td class="line-num sep">...</td>
+            <td class="line-num sep">...</td>
+            <td class="code sep">@@ -{{ group[0][1]+1 }},{{ group[-1][2] - group[0][1] }} +{{ group[0][3]+1 }},{{ group[-1][4] - group[0][3] }} @@</td>
+        </tr>
+    {% endif %}
+    {% for opcode, i1, i2, j1, j2 in group %}
+        {% if opcode == "equal" %}
+            {% for line in range(i1, i2) %}
+                <tr class="line equal">
+                    <td class="line-num old">{{ line+1 }}</td> {# Old Line Number #}
+                    <td class="line-num new">{{ line+1 }}</td> {# New Line Number #}
+                    <td class="code equal">{{ new[line]|safe }}</td> {# Code itself #}
+                </tr>
+            {% endfor %}
+        {% elif opcode == "insert" %}
+            {% for line in range(j1, j2) %}
+                <tr class="line insert">
+                    <td class="line-num old"></td> {# Old Line Number is Blank #}
+                    <td class="line-num new">{{ line+1 }}</td> {# New Line Number #}
+                    <td class="code insert">{{ new[line]|safe }}</td> {# Code itself #}
+                </tr>
+            {% endfor %}
+        {% elif opcode == "delete" %}
+            {% for line in range(i1, i2) %}
+                <tr class="line delete">
+                    <td class="line-num old">{{ line+1 }}</td> {# Old Line Number #}
+                    <td class="line-num new"></td> {# New Line Number is Blank #}
+                    <td class="code delete">{{ old[line]|safe }}</td> {# Code itself #}
+                </tr>
+            {% endfor %}
+        {% elif opcode == "replace" %}
+            {% for line in range(j1, j2) %}
+                <tr class="line insert">
+                    <td class="line-num old"></td> {# Old Line Number is Blank #}
+                    <td class="line-num new">{{ line+1 }}</td> {# New Line Number #}
+                    <td class="code insert">{{ new[line]|safe }}</td> {# Code itself #}
+                </tr>
+            {% endfor %}
+            {% for line in range(i1, i2) %}
+                <tr class="line delete">
+                    <td class="line-num old">{{ line+1 }}</td> {# Old Line Number #}
+                    <td class="line-num new"></td> {# New Line Number is Blank #}
+                    <td class="code delete">{{ old[line]|safe }}</td> {# Code itself #}
+                </tr>
+            {% endfor %}
+        {% endif %}
+    {% endfor %}
+{% endfor %}
+</table>
