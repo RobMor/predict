@@ -13,7 +13,7 @@ class User(UserMixin, Model):
      password_hash = Column(String, nullable=False)
 
      def __repr__(self):
-          return f"<User username={self.username}>"
+          return "<User username={self.username}>"
 
      def get_id(self):
           return self.username

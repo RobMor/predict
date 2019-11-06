@@ -1,5 +1,6 @@
 import argparse
 
+import predict.config
 
 def up(arguments):
     import predict
