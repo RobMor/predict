@@ -1,4 +1,4 @@
-from predict.plugins import ResolutionPlugin
+from predict.plugins import ConflictPlugin
 
 
 class Majority(ConflictPlugin):

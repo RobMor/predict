@@ -56,7 +56,7 @@ def load_label(cve_id, username, repo_user, repo_name, fix_file, intro_file):
 
 
 def process_label(
-    cve_id, username, repo_user, repo_name, fix_file, fix_hash, intro_file, intro_hash, edit_date
+    cve_id, username, repo_user, repo_name, fix_file, fix_hash, intro_file, intro_hash, comment, edit_date
 ):
     """Creates or updates a label.
 
@@ -88,6 +88,7 @@ def process_label(
                 fix_hash=fix_hash,
                 intro_file=intro_file,
                 intro_hash=intro_hash,
+                comment=comment,
                 edit_date=edit_date,
             )
 
@@ -100,6 +101,7 @@ def process_label(
             if intro_file is not None and intro_hash is not None:
                 current_label.intro_file = intro_file
                 current_label.intro_hash = intro_hash
+            current_label.comment = comment
             current_label.edit_date = edit_date
 
             predict.db.Session.commit()
@@ -129,6 +131,7 @@ def create_test_labels(username):
             fix_hash=str(i+3),
             intro_file=str(i+4),
             intro_hash=str(i+5),
+            comment=str(i+6),
             edit_date=datetime.datetime.now()
         )
         if i % 2 == 0:
@@ -141,5 +144,6 @@ def create_test_labels(username):
                 fix_hash=str(2*i+3),
                 intro_file=str(2*i+4),
                 intro_hash=str(2*i+5),
+                comment=str(2*i+6),
                 edit_date=datetime.datetime.now()
             )

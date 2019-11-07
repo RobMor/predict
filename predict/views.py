@@ -11,6 +11,7 @@ import flask_login
 import predict.cve
 import predict.auth
 import predict.github
+import predict.plugins
 import predict.conflict_resolution
 import predict.models
 import predict.labels
@@ -103,7 +104,9 @@ def dashboard():
 
     recent_labels = predict.labels.load_recent(username)
 
-    return flask.render_template("dashboard.html", recent_labels=recent_labels)
+    plugins = predict.plugins.load_plugins()
+
+    return flask.render_template("dashboard.html", plugins=plugins, recent_labels=recent_labels)
 
 
 @blueprint.route("/resolution")
@@ -399,6 +402,7 @@ def create_label():
     fix_hash = flask.request.args["fix_hash"]
     intro_file = flask.request.args.get("intro_file")
     intro_hash = flask.request.args.get("intro_hash")
+    comment = flask.request.args.get("comment")
     edit_date = datetime.datetime.now()
 
     success = flask.labels.process_label(
@@ -410,6 +414,7 @@ def create_label():
         fix_hash=fix_hash,
         intro_file=intro_file,
         intro_hash=intro_hash,
+        comment=comment,
         edit_date=edit_date
     )
 

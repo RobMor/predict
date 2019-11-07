@@ -8,7 +8,7 @@ from setuptools import setup
 setup(
     name="predict",
     packages=["predict", "predict.builtin"],
-    install_requires=["bs4", "flask", "requests", "flask-login", "sqlalchemy", "pygments"],
+    install_requires=["bs4", "flask", "requests", "flask-login", "sqlalchemy", "pygments", "entrypoints"],
     entry_points={
         "console_scripts": ["predict=predict.cli:main"],
         "predict.plugins": [

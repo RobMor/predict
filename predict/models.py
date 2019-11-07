@@ -29,4 +29,5 @@ class Label(Model):
      fix_hash = Column(String, nullable=False)
      intro_hash = Column(String)
 
+     comment = Column(String)
      edit_date = Column(DateTime, nullable=False)
