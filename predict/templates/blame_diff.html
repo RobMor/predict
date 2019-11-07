@@ -13,7 +13,7 @@
                         {% endif %}
                     </td>
                     <td class="line-num old">{{ line+1 }}</td> {# Old Line Number #}
-                    <td class="line-num new" id="L{{ line+1}}">{{ line+1 }}</td> {# New Line Number #}
+                    <td class="line-num new" id="L{{ line+1 }}">{{ line+1 }}</td> {# New Line Number #}
                     <td class="code equal">{{ github_data["new_code"][line]|safe }}</td> {# Code itself #}
                 </tr>
             {% endfor %}
@@ -29,7 +29,7 @@
                         {% endif %}
                     </td>
                     <td class="line-num old"></td> {# Old Line Number is Blank #}
-                    <td class="line-num new" id="L{{ line+1}}">{{ line+1 }}</td> {# New Line Number #}
+                    <td class="line-num new" id="L{{ line+1 }}">{{ line+1 }}</td> {# New Line Number #}
                     <td class="code insert">{{ github_data["new_code"][line]|safe }}</td> {# Code itself #}
                 </tr>
             {% endfor %}
@@ -38,7 +38,7 @@
                 <tr class="line delete">
                     <td class="blame description empty"></td>
                     <td class="blame reblame empty"></td>
-                    <td class="line-num old" id="L{{ line+1}}">{{ line+1 }}</td> {# Old Line Number #}
+                    <td class="line-num old" id="L{{ line+1 }}">{{ line+1 }}</td> {# Old Line Number #}
                     <td class="line-num new"></td> {# New Line Number is Blank #}
                     <td class="code delete">{{ github_data["old_code"][line]|safe }}</td> {# Code itself #}
                 </tr>
@@ -57,7 +57,7 @@
                         <td class="blame reblame empty"></td>
                     {% endif %}
                     <td class="line-num old"></td> {# Old Line Number is Blank #}
-                    <td class="line-num new" id="L{{ line+1}}">{{ line+1 }}</td> {# New Line Number #}
+                    <td class="line-num new" id="L{{ line+1 }}">{{ line+1 }}</td> {# New Line Number #}
                     <td class="code insert">{{ github_data["new_code"][line]|safe }}</td> {# Code itself #}
                 </tr>
             {% endfor %}
@@ -83,7 +83,7 @@
                     </a>
                 {% endif %}
             </td>
-            <td class="line-num" id="L{{ line+1}}">{{ line+1 }}</td> {# New Line Number #}
+            <td class="line-num" id="L{{ line+1 }}">{{ line+1 }}</td> {# New Line Number #}
             <td class="code equal">{{ github_data["new_code"][line]|safe }}</td> {# Code itself #}
         </tr>
     {% endfor %}
