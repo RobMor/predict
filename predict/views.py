@@ -12,6 +12,7 @@ import predict.auth
 import predict.github
 import predict.conflict_resolution
 import predict.models
+import predict.dashboard_review
 
 
 blueprint = flask.Blueprint("main", __name__)
@@ -90,11 +91,23 @@ def register_post():
         flask.flash("That username already exists! Please try again.")
         return flask.render_template("register.html")
 
-
+import datetime
 @blueprint.route("/dashboard")
 @flask_login.login_required
 def dashboard():
-    return flask.render_template("dashboard.html")
+    username = None
+    if not flask_login.current_user.is_anonymous:
+        username = flask_login.current_user.username
+    test_data_set = []
+    for i in range(0,10):
+        entry_user = "foo"+str(i)
+        current_time =datetime.datetime(year = 1,month = 1, day = 1,hour = i,minute = i, second =i, microsecond = i)
+        entry = {"cve":"Random cve", "username":entry_user,
+         "edit_date": current_time, "fix_file":"fix file","intro_file": "intro file"}
+        test_data_set.append(entry)
+    predict.dashboard_review.create_test_labels(test_data_set)
+    recent_labels = predict.dashboard_review.load_recent_labels(username)
+    return flask.render_template("dashboard.html", recent_labels=recent_labels)
 
 
 @blueprint.route("/resolution")
@@ -309,8 +322,8 @@ def conflict_resolution():
     entry15.intro_hash = "4206969"
     entry15.intro_file = "elonmuskrat.cobal"
 
-#    entries = [entry1, entry21, entry1one, entry2, entry3, entry31, entry32, entry4, entry41, entry5, entry6, entry7, entry8,
-#        entry9, entry10, entry11, entry12, entry13, entry14, entry15]
+    entries = [entry1, entry21, entry1one, entry2, entry3, entry31, entry32, entry4, entry41, entry5, entry6, entry7, entry8,
+        entry9, entry10, entry11, entry12, entry13, entry14, entry15]
 
     currentUser = flask_login.current_user.get_id()
     blocks = predict.conflict_resolution.processEntries(entries, currentUser);

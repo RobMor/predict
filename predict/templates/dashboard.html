@@ -92,24 +92,22 @@
             </div>
             <p class="card-text">Review your past labels.</p>
 
-            {% for cve_id, cve_link, date, labels in [("CVE-2014-4014", "/cve/CVE-2014-4014", "2019-10-28", [(True, "file.c", "abcdef", "file.c", "123456"), (False, "file.c", "abcdef", "file.c", "123456")]), ("CVE-2014-4014", "/cve/CVE-2014-4014", "2019-10-28", [(True, "file.c", "abcdef", "file.c", "123456"), (False, "file.c", "abcdef", "file.c", "123456")])] %}
+            {% for label in recent_labels %}
                 <div class="card border-dark review-card">
                     <a href="{{ cve_link }}" class="card-header text-reset d-flex w-100 justify-content-between">
-                        {{ cve_id }}
-                        <small>{{ date }}{# TODO use date times here #}</small>{# TODO more time granularity #}
+                        {{ label.cve }}
+                        <small>{{ label.date }}{# TODO use date times here #}</small>{# TODO more time granularity #}
                     </a>
                     <ul class="list-group list-group-flush">
-                    {% for conflicted, fix_file, fix_hash, intro_file, intro_hash in labels %}
                         <li class="list-group-item {% if conflicted %}text-danger{% endif %}">
-                            <a {# href="{{ fix_file_link }}" #}>{{ fix_file }}</a>
+                            <a {# href="{{ fix_file_link }}" #}>{{ label.fix_file }}</a>
                             @
-                            <a {# href="{{ fix_hash_link }}" #}>{{ fix_hash }}</a>
+                            <a {# href="{{ fix_hash_link }}" #}>{{ label.fix_hash }}</a>
                             ←
-                            <a {# href="{{ intro_file_link }}" #}>{{ intro_file }}</a>
+                            <a {# href="{{ intro_file_link }}" #}>{{ label.intro_file }}</a>
                             @
-                            <a {# href="{{ intro_hash_link }}" #}>{{ intro_hash }}</a>
+                            <a {# href="{{ intro_hash_link }}" #}>{{ label.intro_hash }}</a>
                         </li>
-                    {% endfor %}
                     </ul>
                 </div>
             {% endfor %}
