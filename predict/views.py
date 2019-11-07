@@ -228,7 +228,7 @@ def conflict_resolution():
     entry5.fix_file = "fix_file3.py"
     entry5.intro_hash = "21b9de9erwe"
     entry5.intro_file = "intro_file58.fortranlol"
-    
+
     entry6.cve_id = "CVE-8765-4321"
     entry6.username = "cwolff"
     entry6.repo_name = "thisisareponame"
@@ -353,9 +353,11 @@ def conflict_resolution():
 def cve_base(cve_id):
     cve_data = predict.cve.get_cve(cve_id)
 
-    if cve_data is not None: # TODO page when cve_data is None?
-        if len(cve_data.get("git_links", [])) > 0:
-            return flask.redirect(cve_data["git_links"][0][1])
+    if cve_data is None:
+        cve_data = {"id": "CVE Not Found"}
+
+    if len(cve_data.get("git_links", [])) > 0:
+        return flask.redirect(cve_data["git_links"][0][1])
 
     return flask.render_template("cve_sidebar.html", cve_data=cve_data)
 
