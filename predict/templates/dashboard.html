@@ -94,9 +94,9 @@
 
             {% for label in recent_labels %}
                 <div class="card border-dark review-card">
-                    <a href="{{ cve_link }}" class="card-header text-reset d-flex w-100 justify-content-between">
+                    <a href="{{ '/cve/'+label.cve }}" class="card-header text-reset d-flex w-100 justify-content-between">
                         {{ label.cve }}
-                        <small>{{ label.date }}{# TODO use date times here #}</small>{# TODO more time granularity #}
+                        <small>{{ label.edit_date.strftime("%m/%d/%Y %H:%M:%S") }}</small>
                     </a>
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item {% if conflicted %}text-danger{% endif %}">

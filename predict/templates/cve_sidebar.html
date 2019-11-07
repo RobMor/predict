@@ -25,7 +25,7 @@
         {% endfor %}
         </ul>
     {% endif %}
-    
+
     <button class="btn btn-link mb-3 px-0" data-toggle="collapse" data-target="#git-missing">Did we miss one?</button>
     <form id="git-missing" class="collapse mb-3" onsubmit="return goto_commit('{{ cve_data['id'] }}')()">
         <div class="form-group">
@@ -43,7 +43,7 @@
 
     {% if cve_data["normal_links"]|length > 0 %}
         <h3>Non-Git Links</h3>
-        
+
         <ul>
         {% for link in cve_data["normal_links"] %}
             <li>
@@ -55,5 +55,5 @@
         </ul>
     {% endif %}
 
-    
+
 {% endblock %}

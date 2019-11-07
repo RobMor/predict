@@ -356,8 +356,9 @@ def conflict_resolution():
 def cve_base(cve_id):
     cve_data = predict.cve.get_cve(cve_id)
 
-    if len(cve_data.get("git_links", [])) > 0:
-        return flask.redirect(cve_data["git_links"][0][1])
+    if cve_data is not None: # TODO page when cve_data is None?
+        if len(cve_data.get("git_links", [])) > 0:
+            return flask.redirect(cve_data["git_links"][0][1])
 
     return flask.render_template("cve_sidebar.html", cve_data=cve_data)
 
