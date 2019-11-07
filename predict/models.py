@@ -12,9 +12,6 @@ class User(UserMixin, Model):
      username = Column(String, primary_key=True)
      password_hash = Column(String, nullable=False)
 
-     def __repr__(self):
-          return "<User username={self.username}>"
-
      def get_id(self):
           return self.username
 
@@ -22,15 +19,14 @@ class User(UserMixin, Model):
 class Label(Model):
      __tablename__ = "labels"
 
-     cve = Column(String, primary_key=True)
+     cve_id = Column(String, primary_key=True)
      username = Column(String, ForeignKey("users.username"), primary_key=True)
+     repo_user = Column(String, primary_key=True)
+     repo_name = Column(String, primary_key=True)
      fix_file = Column(String, primary_key=True)
      intro_file = Column(String, primary_key=True, nullable=True)
 
-     fix_hash = Column(String)
+     fix_hash = Column(String, nullable=False)
      intro_hash = Column(String)
 
-     repo_user = Column(String)
-     repo_name = Column(String)
-
-     edit_date = Column(DateTime)
+     edit_date = Column(DateTime, nullable=False)

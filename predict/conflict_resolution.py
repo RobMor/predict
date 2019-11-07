@@ -79,19 +79,19 @@ def insertSubBlockAgreements(subBlock, currUserSubBlock):
     return subBlock
 
 def appendURLs(entry):
-    fixCommitURL = flask.url_for("main.info_page", cve_id = entry.cve,
+    fixCommitURL = flask.url_for("main.info_page", cve_id=entry.cve_id,
         repo_name = entry.repo_name, repo_user = entry.repo_user,
         commit = entry.fix_hash)
-    fixFileURL = flask.url_for("main.info_page", cve_id = entry.cve,
+    fixFileURL = flask.url_for("main.info_page", cve_id=entry.cve_id,
         repo_name = entry.repo_name, repo_user = entry.repo_user,
         commit = entry.fix_file)
-    introCommitURL = flask.url_for("main.info_page", cve_id = entry.cve,
+    introCommitURL = flask.url_for("main.info_page", cve_id=entry.cve_id,
         repo_name = entry.repo_name, repo_user = entry.repo_user,
         commit = entry.intro_hash)
-    introFileURL = flask.url_for("main.info_page", cve_id = entry.cve,
+    introFileURL = flask.url_for("main.info_page", cve_id=entry.cve_id,
         repo_name = entry.repo_name, repo_user = entry.repo_user,
         commit = entry.intro_file)
-    return {"cve": entry.cve, "username": entry.username, "repo_name": entry.repo_name,
+    return {"cve": entry.cve_id, "username": entry.username, "repo_name": entry.repo_name,
         "repo_user": entry.repo_user, "fix_hash": entry.fix_hash, "fix_file": entry.fix_file,
         "intro_hash": entry.intro_hash, "intro_file": entry.intro_file, "fix_hash_url": fixCommitURL,
         "fix_file_url": fixFileURL, "intro_hash_url": introCommitURL, "intro_file_url": introFileURL}
@@ -189,8 +189,8 @@ def splitByCveId(entries):
     blocks = []
     blockNum = -1
     for i in range(0, len(entries)):
-        if entries[i].cve != currCVE:
-            currCVE = entries[i].cve
+        if entries[i].cve_id != currCVE:
+            currCVE = entries[i].cve_id
             blocks.append([])
             blockNum += 1
         blocks[blockNum].append(entries[i])

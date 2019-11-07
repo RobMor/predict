@@ -1,6 +1,7 @@
 import json
 import sqlite3
 import itertools
+import datetime
 from sqlite3 import Error
 
 import flask
@@ -12,7 +13,7 @@ import predict.auth
 import predict.github
 import predict.conflict_resolution
 import predict.models
-import predict.dashboard_review
+import predict.labels
 
 
 blueprint = flask.Blueprint("main", __name__)
@@ -91,22 +92,17 @@ def register_post():
         flask.flash("That username already exists! Please try again.")
         return flask.render_template("register.html")
 
-import datetime
+
 @blueprint.route("/dashboard")
 @flask_login.login_required
 def dashboard():
-    username = None
-    if not flask_login.current_user.is_anonymous:
-        username = flask_login.current_user.username
-    test_data_set = []
-    for i in range(0,10):
-        entry_user = "foo"+str(i)
-        current_time =datetime.datetime(year = 1,month = 1, day = 1,hour = i,minute = i, second =i, microsecond = i)
-        entry = {"cve":"Random cve", "username":entry_user,
-         "edit_date": current_time, "fix_file":"fix file","intro_file": "intro file"}
-        test_data_set.append(entry)
-    predict.dashboard_review.create_test_labels(test_data_set)
-    recent_labels = predict.dashboard_review.load_recent_labels(username)
+    username = flask_login.current_user.get_id() or "unauthenticated"
+
+    if flask.current_app.debug:
+        predict.labels.create_test_labels(username)
+
+    recent_labels = predict.labels.load_recent(username)
+
     return flask.render_template("dashboard.html", recent_labels=recent_labels)
 
 
@@ -116,7 +112,7 @@ def conflict_resolution():
 
     entries = predict.db.Session.query(predict.models.Label).all()
     entries.sort(key=lambda entry:entry.username)
-    entries.sort(key=lambda entry:entry.cve, reverse=True)
+    entries.sort(key=lambda entry:entry.cve_id, reverse=True)
 
 
     # TODO: Comment these out! This is a test set!
@@ -143,7 +139,7 @@ def conflict_resolution():
     entry15 = predict.models.Label()
 
 
-    entry1.cve = "CVE-1234-5678"
+    entry1.cve_id = "CVE-1234-5678"
     entry1.username = "tgiddings"
     entry1.repo_name = "thisisareponame"
     entry1.repo_user = "thisisarepouser"
@@ -152,7 +148,7 @@ def conflict_resolution():
     entry1.intro_hash = "09sdf09sf"
     entry1.intro_file = "intro_file2.cpp"
 
-    entry21.cve = "CVE-1234-5678"
+    entry21.cve_id = "CVE-1234-5678"
     entry21.username = "tgiddings"
     entry21.repo_name = "thisisareponame"
     entry21.repo_user = "thisisarepouser"
@@ -161,7 +157,7 @@ def conflict_resolution():
     entry21.intro_hash = "09sdf09sf"
     entry21.intro_file = "intro_file1.cpp"
 
-    entry1one.cve = "CVE-1234-5678"
+    entry1one.cve_id = "CVE-1234-5678"
     entry1one.username = "jbelke"
     entry1one.repo_name = "thisisareponame"
     entry1one.repo_user = "thisisarepouser"
@@ -170,7 +166,7 @@ def conflict_resolution():
     entry1one.intro_hash ="87654321"
     entry1one.intro_file = "intro_file2.cpp"
 
-    entry2.cve = "CVE-1234-5678"
+    entry2.cve_id = "CVE-1234-5678"
     entry2.username = "jbelke"
     entry2.repo_name = "thisisareponame"
     entry2.repo_user = "thisisarepouser"
@@ -179,7 +175,7 @@ def conflict_resolution():
     entry2.intro_hash ="09sdf09sf"
     entry2.intro_file = "intro_file1.cpp"
 
-    entry3.cve = "CVE-1234-5678"
+    entry3.cve_id = "CVE-1234-5678"
     entry3.username = "rmorrison"
     entry3.repo_name = "thisisareponame"
     entry3.repo_user = "thisisarepouser"
@@ -188,7 +184,7 @@ def conflict_resolution():
     entry3.intro_hash = "1342432"
     entry3.intro_file = "intro_file1.cpp"
 
-    entry31.cve = "CVE-1234-5678"
+    entry31.cve_id = "CVE-1234-5678"
     entry31.username = "rmorrison"
     entry31.repo_name = "thisisareponame"
     entry31.repo_user = "thisisarepouser"
@@ -197,7 +193,7 @@ def conflict_resolution():
     entry31.intro_hash = "21b9de987ac"
     entry31.intro_file = "intro_file2.cpp"
 
-    entry32.cve = "CVE-1234-5678"
+    entry32.cve_id = "CVE-1234-5678"
     entry32.username = "rmorrison"
     entry32.repo_name = "thisisareponame"
     entry32.repo_user = "thisisarepouser"
@@ -206,7 +202,7 @@ def conflict_resolution():
     entry32.intro_hash = "123412532"
     entry32.intro_file = "intro_file3.cpp"
 
-    entry4.cve = "CVE-1234-5678"
+    entry4.cve_id = "CVE-1234-5678"
     entry4.username = "cwolff"
     entry4.repo_name = "thisisareponame"
     entry4.repo_user = "thisisarepouser"
@@ -215,7 +211,7 @@ def conflict_resolution():
     entry4.intro_hash = "454325436"
     entry4.intro_file = "intro_file1.cpp"
 
-    entry41.cve = "CVE-1234-5678"
+    entry41.cve_id = "CVE-1234-5678"
     entry41.username = "cwolff"
     entry41.repo_name = "thisisareponame"
     entry41.repo_user = "thisisarepouser"
@@ -224,7 +220,7 @@ def conflict_resolution():
     entry41.intro_hash = "21b9de987ac"
     entry41.intro_file = "intro_file2.cpp"
 
-    entry5.cve = "CVE-8765-4321"
+    entry5.cve_id = "CVE-8765-4321"
     entry5.username = "elin"
     entry5.repo_name = "thisisareponame"
     entry5.repo_user = "thisisarepouser"
@@ -232,7 +228,8 @@ def conflict_resolution():
     entry5.fix_file = "fix_file3.py"
     entry5.intro_hash = "21b9de9erwe"
     entry5.intro_file = "intro_file58.fortranlol"
-    entry6.cve = "CVE-8765-4321"
+    
+    entry6.cve_id = "CVE-8765-4321"
     entry6.username = "cwolff"
     entry6.repo_name = "thisisareponame"
     entry6.repo_user = "thisisarepouser"
@@ -241,7 +238,7 @@ def conflict_resolution():
     entry6.intro_hash = "21b9de987ac"
     entry6.intro_file = "intro_file1.cpp"
 
-    entry7.cve = "CVE-8765-4321"
+    entry7.cve_id = "CVE-8765-4321"
     entry7.username = "jbelke"
     entry7.repo_name = "thisisareponame"
     entry7.repo_user = "thisisarepouser"
@@ -250,7 +247,7 @@ def conflict_resolution():
     entry7.intro_hash = "4206969"
     entry7.intro_file = "elonmuskrat.cobal"
 
-    entry8.cve = "CVE-867-5309"
+    entry8.cve_id = "CVE-867-5309"
     entry8.username = "thenson"
     entry8.repo_name = "thisisareponame"
     entry8.repo_user = "thisisarepouser"
@@ -259,7 +256,7 @@ def conflict_resolution():
     entry8.intro_hash = "3jd9983"
     entry8.intro_file = "g**gleisabadword.purtilo"
 
-    entry9.cve = "CVE-867-5309"
+    entry9.cve_id = "CVE-867-5309"
     entry9.username = "ckruskal"
     entry9.repo_name = "isthisthekrustykrab"
     entry9.repo_user = "nothisispatrick"
@@ -268,7 +265,7 @@ def conflict_resolution():
     entry9.intro_hash = "3jd9983"
     entry9.intro_file = "krabbypatty.recipe"
 
-    entry10.cve = "CVE-867-5309"
+    entry10.cve_id = "CVE-867-5309"
     entry10.username = "mzuckerberg"
     entry10.repo_name = "robotrepo"
     entry10.repo_user = "robotuser"
@@ -277,7 +274,7 @@ def conflict_resolution():
     entry10.intro_hash = "3jd9983"
     entry10.intro_file = "notarobot.beepboop"
 
-    entry11.cve = "CVE-867-5309"
+    entry11.cve_id = "CVE-867-5309"
     entry11.username = "MrMiyagi"
     entry11.repo_name = "thisisareponame"
     entry11.repo_user = "thisisarepouser"
@@ -286,7 +283,7 @@ def conflict_resolution():
     entry11.intro_hash = "3jd9983"
     entry11.intro_file = "daniel.san"
 
-    entry12.cve = "CVE-867-5309"
+    entry12.cve_id = "CVE-867-5309"
     entry12.username = "esnowden"
     entry12.repo_name = "thisisareponame"
     entry12.repo_user = "thisisarepouser"
@@ -295,7 +292,7 @@ def conflict_resolution():
     entry12.intro_hash = "0932840293"
     entry12.intro_file = "myfbiagent.lol"
 
-    entry13.cve = "CVE-2020-2020"
+    entry13.cve_id = "CVE-2020-2020"
     entry13.username = "jbelke"
     entry13.repo_name = "thisisareponame"
     entry13.repo_user = "thisisarepouser"
@@ -304,7 +301,7 @@ def conflict_resolution():
     entry13.intro_hash = "4206969"
     entry13.intro_file = "elonmuskrat.cobal"
 
-    entry14.cve = "CVE-2020-2020"
+    entry14.cve_id = "CVE-2020-2020"
     entry14.username = "lebronshairline"
     entry14.repo_name = "thisisareponame"
     entry14.repo_user = "thisisarepouser"
@@ -313,7 +310,7 @@ def conflict_resolution():
     entry14.intro_hash = "4206969"
     entry14.intro_file = "elonmuskrat.cobal"
 
-    entry15.cve = "CVE-2020-2020"
+    entry15.cve_id = "CVE-2020-2020"
     entry15.username = "bgates"
     entry15.repo_name = "thisisareponame"
     entry15.repo_user = "thisisarepouser"
@@ -387,6 +384,38 @@ def blame_page(cve_id, repo_user, repo_name, commit, file_name):
     diff_enabled = flask.request.args.get("diff") is not None
 
     return flask.render_template("blame.html", cve_data=cve_data, github_data=blame_data, diff_enabled=diff_enabled)
+
+
+@blueprint.route("/create/label", methods=["POST"])
+@flask_login.login_required
+def create_label():
+    cve_id = flask.request.args["cve_id"]
+    username = flask_login.current_user.get_id() or "unauthenticated" 
+    repo_user = flask.request.args["repo_user"]
+    repo_name = flask.request.args["repo_name"]
+    fix_file = flask.request.args["fix_file"]
+    fix_hash = flask.request.args["fix_hash"]
+    intro_file = flask.request.args.get("intro_file")
+    intro_hash = flask.request.args.get("intro_hash")
+    edit_date = datetime.datetime.now()
+
+    success = flask.labels.process_label(
+        cve_id=cve_id,
+        username=username,
+        repo_user=repo_user,
+        repo_name=repo_name,
+        fix_file=fix_file,
+        fix_hash=fix_hash,
+        intro_file=intro_file,
+        intro_hash=intro_hash,
+        edit_date=edit_date
+    )
+
+    if success:
+        return json.dumps({'success': True}), 200, {'ContentType':'application/json'}
+    else:
+        # TODO provide more feedback as to why the request failed
+        return json.dumps({'success': False}), 400, {'ContentType':'application/json'}
 
 
 @blueprint.errorhandler(404)
