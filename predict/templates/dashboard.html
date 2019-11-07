@@ -87,7 +87,7 @@
     </div>
 
     <div id="conflict-resolution" class="card">
-        <div class="card-body" style="overflow-y:scroll; height:400px;">
+        <div class="card-body">
             <div class="d-flex w-100 justify-content-between">
                 <h3 class="card-title">Review</h3>
                 <a href="{{ url_for('main.conflict_resolution') }}">Resolve Conflicts</a>
@@ -95,29 +95,31 @@
             <p class="card-text">Review your past labels.</p>
 
             {# TODO this needs to be in order of most recently edited!!!! #}
+            <div class="card-body-labels" style="overflow-y: scroll; height:550px;">
             {% for group, labels in recent_labels %}
-            <div class="card border-dark review-card">
-                <a href="{{ url_for('main.cve_base', cve_id=group) }}" class="card-header text-reset">
-                    {{ group }}
-                </a>
-                {% for label in labels %}
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item {% if conflicted %}text-danger{% endif %} d-flex w-100 justify-content-between">
-                            <div class="label-desc">
-                                <a {# href="{{ fix_file_link }}" #}>{{ label.fix_file }}</a>
-                                @
-                                <a {# href="{{ fix_hash_link }}" #}>{{ label.fix_hash }}</a>
-                                ←
-                                <a {# href="{{ intro_file_link }}" #}>{{ label.intro_file }}</a>
-                                @
-                                <a {# href="{{ intro_hash_link }}" #}>{{ label.intro_hash }}</a>
-                            </div>
-                            <small>{{ label.edit_date }}</small>
-                        </li>
-                    </ul>
-                {% endfor %}
-            </div>
+              <div class="card border-dark review-card">
+                  <a href="{{ url_for('main.cve_base', cve_id=group) }}" class="card-header text-reset">
+                      {{ group }}
+                  </a>
+                  {% for label in labels %}
+                      <ul class="list-group list-group-flush">
+                          <li class="list-group-item {% if conflicted %}text-danger{% endif %} d-flex w-100 justify-content-between">
+                              <div class="label-desc">
+                                  <a {# href="{{ fix_file_link }}" #}>{{ label.fix_file }}</a>
+                                  @
+                                  <a {# href="{{ fix_hash_link }}" #}>{{ label.fix_hash }}</a>
+                                  ←
+                                  <a {# href="{{ intro_file_link }}" #}>{{ label.intro_file }}</a>
+                                  @
+                                  <a {# href="{{ intro_hash_link }}" #}>{{ label.intro_hash }}</a>
+                              </div>
+                              <small>{{ label.edit_date }}</small>
+                          </li>
+                      </ul>
+                  {% endfor %}
+              </div>
             {% endfor %}
+            </div>
         </div>
     </div>
 </div>
