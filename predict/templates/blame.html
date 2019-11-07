@@ -1,142 +1,37 @@
 {% extends "cve_sidebar.html" %}
-<! looks bad but sidebar is there>
 
 {% block head %}
+{{ super() }}
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='diff.css') }}">
 {% endblock %}
 
 {% block title %}Git Blame {{github_data["file_name"]}}{% endblock %}
 
+
+
 {% block content %}
-<style>
-	.sticky {
-	  overflow: hidden;
-	  border-style: solid;
-	  background-color: white;
-	  position: fixed;
-	  top: 0;
-	  width: 65.5%;
-	}
-	.main {
-	  margin-top: 30px; /* Add a top margin to avoid content overlay */
-	}
-</style>
+    <style>
+        #header {
+            background: white;
+            width: 100%;
 
-<center>
-  <h1 class="main">
-    {{github_data["file_name"]}}
-    Git Blame Page
-  </h1>
-</center>
+            padding: 0.5rem;
 
+            position: sticky;
+            top: 0;
+        }
+    </style>
+    
+    <div id="header">
+        <select class="form-control">
+            <option value="" disabled selected>Relation to Vulnerability</option>
+            <option value="fVuln"> Fixes Vulnerability</option>
+            <option value="fVuln"> Introduces Vulnerability</option>
+            <option value="fVuln"> None</option>
+        </select>
+    </div>
 
-<div class="header sticky" id="myHeader">
-  <select>
-	<option value="" disabled selected>Relation to Vulnerability</option>
-	<option value="fVuln"> Fixes Vulnerability</option>
-	<option value="fVuln"> Introduces Vulnerability</option>
-	<option value="fVuln"> None</option>
-  </select>
-</div>
-
-<hr>
-<div class="container">
-  <table class="table table-bordered">
-    <thead>
-      <tr>
-        <th>File Diff</th>
-        <th>File Blame</th>
-      </tr>
-    </thead>
-    <tbody>
-	{% for line in github_data.get("sorted_blame_line_numbers") %}
-      <tr>
-        <td id = "{{line}}">
-		{% for dline in github_data.get("sorted_line_numbers") %}
-		{% if github_data["inline_diff"][dline]["old_text_line_number"] != "*" and github_data["inline_diff"][dline]["new_text_line_number"] != "*" and github_data["inline_diff"][dline]["new_text_line_number"]|int == line %}
-            <ul>
-                 <li>
-                    <div>
-                        <span style="color:red; width: 20%" align="left">
-                            {{ github_data["inline_diff"][dline]["old_text_line_number"] }} |
-                        </span>
-                        <span style="color:blue; width: 20%" align="left">
-                            {{ github_data["inline_diff"][dline]["new_text_line_number"] }}
-                        </span>
-						<span>
-						  {{ github_data["inline_diff"][dline]["text"] }}
-						</span>
-                    </div>
-                  </li>
-            </ul>
-		{% elif github_data["inline_diff"][dline]["old_text_line_number"] == "*" and github_data["inline_diff"][dline]["new_text_line_number"]|int == line %}
-            <ul>
-                 <li>
-                    <div>
-                        <span style="color:red; width: 20%" align="left">
-                            {{ github_data["inline_diff"][dline]["old_text_line_number"] }} |
-                        </span>
-                        <span style="color:blue; width: 20%" align="left">
-                            {{ github_data["inline_diff"][dline]["new_text_line_number"] }}
-                        </span>
-						<span style="color: green;">
-						  {{ github_data["inline_diff"][dline]["text"] }}
-						</span>
-
-                    </div>
-                  </li>
-            </ul>
-		{% elif github_data["inline_diff"][dline]["new_text_line_number"] == "*" and github_data["inline_diff"][dline]["old_text_line_number"]|int == line %}
-            <ul>
-                 <li>
-                    <div>
-                        <span style="color:red; width: 20%" align="left">
-                            {{ github_data["inline_diff"][dline]["old_text_line_number"] }} |
-                        </span>
-                        <span style="color:blue; width: 20%" align="left">
-                            {{ github_data["inline_diff"][dline]["new_text_line_number"] }}
-                        </span>
-			                    <span style="color: orange;">
-			                      {{ github_data["inline_diff"][dline]["text"] }}
-			                    </span>
-                    </div>
-                  </li>
-            </ul>
-			{% endif %}
-			{% endfor %}
-        </td>
-        <td>
-								<! collapse code prior to line sent if selecting blame by line, default line 1, may also collapse by default
-										when compared to diff in left table, tbd>
-                <div>
-                    <span style="color: gray">
-                        {{ github_data["line_representation"][line].get("line_number")}}
-                    </span>
-                    <span style="color: black">
-                        |
-                    </span>
-                    <a href={{ github_data["line_representation"][line].get("blame_commit_link") }}>
-												<! I want to change this somehow, either truncate it or remove it entirely>
-												<! It currently makes the blame page completely unreadable with long commit msgs>
-												<! time could also be formatted to something usable>
-                        <span style="color:  red">
-                            {{ github_data["line_representation"][line].get("blame_commit_message")}}
-                        </span>
-                        <span style="color: lightgreen">
-                            {{ github_data["line_representation"][line].get("blame_commit_time")}}
-                        </span>
-                    </a>
-                    <span style="color: black;">
-                        |
-                    </span>
-                   <span style="color: gray;">
-                        {{ github_data["line_representation"][line].get("line_text")}}
-                   </span>
-                </div>
-        </td>
-      </tr>
-	 {% endfor %}
-    </tbody>
-  </table>
-</div>
+    <div id="blame">
+        {% include "blame_diff.html" %}
+    </div>
 {% endblock%}

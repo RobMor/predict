@@ -74,6 +74,29 @@
     content: "-";
 }
 
+.blame.description {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 15rem;
+
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+
+    font-size: 12px;
+}
+
+.blame.commit-link {
+    color: #24292e;
+}
+
+.blame.reblame-link {
+    color: #d1d5da;
+}
+
+.blame.reblame-link:hover {
+    color: #0366d6;
+}
 
 /* ---- Syntax Highlighting Below This Line ---- */
 

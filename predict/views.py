@@ -366,11 +366,13 @@ def info_page(cve_id, repo_user, repo_name, commit):
 @flask_login.login_required
 def blame_page(cve_id, repo_user, repo_name, commit, file_name):
     cve_data = predict.cve.get_cve(cve_id)
-    result = predict.github.get_blame_page(
+    blame_data = predict.github.get_blame(
         cve_id, repo_user, repo_name, commit, file_name
     )
 
-    return flask.render_template("blame.html", cve_data=cve_data, github_data=result)
+    diff_enabled = flask.request.args.get("diff") is not None
+
+    return flask.render_template("blame.html", cve_data=cve_data, github_data=blame_data, diff_enabled=diff_enabled)
 
 
 @blueprint.errorhandler(404)

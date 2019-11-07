@@ -1,44 +1,91 @@
 <table class="diff">
-{% for opcode, i1, i2, j1, j2 in group %}
-    {% if opcode == "equal" %}
-        {% for line in range(i1, i2) %}
-            <tr class="line equal">
-                <td class="line-num old">{{ line+1 }}</td> {# Old Line Number #}
-                <td class="line-num new">{{ line+1 }}</td> {# New Line Number #}
-                <td class="code equal">{{ new[line]|safe }}</td> {# Code itself #}
-            </tr>
-        {% endfor %}
-    {% elif opcode == "insert" %}
-        {% for line in range(j1, j2) %}
-            <tr class="line insert">
-                <td class="line-num old"></td> {# Old Line Number is Blank #}
-                <td class="line-num new">{{ line+1 }}</td> {# New Line Number #}
-                <td class="code insert">{{ new[line]|safe }}</td> {# Code itself #}
-            </tr>
-        {% endfor %}
-    {% elif opcode == "delete" %}
-        {% for line in range(i1, i2) %}
-            <tr class="line delete">
-                <td class="line-num old">{{ line+1 }}</td> {# Old Line Number #}
-                <td class="line-num new"></td> {# New Line Number is Blank #}
-                <td class="code delete">{{ old[line]|safe }}</td> {# Code itself #}
-            </tr>
-        {% endfor %}
-    {% elif opcode == "replace" %}
-        {% for line in range(j1, j2) %}
-            <tr class="line insert">
-                <td class="line-num old"></td> {# Old Line Number is Blank #}
-                <td class="line-num new">{{ line+1 }}</td> {# New Line Number #}
-                <td class="code insert">{{ new[line]|safe }}</td> {# Code itself #}
-            </tr>
-        {% endfor %}
-        {% for line in range(i1, i2) %}
-            <tr class="line delete">
-                <td class="line-num old">{{ line+1 }}</td> {# Old Line Number #}
-                <td class="line-num new"></td> {# New Line Number is Blank #}
-                <td class="code delete">{{ old[line]|safe }}</td> {# Code itself #}
-            </tr>
-        {% endfor %}
-    {% endif %}
-{% endfor %}
+{% if diff_enabled %}
+    {% for opcode, i1, i2, j1, j2 in github_data["diff"] %}
+        {% if opcode == "equal" %}
+            {% for line in range(j1, j2) %}
+                <tr class="line equal">
+                    <td class="blame description"><a class="blame commit-link" href="{{ github_data["blame_meta"][line]["commit_url"] }}">{{ github_data["blame_meta"][line]["commit_desc"] }}</td>
+                    <td class="blame reblame">
+                        {% if github_data["blame_meta"][line]["blame_url"] %}
+                            <a class="blame reblame-link" href="{{ github_data["blame_meta"][line]["blame_url"] }}">
+                                <i class="fas fa-caret-square-left"></i>
+                            </a>
+                        {% endif %}
+                    </td>
+                    <td class="line-num old">{{ line+1 }}</td> {# Old Line Number #}
+                    <td class="line-num new" id="L{{ line+1}}">{{ line+1 }}</td> {# New Line Number #}
+                    <td class="code equal">{{ github_data["new_code"][line]|safe }}</td> {# Code itself #}
+                </tr>
+            {% endfor %}
+        {% elif opcode == "insert" %}
+            {% for line in range(j1, j2) %}
+                <tr class="line insert">
+                    <td class="blame description"><a class="blame commit-link" href="{{ github_data["blame_meta"][line]["commit_url"] }}">{{ github_data["blame_meta"][line]["commit_desc"] }}</td>
+                    <td class="blame reblame">
+                        {% if github_data["blame_meta"][line]["blame_url"] %}
+                            <a class="blame reblame-link" href="{{ github_data["blame_meta"][line]["blame_url"] }}">
+                                <i class="fas fa-caret-square-left"></i>
+                            </a>
+                        {% endif %}
+                    </td>
+                    <td class="line-num old"></td> {# Old Line Number is Blank #}
+                    <td class="line-num new" id="L{{ line+1}}">{{ line+1 }}</td> {# New Line Number #}
+                    <td class="code insert">{{ github_data["new_code"][line]|safe }}</td> {# Code itself #}
+                </tr>
+            {% endfor %}
+        {% elif opcode == "delete" %}
+            {% for line in range(i1, i2) %}
+                <tr class="line delete">
+                    <td class="blame description empty"></td>
+                    <td class="blame reblame empty"></td>
+                    <td class="line-num old" id="L{{ line+1}}">{{ line+1 }}</td> {# Old Line Number #}
+                    <td class="line-num new"></td> {# New Line Number is Blank #}
+                    <td class="code delete">{{ github_data["old_code"][line]|safe }}</td> {# Code itself #}
+                </tr>
+            {% endfor %}
+        {% elif opcode == "replace" %}
+            {% for line in range(j1, j2) %}
+                <tr class="line insert">
+                    <td class="blame description"><a class="blame commit-link" href="{{ github_data["blame_meta"][line]["commit_url"] }}">{{ github_data["blame_meta"][line]["commit_desc"] }}</td>
+                    {% if github_data["blame_meta"][line]["blame_url"] %}
+                        <td class="blame reblame">
+                            <a class="blame reblame-link" href="{{ github_data["blame_meta"][line]["blame_url"] }}">
+                                <i class="fas fa-caret-square-left"></i>
+                            </a>
+                        </td>
+                    {% else %}
+                        <td class="blame reblame empty"></td>
+                    {% endif %}
+                    <td class="line-num old"></td> {# Old Line Number is Blank #}
+                    <td class="line-num new" id="L{{ line+1}}">{{ line+1 }}</td> {# New Line Number #}
+                    <td class="code insert">{{ github_data["new_code"][line]|safe }}</td> {# Code itself #}
+                </tr>
+            {% endfor %}
+            {% for line in range(i1, i2) %}
+                <tr class="line delete">
+                    <td class="blame description empty"></td>
+                    <td class="blame reblame empty"></td>
+                    <td class="line-num old">{{ line+1 }}</td> {# Old Line Number #}
+                    <td class="line-num new"></td> {# New Line Number is Blank #}
+                    <td class="code delete">{{ github_data["old_code"][line]|safe }}</td> {# Code itself #}
+                </tr>
+            {% endfor %}
+        {% endif %}
+    {% endfor %}
+{% else %}
+    {% for line in range(github_data["new_code"]|length) %}
+        <tr class="line equal">
+            <td class="blame description"><a class="blame commit-link" href="{{ github_data["blame_meta"][line]["commit_url"] }}">{{ github_data["blame_meta"][line]["commit_desc"] }}</td>
+            <td class="blame reblame">
+                {% if github_data["blame_meta"][line]["blame_url"] %}
+                    <a class="blame reblame-link" href="{{ github_data["blame_meta"][line]["blame_url"] }}">
+                        <i class="fas fa-caret-square-left"></i>
+                    </a>
+                {% endif %}
+            </td>
+            <td class="line-num" id="L{{ line+1}}">{{ line+1 }}</td> {# New Line Number #}
+            <td class="code equal">{{ github_data["new_code"][line]|safe }}</td> {# Code itself #}
+        </tr>
+    {% endfor %}
+{% endif %}
 </table>
