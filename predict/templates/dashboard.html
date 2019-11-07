@@ -85,13 +85,13 @@
     </div>
 
     <div id="conflict-resolution" class="card">
-        <div class="card-body">
+        <div class="card-body" style="overflow-y:scroll; height:400px;">
             <div class="d-flex w-100 justify-content-between">
                 <h3 class="card-title">Review</h3>
                 <a href="{{ url_for('main.conflict_resolution') }}">Resolve Conflicts</a>
             </div>
             <p class="card-text">Review your past labels.</p>
-            
+
             {# TODO this needs to be in order of most recently edited!!!! #}
             {% for group, labels in recent_labels %}
             <div class="card border-dark review-card">

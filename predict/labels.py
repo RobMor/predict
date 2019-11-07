@@ -154,3 +154,4 @@ def create_test_labels(username):
                 comment=str(2 * i + 6),
                 edit_date=datetime.datetime.now(),
             )
+    print("Created test labels")
