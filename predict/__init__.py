@@ -8,11 +8,11 @@ import sqlalchemy
 def configure_app(config):
     # Configure App
     app = Flask("predict")
-
-    app.config.update(config)
-
+    app.config.update(config["flask_login"])
+        
     # Configure SQLAlchemy
     import predict.db
+
     # TODO get database location from the config
     engine = sqlalchemy.create_engine("sqlite:///db.sqlite")
     predict.db.SessionFactory.configure(bind=engine)
@@ -21,8 +21,7 @@ def configure_app(config):
     # Configure LoginManager
     login_manager = flask_login.LoginManager(app)
     login_manager.login_view = "main.login"
-    # TODO might want to get this key from a config file...
-    app.config["SECRET_KEY"] = "secret_xxx"
+    app.config["SECRET_KEY"] = config["flask_login"]["SECRET_KEY"]
 
     import predict.auth
     login_manager.user_loader(predict.auth.load_user)
