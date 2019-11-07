@@ -35,7 +35,7 @@
                     <label for="filters">Filters</label>
                     <select id="filters" class="form-control">
                         <option value="none">None</option>
-                    {% for plugin in plugins["filters"] %}
+                    {% for plugin in plugins["filter"] %}
                         <option value="{{ plugin.id }}">{{ plugin.description }}</option>
                     {% endfor %}
                     </select>
@@ -86,7 +86,7 @@
         </div>
     </div>
 
-    <div id="conflict-resolution" class="card">
+    <div id="review" class="card">
         <div class="card-body">
             <div class="d-flex w-100 justify-content-between">
                 <h3 class="card-title">Review</h3>
@@ -95,7 +95,7 @@
             <p class="card-text">Review your past labels.</p>
 
             {# TODO this needs to be in order of most recently edited!!!! #}
-            <div class="card-body-labels" style="overflow-y: scroll; height:550px;">
+            <div id="review-cards">
             {% for group, labels in recent_labels %}
               <div class="card border-dark review-card">
                   <a href="{{ url_for('main.cve_base', cve_id=group) }}" class="card-header text-reset">

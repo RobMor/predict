@@ -6,6 +6,11 @@
     padding: 1rem;
 }
 
+#review-cards {
+    overflow-y: scroll;
+    height: 33rem; /* TODO make this more dynamic */
+}
+
 .review-card {
     margin: 1rem;
 }
