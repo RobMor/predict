@@ -34,8 +34,9 @@
                 <div class="form-group">
                     <label for="filters">Filters</label>
                     <select id="filters" class="form-control">
-                    {% for strategy, name in [(None, "None"), ("current_user", "Only My Data")] %}
-                        <option value="{{ strategy }}">{{ name }}</option>
+                        <option value="none">None</option>
+                    {% for plugin in plugins["filters"] %}
+                        <option value="{{ plugin.id }}">{{ plugin.description }}</option>
                     {% endfor %}
                     </select>
                     <small class="form-text text-muted">
@@ -46,8 +47,8 @@
                 <div class="form-group">
                     <label for="filters">Additional Data</label>
                     <select id="filters" class="form-control" multiple>
-                    {% for strategy, name in [("comments", "Comments"), ("num_agree", "Number in Agreement")] %}
-                        <option value="{{ strategy }}">{{ name }}</option>
+                    {% for plugin in plugins["data"] %}
+                        <option value="{{ plugin.id }}">{{ plugin.description }}</option>
                     {% endfor %}
                     </select>
                     <small class="form-text text-muted">
@@ -58,8 +59,9 @@
                 <div class="form-group">
                     <label for="strategy">Conflict Resolution Strategy</label>
                     <select id="file-format" class="form-control">
-                    {% for strategy, name in [(None, "None"), ("majority", "Majority Rule")] %}
-                        <option value="{{ strategy }}">{{ name }}</option>
+                        <option value="none">None</option>
+                    {% for plugin in plugins["conflict"] %}
+                        <option value="{{ plugin.id }}">{{ plugin.description }}</option>
                     {% endfor %}
                     </select>
                     <small class="form-text text-muted">
@@ -70,8 +72,8 @@
                 <div class="form-group">
                     <label for="file-format">File Format</label>
                     <select id="file-format" class="form-control">
-                    {% for format, name in [("csv", "CSV")] %}
-                        <option value="{{ format }}">{{ name }}</option>
+                    {% for plugin in plugins["format"] %}
+                        <option value="{{ plugin.id }}">{{ plugin.description }}</option>
                     {% endfor %}
                     </select>
                     <small class="form-text text-muted">

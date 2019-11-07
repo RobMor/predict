@@ -2,4 +2,5 @@ from predict.plugins import FilterPlugin
 
 
 class CurrentUser(FilterPlugin):
-    pass
+    id="current_user"
+    description="Only Me"

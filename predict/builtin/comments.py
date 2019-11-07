@@ -2,4 +2,5 @@ from predict.plugins import DataPlugin
 
 
 class Comments(DataPlugin):
-    pass
+    id="comments"
+    description="Comments"

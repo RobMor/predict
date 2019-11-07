@@ -2,4 +2,5 @@ from predict.plugins import DataPlugin
 
 
 class NumAgree(DataPlugin):
-    pass
+    id="num_agree"
+    description="Number In Agreement"

@@ -2,4 +2,5 @@ from predict.plugins import FormatPlugin
 
 
 class CSV(FormatPlugin):
-    pass
+    id="csv"
+    description="CSV"
