@@ -1,11 +1,7 @@
 import json
-import sqlite3
-import itertools
 import datetime
-from sqlite3 import Error
 
 import flask
-import requests
 import flask_login
 
 import predict.cve
