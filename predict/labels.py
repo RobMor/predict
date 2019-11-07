@@ -37,15 +37,12 @@ def load_label(cve_id, username, repo_user, repo_name, fix_file, intro_file):
         intro_file (str): The intro file to find
         fix_file (str): The fix file to find
     """
-    query = (
-        predict.db.Session.query(predict.models.Label)
-        .filter_by(
-            cve_id=cve_id,
-            username=username,
-            repo_user=repo_user,
-            repo_name=repo_name,
-            fix_file=fix_file,
-        )
+    query = predict.db.Session.query(predict.models.Label).filter_by(
+        cve_id=cve_id,
+        username=username,
+        repo_user=repo_user,
+        repo_name=repo_name,
+        fix_file=fix_file,
     )
 
     label = query.filter_by(intro_file=intro_file).first()
@@ -56,7 +53,16 @@ def load_label(cve_id, username, repo_user, repo_name, fix_file, intro_file):
 
 
 def process_label(
-    cve_id, username, repo_user, repo_name, fix_file, fix_hash, intro_file, intro_hash, comment, edit_date
+    cve_id,
+    username,
+    repo_user,
+    repo_name,
+    fix_file,
+    fix_hash,
+    intro_file,
+    intro_hash,
+    comment,
+    edit_date,
 ):
     """Creates or updates a label.
 
@@ -75,7 +81,12 @@ def process_label(
     """
     if None not in [cve_id, username, repo_user, repo_name, fix_file]:
         current_label = load_label(
-            cve_id=cve_id, username=username, repo_user=repo_user, repo_name=repo_name, fix_file=fix_file, intro_file=intro_file
+            cve_id=cve_id,
+            username=username,
+            repo_user=repo_user,
+            repo_name=repo_name,
+            fix_file=fix_file,
+            intro_file=intro_file,
         )
 
         if current_label is None:
@@ -112,38 +123,34 @@ def process_label(
 
 
 def create_test_labels(username):
-    """
-        Creates a list of label objects in database if it doesn't exist already
+    """Creates a list of label objects in database if it doesn't exist already
 
-        Input:
-            args_list: A list of args. Each arg is a dictionary of label properties
-                Example - [{"cve":"124", "username":"namerandom"}, {"cve":"bobs"}]
-        Returns:
-            prints out "Created test labels"
+    Args:
+        username (str): The username to create dummy labels for
     """
     for i in range(5):
         process_label(
             cve_id=f"CVE-2019-000{i}",
             username=username,
             repo_user=str(i),
-            repo_name=str(i+1),
-            fix_file=str(i+2),
-            fix_hash=str(i+3),
-            intro_file=str(i+4),
-            intro_hash=str(i+5),
-            comment=str(i+6),
-            edit_date=datetime.datetime.now()
+            repo_name=str(i + 1),
+            fix_file=str(i + 2),
+            fix_hash=str(i + 3),
+            intro_file=str(i + 4),
+            intro_hash=str(i + 5),
+            comment=str(i + 6),
+            edit_date=datetime.datetime.now(),
         )
         if i % 2 == 0:
             process_label(
                 cve_id=f"CVE-2019-000{i}",
                 username=username,
-                repo_user=str(2*i),
-                repo_name=str(2*i+1),
-                fix_file=str(2*i+2),
-                fix_hash=str(2*i+3),
-                intro_file=str(2*i+4),
-                intro_hash=str(2*i+5),
-                comment=str(2*i+6),
-                edit_date=datetime.datetime.now()
+                repo_user=str(2 * i),
+                repo_name=str(2 * i + 1),
+                fix_file=str(2 * i + 2),
+                fix_hash=str(2 * i + 3),
+                intro_file=str(2 * i + 4),
+                intro_hash=str(2 * i + 5),
+                comment=str(2 * i + 6),
+                edit_date=datetime.datetime.now(),
             )
