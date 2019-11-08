@@ -1,8 +1,5 @@
 import configparser
 import os
-import random
-import string
-
 
 '''
     Helper file for configuration work.
@@ -33,36 +30,46 @@ def create_default_config(arguments):
     # TODO: See if there is a faster way to add feilds without overriding. NOTE: Using config.set followed by config[] on the same section
     # clears that section.
     config['auth_settings']= {}
-    config.set('auth_settings', ';Control how strictly defined password and usernames are by modifying the regex in the below section')
+    config.set('auth_settings', '#Control how strictly defined password and usernames are by modifying the regex in the below section')
 
     config['auth_settings']['username_regex'] = '\\w+'
     config['auth_settings']['password_regex'] = '\\w{8,}'
 
     config['flask_login'] = {}
     config.set('flask_login','#Secret key is used to encrypt flask-login sessions. Only set it if you know what you are doing.')
-    #config['flask_login']['SECRET_KEY'] = str(os.urandom(16)).replace('%','') #NOTE: Stricter version of secret keys
-    config['flask_login']['SECRET_KEY']  = randomSecret(3)
     config['flask_login']['LOGIN_DISABLED'] = str(not arguments.secured)
+
+    #NOTE: Stricter version of secret keys, removed % because was causing runtime interpolation error.
+    #config['flask_login']['SECRET_KEY'] = str(os.urandom(16)).replace('%','') 
+    config['flask_login']['SECRET_KEY']  = randomSecret(3)
     
-    # TODO: Make it so the config file writes to the user's home directory unless environment variable set.
+    # TODO: Unless environment variable set?
     write_config()
 
 def randomSecret(stringLength):
     '''
-        Generate a random string of fixed length
+        Generate a random uppercase string of fixed length
     '''
+    import random
+    import string
+    
     letters = string.ascii_uppercase
     return ''.join(random.choice(letters) for i in range(stringLength))
 
 def write_config():
+    
     '''
-        Writes the config file and creates a new configs directory if one
-        does not exist, already.
+        Writes the config file to the user's home directory, and creates one if does not exist already.
     '''
-    if not os.path.isdir('configs'):
-        os.mkdir('configs')
+    # Get the home directory.
+    from pathlib import Path
+    home = str(Path.home())
 
-    with open('configs/config.ini', 'w') as configfile:
+    # Apparently it is possible to delete your home directory. TODO: Delete if completely unecessary. 
+    if not os.path.isdir(home):
+        os.mkdir(home)
+
+    with open(home + '/config.ini', 'w') as configfile:
         config.write(configfile)
 
 #TODO: Determine whether this needs to be filtering out the commented items inside the .ini file.
