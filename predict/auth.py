@@ -8,7 +8,6 @@ import sqlalchemy
 import predict.db
 import predict.models
 
-
 def create_user(username, password):
     """Attempts to create a new user
 
@@ -78,7 +77,7 @@ def valid_username(username):
     Returns:
         True if the username is valid, False otherwise.
     """
-    return re.fullmatch("\w+", username) is not None
+    return re.fullmatch(flask.current_app.config['USERNAME_REGEX'], username) is not None
 
 
 def valid_password(password):
@@ -90,4 +89,5 @@ def valid_password(password):
     Returns:
         True if the password is valid, False otherwise.
     """
-    return re.fullmatch("\w{8,}", password) is not None
+
+    return re.fullmatch(flask.current_app.config['PASSWORD_REGEX'], password) is not None

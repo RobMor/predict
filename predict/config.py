@@ -19,7 +19,7 @@ def load_config(file_path):
 def write_config(config, file_path):
     """
         Writes the config file and creates a new configs directory if one
-        does not exist, alreadReturn True if path refers to an existing path. Returns True for broken symbolic links. Equivalent to exists() on platforms lacking os.lstat().y.
+        does not exist, and return True if path refers to an existing path. Returns True for broken symbolic links. Equivalent to exists() on platforms lacking os.lstat().y.
     """
     if not os.path.exists(os.path.dirname(file_path)):
         os.makedirs(os.path.dirname(file_path))
@@ -30,8 +30,6 @@ def write_config(config, file_path):
     # Set file permissions to only this user
     os.chmod(file_path, stat.S_IRUSR | stat.S_IWUSR)
 
-
-# TODO: Maybe have this function return the current config hash by default?
 def create_default_config():
     """Creates a default configuraion.
 
