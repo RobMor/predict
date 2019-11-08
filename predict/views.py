@@ -15,7 +15,6 @@ import predict.labels
 
 blueprint = flask.Blueprint("main", __name__)
 
-
 @blueprint.route("/")
 @flask_login.login_required
 def base():
@@ -26,19 +25,26 @@ def base():
 def login():
     return flask.render_template("login.html", invalidLogin=False)
 
+# TODO: Determine the idiomatic way to send the config regex vars to the template (if this is something we need to do) --
+# flashed messages usually only for messages? Might be cleaner to pass the variable to the render function? 
+# Disadvantage is vars need to be sent to render_tempalte() every time register.html is created, and defined twice. 
+# Advantage is that the template code is simple. You could alternatively parse the config from the Javascript? That seems bad.
 
 @blueprint.route("/login", methods=["POST"])
 def login_post():
     username = flask.request.form["username"]
     password = flask.request.form["password"]
 
+    user_regex = flask.current_app.config["USERNAME_REGEX"]
+    password_regex = flask.current_app.config["PASSWORD_REGEX"]
+
     if not predict.auth.valid_username(username):
-        flask.flash("Your username must be one or more alphanumeric characters! Please try again.")
-        return flask.render_template("register.html")
+        flask.flash(user_regex) # TODO: hotfix, not very descriptive, but we have variable, user-def regex now, so...
+        return flask.render_template("register.html", user_regex = user_regex, password_regex = password_regex)
 
     if not predict.auth.valid_password(password):
-        flask.flash("Your password must be eight or more alphanumeric characters! Please try again.")
-        return flask.render_template("register.html")
+        flask.flash(password_regex)
+        return flask.render_template("register.html", user_regex = user_regex, password_regex = password_regex)
 
     authorized = predict.auth.authenticate_user(username, password)
 
@@ -60,8 +66,8 @@ def logout():
 
 @blueprint.route("/register", methods=["GET"])
 def register():
-    return flask.render_template("register.html")
-
+    return flask.render_template("register.html", user_regex = flask.current_app.config["USERNAME_REGEX"], 
+    password_regex = flask.current_app.config["PASSWORD_REGEX"])
 
 @blueprint.route("/register", methods=["POST"])
 def register_post():
@@ -69,25 +75,29 @@ def register_post():
     password = flask.request.form["password"]
     confirm = flask.request.form["confirm"]
 
+    user_regex = flask.current_app.config["USERNAME_REGEX"]
+    password_regex = flask.current_app.config["PASSWORD_REGEX"]
+
     if confirm != password:
         flask.flash("Passwords entered do not match! Please try again.")
-        return flask.render_template("register.html")
+        return flask.render_template("register.html", user_regex = user_regex, password_regex = password_regex)
 
     if not predict.auth.valid_username(username):
-        flask.flash("Your username must be one or more alphanumeric characters! Please try again.")
-        return flask.render_template("register.html")
+       
+        flask.flash(user_regex) 
+        return flask.render_template("register.html", user_regex = user_regex, password_regex = password_regex)
 
     if not predict.auth.valid_password(password):
-        flask.flash("Your password must be eight or more alphanumeric characters! Please try again.")
-        return flask.render_template("register.html")
+        flask.flash(password_regex)
+        return flask.render_template("register.html", user_regex = user_regex, password_regex = password_regex)
 
-    created = predict.auth.create_user(username, password)
+    created = predict.auth.create_user(user_regex = user_regex, password_regex = password_regex)
 
     if created:
         return flask.redirect(flask.url_for("main.login"))
     else:
         flask.flash("That username already exists! Please try again.")
-        return flask.render_template("register.html")
+        return flask.render_template("register.html", user_regex = user_regex, password_regex = password_regex)
 
 
 @blueprint.route("/dashboard")

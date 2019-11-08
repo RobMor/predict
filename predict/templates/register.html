@@ -20,17 +20,17 @@
     <form method="POST" id="main-form">
         <div class="form-group">
             <label for="username">Username:</label>
-            <input class="form-control" name="username" id="username" title="Please enter a username consisting of at least 1 alphanumeric characters." placeholder="Username" pattern="\w+" required>
+            <input class="form-control" name="username" id="username" title="{{ user_regex }}" placeholder="Username" pattern="{{ user_regex }}" required>
         </div>
 
         <div class="form-group">
             <label for="password">Password:</label>
-            <input class="form-control" name="password" id="password" title="Please enter a password consisting of at least 8 alphanumeric characters." type="password" placeholder="Password" pattern="\w{8,}" required>
+            <input class="form-control" name="password" id="password" title="{{ password_regex }}" type="password" placeholder="Password" pattern="{{ password_regex }}" required>
         </div>
 
         <div class="form-group">
             <label for="confirm">Confirm Password:</label>
-            <input class="form-control" name="confirm" id="confirm" title="Please enter a password consisting of at least 8 alphanumeric chacaters." type="password" oninput="checkPassAndConfirm()" placeholder="Confirm Password" pattern="\w{8,}" required>
+            <input class="form-control" name="confirm" id="confirm" title="{{ password_regex }}" type="password" oninput="checkPassAndConfirm()" placeholder="Confirm Password" pattern="{{ password_regex }}" required>
         </div>
 
         <input type="submit" class="btn btn-primary" value="Register">
