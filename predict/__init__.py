@@ -8,8 +8,11 @@ import sqlalchemy
 def configure_app(config):
     # Configure App
     app = Flask("predict")
-    app.config.update(config["flask_login"])
-        
+
+    app.config["WHITELIST"] = config["WHITELIST"].keys()
+    app.config["USERNAME_REGEX"] = config["AUTHENTICATION"]["USERNAME_REGEX"]
+    app.config["PASSWORD_REGEX"] = config["AUTHENTICATION"]["PASSWORD_REGEX"]
+
     # Configure SQLAlchemy
     import predict.db
 
@@ -19,9 +22,10 @@ def configure_app(config):
     app.teardown_appcontext(predict.db.teardown_session)
 
     # Configure LoginManager
+    app.config["SECRET_KEY"] = config["SECURITY"]["SECRET_KEY"]
+    app.config["LOGIN_DISABLED"] = not config["SECURITY"]["LOGIN_REQUIRED"]
     login_manager = flask_login.LoginManager(app)
     login_manager.login_view = "main.login"
-    app.config["SECRET_KEY"] = config["flask_login"]["SECRET_KEY"]
 
     import predict.auth
     login_manager.user_loader(predict.auth.load_user)

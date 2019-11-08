@@ -1,87 +1,82 @@
-import configparser
+"""Handles operations related to the configuration of predict."""
 import os
+import stat
+import binascii
+import configparser
 
-'''
-    Helper file for configuration work.
-'''
 
-# Create parsing object for manipulating config file
-config = configparser.ConfigParser(allow_no_value=True)
-config.optionxform = str # Allows for uppercase keys so the flask-login will disable properly when it reads the configuration.
+def load_config(file_path):
+    config = configparser.ConfigParser(allow_no_value=True)
+    config.optionxform = str
+
+    if os.path.exists(file_path):
+        config.read(file_path)
+        return config
+
+    return None
+
+
+def write_config(config, file_path):
+    """
+        Writes the config file and creates a new configs directory if one
+        does not exist, alreadReturn True if path refers to an existing path. Returns True for broken symbolic links. Equivalent to exists() on platforms lacking os.lstat().y.
+    """
+    with open(file_path, "w") as f:
+        config.write(f)
+
+    # Set file permissions to only this user
+    os.chmod(file_path, stat.S_IRUSR | stat.S_IWUSR)
+
 
 # TODO: Maybe have this function return the current config hash by default?
-def create_default_config(arguments):
-    '''
-        Creates the configuration file in the default location of configs/config.ini. Fills the 
-        configuration file with default regex and an empty whitelist and comments describing the 
-        sections of the config.ini.
+def create_default_config():
+    """Creates a default configuraion.
 
-        Parameters:
-            arguments: the arguments (presumably passed in from cli.py) from the command line.
-    '''
+    Fills the configuration file with default regex and an empty whitelist and
+    comments describing the sections of the config.ini.
+
+    Args:
+        arguments: the arguments (presumably passed in from cli.py) from the command line.
+    """
     # By default the configuration file is an empty whitelist with basic username and password requirements.
-    
+    config = configparser.ConfigParser(allow_no_value=True)
+    config.optionxform = str
+
     # TODO: Change these to config defaults?
-   
-    config['whitelist'] = {}
-    config.set('whitelist', '''#Please place the usernames of researchers allowed on the predict system in the below section. 
-#Each name should appear on a seperate line and do not requre values (=).''')
-    
-    # TODO: See if there is a faster way to add feilds without overriding. NOTE: Using config.set followed by config[] on the same section
-    # clears that section.
-    config['auth_settings']= {}
-    config.set('auth_settings', '#Control how strictly defined password and usernames are by modifying the regex in the below section')
 
-    config['auth_settings']['username_regex'] = '\\w+'
-    config['auth_settings']['password_regex'] = '\\w{8,}'
+    config.add_section("WHITELIST")
+    config.set(
+        "WHITELIST",
+        "; This section of the configuration is for specifying which users are allowed to",
+    )
+    config.set(
+        "WHITELIST",
+        "; register. Each line here should be a username. Every username specified will",
+    )
+    config.set("WHITELIST", "; be permitted to create an account.")
 
-    config['flask_login'] = {}
-    config.set('flask_login','#Secret key is used to encrypt flask-login sessions. Only set it if you know what you are doing.')
-    config['flask_login']['LOGIN_DISABLED'] = str(not arguments.secured)
+    config.add_section("SECURITY")
+    config.set(
+        "SECURITY",
+        "; This section lets you configure the security features of predict like secret",
+    )
+    config.set("SECURITY", "; keys and whether or not authentication is required.")
 
-    #NOTE: Stricter version of secret keys, removed % because was causing runtime interpolation error.
-    #config['flask_login']['SECRET_KEY'] = str(os.urandom(16)).replace('%','') 
-    config['flask_login']['SECRET_KEY']  = randomSecret(3)
-    
-    # TODO: Unless environment variable set?
-    write_config()
+    config["SECURITY"]["SECRET_KEY"] = random_secret_key(24)
+    config["SECURITY"]["LOGIN_REQUIRED"] = False
 
-def randomSecret(stringLength):
-    '''
-        Generate a random uppercase string of fixed length
-    '''
-    import random
-    import string
-    
-    letters = string.ascii_uppercase
-    return ''.join(random.choice(letters) for i in range(stringLength))
+    config.add_section("AUTHENTICATION")
+    config.set(
+        "AUTHENTICATION",
+        "; This section lets you configure the regular expressions used by the registration system.",
+    )
 
-def write_config():
-    
-    '''
-        Writes the config file to the user's home directory, and creates one if does not exist already.
-    '''
-    # Get the home directory.
-    from pathlib import Path
-    home = str(Path.home())
+    config["AUTHENTICATION"]["USERNAME_REGEX"] = "\\w+"
+    config["AUTHENTICATION"]["PASSWORD_REGEX"] = "\\w{8,}"
 
-    # Apparently it is possible to delete your home directory. TODO: Delete if completely unecessary. 
-    if not os.path.isdir(home):
-        os.mkdir(home)
+    return config
 
-    with open(home + '/config.ini', 'w') as configfile:
-        config.write(configfile)
 
-#TODO: Determine whether this needs to be filtering out the commented items inside the .ini file.
-def get_whitelist():
-    '''
-        Returns: A list containing string representations of usernames from the configuration file
-    '''
-    return list(config._sections['whitelist'].keys())
-
-#TODO: Determine whether or not need a helper function or this or can obtain it straight out of the import from the other class.
-def get_config():
-    '''
-        Returns: The current confiiguration as a dictionary
-    '''
-    return config._sections
+def random_secret_key(length):
+    """Generate a random secret key with length bytes"""
+    return binascii.hexlify(os.urandom(length)).decode("utf-8")

@@ -1,20 +1,33 @@
+import os
 import argparse
 
 import predict.config
 
+
 def up(arguments):
     import predict
 
-    predict.config.create_default_config(arguments)
+    # Precedence order
+    config_location = arguments.config or os.environ.get("PREDICT_CONFIG") or os.path.expanduser("~/.predict.ini")
     
-    app = predict.configure_app(predict.config.get_config())
+    config = predict.config.load_config(config_location)
+        
+    if config is None:
+        config = predict.config.create_default_config()
+        predict.config.write_config(config, config_location)
+
+    config["SECURITY"]["LOGIN_REQUIRED"] = config["SECURITY"]["LOGIN_REQUIRED"] or arguments.secured
+    
+    app = predict.configure_app(config)
+
     # TODO remove `debug` later
     app.run(debug=True)
+
 
 def main():
     parser = argparse.ArgumentParser("predict", description="Predict: CVE Labeling Tool")
 
-    parser.set_defaults(target=up, secured=False)
+    parser.set_defaults(target=up, config=None, secured=False)
 
     subparsers = parser.add_subparsers(title="Available commands", metavar="<command>", prog="predict")
 
@@ -46,6 +59,7 @@ def main():
         arguments.target(arguments)
     else:
         parser.print_help()
+
 
 if __name__ == "__main__":
     main()
