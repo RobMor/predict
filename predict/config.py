@@ -21,6 +21,9 @@ def write_config(config, file_path):
         Writes the config file and creates a new configs directory if one
         does not exist, alreadReturn True if path refers to an existing path. Returns True for broken symbolic links. Equivalent to exists() on platforms lacking os.lstat().y.
     """
+    if not os.path.exists(os.path.dirname(file_path)):
+        os.makedirs(os.path.dirname(file_path))
+
     with open(file_path, "w") as f:
         config.write(f)
 

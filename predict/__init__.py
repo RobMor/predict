@@ -23,7 +23,7 @@ def configure_app(config):
 
     # Configure LoginManager
     app.config["SECRET_KEY"] = config["SECURITY"]["SECRET_KEY"]
-    app.config["LOGIN_DISABLED"] = not config["SECURITY"]["LOGIN_REQUIRED"]
+    app.config["LOGIN_DISABLED"] = not config["SECURITY"].getboolean("LOGIN_REQUIRED")
     login_manager = flask_login.LoginManager(app)
     login_manager.login_view = "main.login"
 

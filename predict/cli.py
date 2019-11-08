@@ -8,7 +8,7 @@ def up(arguments):
     import predict
 
     # Precedence order
-    config_location = arguments.config or os.environ.get("PREDICT_CONFIG") or os.path.expanduser("~/.predict.ini")
+    config_location = arguments.config or os.environ.get("PREDICT_CONFIG") or os.path.expanduser("~/.predict/config.ini")
     
     config = predict.config.load_config(config_location)
         
@@ -16,7 +16,7 @@ def up(arguments):
         config = predict.config.create_default_config()
         predict.config.write_config(config, config_location)
 
-    config["SECURITY"]["LOGIN_REQUIRED"] = config["SECURITY"]["LOGIN_REQUIRED"] or arguments.secured
+    config["SECURITY"]["LOGIN_REQUIRED"] = config["SECURITY"].getboolean("LOGIN_REQUIRED") or arguments.secured
     
     app = predict.configure_app(config)
 
