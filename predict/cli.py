@@ -16,7 +16,14 @@ def up(arguments):
         config = predict.config.create_default_config()
         predict.config.write_config(config, config_location)
 
-    config["SECURITY"]["LOGIN_REQUIRED"] = config["SECURITY"].getboolean("LOGIN_REQUIRED") or arguments.secured
+    #DEBUGGING
+    print (config["SECURITY"]["LOGIN_REQUIRED"])
+    print (type(config.getboolean("SECURITY","LOGIN_REQUIRED")))
+    print (type(arguments.secured))
+    print (arguments.secured)
+    print (config.getboolean("SECURITY","LOGIN_REQUIRED") or arguments.secured)
+    
+    config["SECURITY"]["LOGIN_REQUIRED"] = str(config.getboolean("SECURITY","LOGIN_REQUIRED") or arguments.secured)
     
     app = predict.configure_app(config)
 
