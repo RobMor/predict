@@ -132,7 +132,9 @@ def dashboard():
 
     plugins = predict.plugins.load_plugins()
 
-    return flask.render_template("dashboard.html", plugins=plugins, recent_labels=recent_labels, username=username)
+    return flask.render_template(
+        "dashboard.html", plugins=plugins, recent_labels=recent_labels, username=username
+    )
 
 
 @blueprint.route("/resolution")
