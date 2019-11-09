@@ -8,10 +8,18 @@
 {% endblock %}
 
 {% block content %}
-<div class="commit-info">
-    <h1 class="commit-title">{{ github_data["title"] }}</h1>
-    <small>{{ github_data["hash"] }}</small>
-    <pre>{{ github_data["desc"] }}</pre>
+<div id="commit-info">
+    <div id="commit-title">{{ github_data["title"] }}</div>
+    <div id="commit-description">{{ github_data["desc"] }}</div>
+    <hr>
+    <div id="commit-metadata">
+        <div id="commit-authors">
+            Authored by: {{ github_data["authors"]|join(", ") }}
+        </div>
+        <div id="commit-hash-container">
+            commit <span id="commit-hash">{{ github_data["hash"] }}</span>
+        </div>
+    </div>
 </div>
 
 <div id="files">
