@@ -7,10 +7,9 @@
 {% endblock %}
 
 {% block title %}{{ github_data["file_name"] }}{% endblock %}
-
-
-
 {% block content %}
+
+    
     <div id="header">
         <h1>{{ github_data["file_name"] }}</h1>
         <select class="form-control">
@@ -20,7 +19,7 @@
         </select>
     </div>
 
-    <div id="blame">
+    <div id="blame" class="content">
         {% include "blame_diff.html" %}
     </div>
 {% endblock%}
