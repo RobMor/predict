@@ -102,6 +102,15 @@ def register_post():
         flask.flash(flask.current_app.config["PASSWORD_FEEDBACK"])
         return flask.render_template("register.html")
 
+    if (
+        "WHITELIST" in flask.current_app.config
+        and username not in flask.current_app.config["WHITELIST"]
+    ):
+        flask.flash(
+            "Username not in the whitelist. Please register using your whitelisted username."
+        )
+        return flask.render_template("register.html")
+
     created = predict.auth.create_user(username, password)
 
     if created:

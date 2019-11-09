@@ -9,7 +9,10 @@ def configure_app(config):
     # Configure App
     app = Flask("predict")
 
-    app.config["WHITELIST"] = config["WHITELIST"].keys()
+    if config.getboolean("WHITELIST", "WHITELIST_ENABLED"):
+        config.remove_option("WHITELIST", "WHITELIST_ENABLED")
+        app.config["WHITELIST"] = config["WHITELIST"].keys()
+
     app.config["USERNAME_REGEX"] = config["AUTHENTICATION"]["USERNAME_REGEX"]
     app.config["USERNAME_FEEDBACK"] = config["AUTHENTICATION"]["USERNAME_FEEDBACK"]
     app.config["PASSWORD_REGEX"] = config["AUTHENTICATION"]["PASSWORD_REGEX"]

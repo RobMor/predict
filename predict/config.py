@@ -52,9 +52,10 @@ def create_default_config():
     )
     config.set(
         "WHITELIST",
-        "; register. Each line here should be a username. Every username specified will",
+        "; register. Aside from WHITELIST_ENABLED, each line here should be a username. ",
     )
-    config.set("WHITELIST", "; be permitted to create an account.")
+    config.set("WHITELIST", "; Every username specified will be permitted to create an account.")
+    config["WHITELIST"]["WHITELIST_ENABLED"] = "True"
 
     config.add_section("SECURITY")
     config.set(
