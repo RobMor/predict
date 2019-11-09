@@ -7,11 +7,11 @@
     </tr>
     {% for opcode, i1, i2, j1, j2 in group["diff"] %}
         {% if opcode == "equal" %}
-            {% for line in range(i1, i2) %}
+            {% for offset in range(j2 - j1) %}
                 <tr class="line equal">
-                    <td class="line-num old">{{ line+group["old_start"] }}</td> {# Old Line Number #}
-                    <td class="line-num new">{{ line+group["new_start"] }}</td> {# New Line Number #}
-                    <td class="code equal">{{ group["new_code"][line]|safe }}</td> {# Code itself #}
+                    <td class="line-num old">{{ i1 + offset + group["old_start"] }}</td> {# Old Line Number #}
+                    <td class="line-num new">{{ j1 + offset + group["new_start"] }}</td> {# New Line Number #}
+                    <td class="code equal">{{ group["new_code"][j1 + offset]|safe }}</td> {# Code itself #}
                 </tr>
             {% endfor %}
         {% elif opcode == "insert" %}

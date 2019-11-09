@@ -74,6 +74,10 @@
     content: "-";
 }
 
+.code::selection, .code *::selection {
+    background-color: yellow;
+}
+
 .blame.description {
     white-space: nowrap;
     overflow: hidden;
@@ -82,6 +86,8 @@
 
     padding-left: 0.5rem;
     padding-right: 0.5rem;
+
+    user-select: none;
 
     font-size: 12px;
 }
@@ -96,10 +102,6 @@
 
 .blame.reblame-link:hover {
     color: #0366d6;
-}
-
-.selected {
-    background: yellow;
 }
 
 /* ---- Syntax Highlighting Below This Line ---- */
