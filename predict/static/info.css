@@ -1,19 +1,40 @@
 .file {
-background-color: white;
-float: left;
-}
-.file-text {
-  background-color: pink;
-  padding-left: 14px;
-  overflow: auto;
-
+    width: 100%;
+    margin: 1rem;
 }
 
-.diff-card {
-  width: 100%;
-  margin: 1rem;
+.file-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
 }
 
-.diff-card-body {
-  padding: 0;
+.file-name {
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.file-controls {
+    display: flex;
+}
+
+.file-btn {
+    text-align: center;
+    padding: 0;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+
+    border: none;
+    border-radius: 0.25rem;
+
+    min-width: 2rem;
+
+    cursor: pointer;
+}
+
+.file-btn:hover {
+    background-color: lightgray;
+}
+
+.diff-container {
+    padding: 0;
 }

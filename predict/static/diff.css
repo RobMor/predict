@@ -1,4 +1,4 @@
-.diff {
+.diff-body {
     border-collapse: collapse;
     font-family: 'Courier New', Courier, monospace;
 }
@@ -96,6 +96,10 @@
 
 .blame.reblame-link:hover {
     color: #0366d6;
+}
+
+.selected {
+    background: yellow;
 }
 
 /* ---- Syntax Highlighting Below This Line ---- */
