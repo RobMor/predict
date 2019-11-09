@@ -65,7 +65,7 @@
                     {% endfor %}
                     </select>
                     <small class="form-text text-muted">
-                        The strategy to use when there are conflicts in the data.
+                        Select the strategy to use when there are conflicts in the data.
                     </small>
                 </div>
 
@@ -77,7 +77,7 @@
                     {% endfor %}
                     </select>
                     <small class="form-text text-muted">
-                        The file format you want the data in.
+                        Select the file format you want the data in.
                     </small>
                 </div>
 
@@ -107,11 +107,11 @@
                               <div class="label-desc">
                                   <a {# href="{{ fix_file_link }}" #}>{{ label.fix_file }}</a>
                                   @
-                                  <a {# href="{{ fix_hash_link }}" #}>{{ label.fix_hash }}</a>
+                                  <a {# href="{{ fix_hash_link }}" #}>{{ label.fix_hash[:7] }}</a>
                                   ←
                                   <a {# href="{{ intro_file_link }}" #}>{{ label.intro_file }}</a>
                                   @
-                                  <a {# href="{{ intro_hash_link }}" #}>{{ label.intro_hash }}</a>
+                                  <a {# href="{{ intro_hash_link }}" #}>{{ label.intro_hash[:7] }}</a>
                               </div>
                               <small>{{ label.edit_date }}</small>
                           </li>

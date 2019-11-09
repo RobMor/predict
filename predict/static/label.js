@@ -18,6 +18,11 @@ function catchSelection(event) {
 // TODO
 document.addEventListener("selectionchange", catchSelection)
 
+function promptForFix(files) {
+    // TODO
+    return { file: "fs/attr.c", hash: "123ABC" }
+}
+
 function promptForComments() {
     return prompt("Any Comments?")
 }
@@ -26,9 +31,18 @@ function fixesVulnerability(cve_id, repo_name, repo_user, fix_file, fix_hash) {
     createLabel(cve_id, repo_name, repo_user, fix_file, fix_hash, null, null, null)
 }
 
-function introducesVulnerability(cve_id, repo_name, repo_user, fix_file, fix_hash, intro_file, intro_hash) {
+function introducesVulnerability(cve_id, repo_name, repo_user, intro_file, intro_hash) {
+    fixOptions = getFixOptions(cve_id, repo_name, repo_user)
+
+    fix = promptForFix(fixOptions)
+
     comment = promptForComments()
-    createLabel(cve_id, repo_name, repo_user, fix_file, fix_hash, intro_file, intro_hash, comment)
+
+    createLabel(cve_id, repo_name, repo_user, fix.file, fix.hash, intro_file, intro_hash, comment)
+}
+
+function getFixOptions(cve_id, repo_name, repo_user) {
+    return [{ file: "fs/attr.c", hash: "123ABC" }]
 }
 
 function createLabel(cve_id, repo_name, repo_user, fix_file, fix_hash, intro_file, intro_hash, comment) {

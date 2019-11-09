@@ -3,31 +3,20 @@
 {% block head %}
 {{ super() }}
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='diff.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='blame.css') }}">
 {% endblock %}
 
-{% block title %}Git Blame {{github_data["file_name"]}}{% endblock %}
+{% block title %}{{ github_data["file_name"] }}{% endblock %}
 
 
 
 {% block content %}
-    <style>
-        #header {
-            background: white;
-            width: 100%;
-
-            padding: 0.5rem;
-
-            position: sticky;
-            top: 0;
-        }
-    </style>
-    
     <div id="header">
+        <h1>{{ github_data["file_name"] }}</h1>
         <select class="form-control">
             <option value="" disabled selected>Relation to Vulnerability</option>
-            <option value="fVuln"> Fixes Vulnerability</option>
-            <option value="fVuln"> Introduces Vulnerability</option>
-            <option value="fVuln"> None</option>
+            <option value="fix"> Fixes Vulnerability</option>
+            <option value="intro"> Introduces Vulnerability</option>
         </select>
     </div>
 
