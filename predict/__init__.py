@@ -42,5 +42,7 @@ def configure_app(config):
     # Configure Views
     import predict.views
     app.register_blueprint(predict.views.blueprint)
-
+	
+    import predict.plugins
+    app.register_blueprint(predict.plugins.plugbp)
     return app
