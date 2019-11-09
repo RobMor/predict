@@ -1,14 +1,28 @@
 from abc import ABC
 import entrypoints
-
-
+import sys
+from flask import Response, request, Flask
+import flask
 # Data Export Process
 # 1. Select Data Filter (optional)
 # 2. Select Additional Data (optional)
 # 3. Select Conflict Resolution (optional)
 # 4. Select Output Format (required)
 
+plugbp = flask.Blueprint('plugins', __name__, template_folder='templates')
 
+@plugbp.route('/plug/handler', methods=['POST'])	
+def plugHandler():
+	form = request.form
+	type = request.form.get('file-format')
+	filt = request.form.get('filters')
+	
+	if(type == 'csv'):
+		from predict.builtin.csv import createCSV
+		return createCSV(form)
+	else:
+		return type
+		
 # TODO
 class FilterPlugin(ABC):
     pass
