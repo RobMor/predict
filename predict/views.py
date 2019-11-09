@@ -40,11 +40,11 @@ def login_post():
 
     if not predict.auth.valid_username(username):
         flask.flash(user_regex) # TODO: hotfix, not very descriptive, but we have variable, user-def regex now, so...
-        return flask.render_template("register.html", user_regex = user_regex, password_regex = password_regex)
+        return flask.render_template("register.html", user_regex=user_regex, password_regex=password_regex)
 
     if not predict.auth.valid_password(password):
         flask.flash(password_regex)
-        return flask.render_template("register.html", user_regex = user_regex, password_regex = password_regex)
+        return flask.render_template("register.html", user_regex=user_regex, password_regex=password_regex)
 
     authorized = predict.auth.authenticate_user(username, password)
 
@@ -83,7 +83,6 @@ def register_post():
         return flask.render_template("register.html", user_regex = user_regex, password_regex = password_regex)
 
     if not predict.auth.valid_username(username):
-       
         flask.flash(user_regex) 
         return flask.render_template("register.html", user_regex = user_regex, password_regex = password_regex)
 
@@ -91,7 +90,7 @@ def register_post():
         flask.flash(password_regex)
         return flask.render_template("register.html", user_regex = user_regex, password_regex = password_regex)
 
-    created = predict.auth.create_user(user_regex = user_regex, password_regex = password_regex)
+    created = predict.auth.create_user(username, password)
 
     if created:
         return flask.redirect(flask.url_for("main.login"))
