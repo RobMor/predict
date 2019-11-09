@@ -15,6 +15,7 @@ import predict.labels
 
 blueprint = flask.Blueprint("main", __name__)
 
+
 @blueprint.route("/")
 @flask_login.login_required
 def base():
@@ -25,32 +26,41 @@ def base():
 def login():
     return flask.render_template("login.html", invalidLogin=False)
 
+
 # TODO: Determine the idiomatic way to send the config regex vars to the template (if this is something we need to do) --
-# flashed messages usually only for messages? Might be cleaner to pass the variable to the render function? 
-# Disadvantage is vars need to be sent to render_tempalte() every time register.html is created, and defined twice. 
+# flashed messages usually only for messages? Might be cleaner to pass the variable to the render function?
+# Disadvantage is vars need to be sent to render_tempalte() every time register.html is created, and defined twice.
 # Advantage is that the template code is simple. You could alternatively parse the config from the Javascript? That seems bad.
+
 
 @blueprint.route("/login", methods=["POST"])
 def login_post():
     username = flask.request.form["username"]
     password = flask.request.form["password"]
 
-    user_regex = flask.current_app.config["USERNAME_REGEX"]
-    password_regex = flask.current_app.config["PASSWORD_REGEX"]
+    # TODO decide whether we should validate login
+    # argument against: it's possible registration requirements get out of sync
+    # with login requirements and people get locked out. Also there's virtually
+    # no point...
 
-    if not predict.auth.valid_username(username):
-        flask.flash(user_regex) # TODO: hotfix, not very descriptive, but we have variable, user-def regex now, so...
-        return flask.render_template("register.html", user_regex=user_regex, password_regex=password_regex)
+    # user_regex = flask.current_app.config["USERNAME_REGEX"]
+    # password_regex = flask.current_app.config["PASSWORD_REGEX"]
 
-    if not predict.auth.valid_password(password):
-        flask.flash(password_regex)
-        return flask.render_template("register.html", user_regex=user_regex, password_regex=password_regex)
+    # if not predict.auth.valid_username(username):
+    #     flask.flash(user_regex)
+    #     return flask.render_template("login.html")
+
+    # if not predict.auth.valid_password(password):
+    #     flask.flash(password_regex)
+    #     return flask.render_template("login.html")
 
     authorized = predict.auth.authenticate_user(username, password)
 
     # If valid send the user to the dashboard
     if authorized:
-        return flask.redirect(flask.request.args.get("next", flask.url_for("main.dashboard")))
+        return flask.redirect(
+            flask.request.args.get("next", flask.url_for("main.dashboard"))
+        )
     else:
         flask.flash("Unrecognized credentials! Please try again.")
         return flask.render_template("login.html")
@@ -66,8 +76,12 @@ def logout():
 
 @blueprint.route("/register", methods=["GET"])
 def register():
-    return flask.render_template("register.html", user_regex = flask.current_app.config["USERNAME_REGEX"], 
-    password_regex = flask.current_app.config["PASSWORD_REGEX"])
+    return flask.render_template(
+        "register.html",
+        user_regex=flask.current_app.config["USERNAME_REGEX"],
+        password_regex=flask.current_app.config["PASSWORD_REGEX"],
+    )
+
 
 @blueprint.route("/register", methods=["POST"])
 def register_post():
@@ -75,20 +89,17 @@ def register_post():
     password = flask.request.form["password"]
     confirm = flask.request.form["confirm"]
 
-    user_regex = flask.current_app.config["USERNAME_REGEX"]
-    password_regex = flask.current_app.config["PASSWORD_REGEX"]
-
     if confirm != password:
         flask.flash("Passwords entered do not match! Please try again.")
-        return flask.render_template("register.html", user_regex = user_regex, password_regex = password_regex)
+        return flask.render_template("register.html")
 
     if not predict.auth.valid_username(username):
-        flask.flash(user_regex) 
-        return flask.render_template("register.html", user_regex = user_regex, password_regex = password_regex)
+        flask.flash(flask.current_app.config["USERNAME_FEEDBACK"])
+        return flask.render_template("register.html")
 
     if not predict.auth.valid_password(password):
-        flask.flash(password_regex)
-        return flask.render_template("register.html", user_regex = user_regex, password_regex = password_regex)
+        flask.flash(flask.current_app.config["PASSWORD_FEEDBACK"])
+        return flask.render_template("register.html")
 
     created = predict.auth.create_user(username, password)
 
@@ -96,7 +107,7 @@ def register_post():
         return flask.redirect(flask.url_for("main.login"))
     else:
         flask.flash("That username already exists! Please try again.")
-        return flask.render_template("register.html", user_regex = user_regex, password_regex = password_regex)
+        return flask.render_template("register.html")
 
 
 @blueprint.route("/dashboard")
@@ -111,7 +122,9 @@ def dashboard():
 
     plugins = predict.plugins.load_plugins()
 
-    return flask.render_template("dashboard.html", plugins=plugins, recent_labels=recent_labels)
+    return flask.render_template(
+        "dashboard.html", plugins=plugins, recent_labels=recent_labels
+    )
 
 
 @blueprint.route("/resolution")
@@ -119,9 +132,8 @@ def dashboard():
 def conflict_resolution():
 
     entries = predict.db.Session.query(predict.models.Label).all()
-    entries.sort(key=lambda entry:entry.username)
-    entries.sort(key=lambda entry:entry.cve_id, reverse=True)
-
+    entries.sort(key=lambda entry: entry.username)
+    entries.sort(key=lambda entry: entry.cve_id, reverse=True)
 
     # TODO: Comment these out! This is a test set!
     # Please excuse my terrible entry names. It was a long night.
@@ -145,7 +157,6 @@ def conflict_resolution():
     entry13 = predict.models.Label()
     entry14 = predict.models.Label()
     entry15 = predict.models.Label()
-
 
     entry1.cve_id = "CVE-1234-5678"
     entry1.username = "tgiddings"
@@ -171,7 +182,7 @@ def conflict_resolution():
     entry1one.repo_user = "thisisarepouser"
     entry1one.fix_hash = "12345678"
     entry1one.fix_file = "fix_file1.cpp"
-    entry1one.intro_hash ="87654321"
+    entry1one.intro_hash = "87654321"
     entry1one.intro_file = "intro_file2.cpp"
 
     entry2.cve_id = "CVE-1234-5678"
@@ -180,7 +191,7 @@ def conflict_resolution():
     entry2.repo_user = "thisisarepouser"
     entry2.fix_hash = "3k432k4h"
     entry2.fix_file = "fix_file2.cpp"
-    entry2.intro_hash ="09sdf09sf"
+    entry2.intro_hash = "09sdf09sf"
     entry2.intro_file = "intro_file1.cpp"
 
     entry3.cve_id = "CVE-1234-5678"
@@ -327,33 +338,51 @@ def conflict_resolution():
     entry15.intro_hash = "4206969"
     entry15.intro_file = "elonmuskrat.cobal"
 
-    entries = [entry1, entry21, entry1one, entry2, entry3, entry31, entry32, entry4, entry41, entry5, entry6, entry7, entry8,
-        entry9, entry10, entry11, entry12, entry13, entry14, entry15]
+    entries = [
+        entry1,
+        entry21,
+        entry1one,
+        entry2,
+        entry3,
+        entry31,
+        entry32,
+        entry4,
+        entry41,
+        entry5,
+        entry6,
+        entry7,
+        entry8,
+        entry9,
+        entry10,
+        entry11,
+        entry12,
+        entry13,
+        entry14,
+        entry15,
+    ]
 
     currentUser = flask_login.current_user.get_id()
-    blocks = predict.conflict_resolution.processEntries(entries, currentUser);
-#    blocks = predict.conflict_resolution.splitByCveId(entries)
-#    newBlocks = []
-#    for block in blocks:
-#        block = predict.conflict_resolution.moveUserToFront(block, currentUser)
-#        currUserEntry = block[0]
-#        for i in range(0, len(block)):
-#            block[i] = predict.conflict_resolution.appendURLs(block[i])
-#            if block[0][1] == currentUser:
-#                if i != 0:
-#                    block[i] = predict.conflict_resolution.insertAgreements(
-#                        block[i], currUserEntry
-#                    )
-#            else:
-#                block[i] = predict.conflict_resolution.insertAgreements(block[i], None)
-#        if block[0][1] == currentUser:
-#            block = predict.conflict_resolution.insertPercentages(block)
-#        if block is not None:
-#            newBlocks.append(block)
+    blocks = predict.conflict_resolution.processEntries(entries, currentUser)
+    #    blocks = predict.conflict_resolution.splitByCveId(entries)
+    #    newBlocks = []
+    #    for block in blocks:
+    #        block = predict.conflict_resolution.moveUserToFront(block, currentUser)
+    #        currUserEntry = block[0]
+    #        for i in range(0, len(block)):
+    #            block[i] = predict.conflict_resolution.appendURLs(block[i])
+    #            if block[0][1] == currentUser:
+    #                if i != 0:
+    #                    block[i] = predict.conflict_resolution.insertAgreements(
+    #                        block[i], currUserEntry
+    #                    )
+    #            else:
+    #                block[i] = predict.conflict_resolution.insertAgreements(block[i], None)
+    #        if block[0][1] == currentUser:
+    #            block = predict.conflict_resolution.insertPercentages(block)
+    #        if block is not None:
+    #            newBlocks.append(block)
 
-
-    return flask.render_template(
-        "conflict_resolution.html", blocks=blocks)
+    return flask.render_template("conflict_resolution.html", blocks=blocks)
 
 
 @blueprint.route("/cve/<cve_id>")
@@ -374,16 +403,16 @@ def cve_base(cve_id):
 @flask_login.login_required
 def info_page(cve_id, repo_user, repo_name, commit):
     cve_data = predict.cve.get_cve(cve_id)
-    github_data = predict.github.get_commit_info(
-        cve_id, repo_user, repo_name, commit
-    )
+    github_data = predict.github.get_commit_info(cve_id, repo_user, repo_name, commit)
 
     return flask.render_template(
         "info.html", cve_data=cve_data, github_data=github_data
     )
 
 
-@blueprint.route("/cve/<cve_id>/blame/<repo_user>/<repo_name>/<commit>/<path:file_name>")
+@blueprint.route(
+    "/cve/<cve_id>/blame/<repo_user>/<repo_name>/<commit>/<path:file_name>"
+)
 @flask_login.login_required
 def blame_page(cve_id, repo_user, repo_name, commit, file_name):
     cve_data = predict.cve.get_cve(cve_id)
@@ -393,14 +422,19 @@ def blame_page(cve_id, repo_user, repo_name, commit, file_name):
 
     diff_enabled = flask.request.args.get("diff") is not None
 
-    return flask.render_template("blame.html", cve_data=cve_data, github_data=blame_data, diff_enabled=diff_enabled)
+    return flask.render_template(
+        "blame.html",
+        cve_data=cve_data,
+        github_data=blame_data,
+        diff_enabled=diff_enabled,
+    )
 
 
 @blueprint.route("/create/label", methods=["POST"])
 @flask_login.login_required
 def create_label():
     cve_id = flask.request.form["cve_id"]
-    username = flask_login.current_user.get_id() or "unauthenticated" 
+    username = flask_login.current_user.get_id() or "unauthenticated"
     repo_user = flask.request.form["repo_user"]
     repo_name = flask.request.form["repo_name"]
     fix_file = flask.request.form["fix_file"]
@@ -420,14 +454,14 @@ def create_label():
         intro_file=intro_file,
         intro_hash=intro_hash,
         comment=comment,
-        edit_date=edit_date
+        edit_date=edit_date,
     )
 
     if success:
-        return json.dumps({'success': True}), 200, {'ContentType':'application/json'}
+        return json.dumps({"success": True}), 200, {"ContentType": "application/json"}
     else:
         # TODO provide more feedback as to why the request failed
-        return json.dumps({'success': False}), 400, {'ContentType':'application/json'}
+        return json.dumps({"success": False}), 400, {"ContentType": "application/json"}
 
 
 @blueprint.errorhandler(404)

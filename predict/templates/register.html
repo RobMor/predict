@@ -20,17 +20,17 @@
     <form method="POST" id="main-form">
         <div class="form-group">
             <label for="username">Username:</label>
-            <input class="form-control" name="username" id="username" title="{{ user_regex }}" placeholder="Username" pattern="{{ user_regex }}" required>
+            <input class="form-control" name="username" id="username" title="{{ config['USERNAME_FEEDBACK'] }}" placeholder="Username" pattern="{{ config['USERNAME_REGEX'] }}" required>
         </div>
 
         <div class="form-group">
             <label for="password">Password:</label>
-            <input class="form-control" name="password" id="password" title="{{ password_regex }}" type="password" placeholder="Password" pattern="{{ password_regex }}" required>
+            <input class="form-control" name="password" id="password" title="{{ config['PASSWORD_FEEDBACK'] }}" type="password" placeholder="Password" pattern="{{ config['PASSWORD_REGEX'] }}" required>
         </div>
 
         <div class="form-group">
             <label for="confirm">Confirm Password:</label>
-            <input class="form-control" name="confirm" id="confirm" title="{{ password_regex }}" type="password" oninput="checkPassAndConfirm()" placeholder="Confirm Password" pattern="{{ password_regex }}" required>
+            <input class="form-control" name="confirm" id="confirm" title="{{ config['PASSWORD_FEEDBACK'] }}" type="password" oninput="checkPassAndConfirm()" placeholder="Confirm Password" pattern="{{ config['PASSWORD_REGEX'] }}" required>
         </div>
 
         <input type="submit" class="btn btn-primary" value="Register">

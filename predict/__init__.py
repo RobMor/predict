@@ -11,7 +11,9 @@ def configure_app(config):
 
     app.config["WHITELIST"] = config["WHITELIST"].keys()
     app.config["USERNAME_REGEX"] = config["AUTHENTICATION"]["USERNAME_REGEX"]
+    app.config["USERNAME_FEEDBACK"] = config["AUTHENTICATION"]["USERNAME_FEEDBACK"]
     app.config["PASSWORD_REGEX"] = config["AUTHENTICATION"]["PASSWORD_REGEX"]
+    app.config["PASSWORD_FEEDBACK"] = config["AUTHENTICATION"]["PASSWORD_FEEDBACK"]
 
     # Configure SQLAlchemy
     import predict.db
