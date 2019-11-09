@@ -64,7 +64,7 @@ def create_default_config():
     config.set("SECURITY", "; keys and whether or not authentication is required.")
 
     config["SECURITY"]["SECRET_KEY"] = random_secret_key(24)
-    config["SECURITY"]["LOGIN_REQUIRED"] = False
+    config["SECURITY"]["LOGIN_REQUIRED"] = "False"
 
     config.add_section("AUTHENTICATION")
     config.set(
