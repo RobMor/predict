@@ -1,4 +1,5 @@
 import json
+import socket
 import datetime
 
 import flask
@@ -113,7 +114,7 @@ def register_post():
 @blueprint.route("/dashboard")
 @flask_login.login_required
 def dashboard():
-    username = flask_login.current_user.get_id() or "unauthenticated"
+    username = flask_login.current_user.get_id() or socket.gethostname()
 
     if flask.current_app.debug:
         predict.labels.create_test_labels(username)
@@ -434,7 +435,7 @@ def blame_page(cve_id, repo_user, repo_name, commit, file_name):
 @flask_login.login_required
 def create_label():
     cve_id = flask.request.form["cve_id"]
-    username = flask_login.current_user.get_id() or "unauthenticated"
+    username = flask_login.current_user.get_id() or socket.gethostname()
     repo_user = flask.request.form["repo_user"]
     repo_name = flask.request.form["repo_name"]
     fix_file = flask.request.form["fix_file"]
