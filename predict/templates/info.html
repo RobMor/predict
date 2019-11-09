@@ -18,7 +18,7 @@
     {% for file in github_data["files"] %}
     <div class="card file">
         <div class="card-header file-header">
-            <a class="file-name" href="{{ file['blame_link'] }}"><b>{{ file["path"] }}</b></a>
+            <a class="file-name" href="{{ file['blame_link'] }}">{{ file["path"] }}</a>
             <div class="file-controls">
                 <a class="file-btn" title="This fixes the vulnerability" onclick="fixesVulnerability('{{ cve_data['id'] }}', '{{ cve_data['repo_user'] }}', '{{ cve_data['repo_name'] }}', '{{ file['path'] }}', '{{ github_data['hash'] }}')">
                     <!-- Fixes Vulnerability --> <i class="fas fa-check text-success"></i>

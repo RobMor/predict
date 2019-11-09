@@ -27,7 +27,7 @@
     {% endif %}
 
     {% if cve_data["normal_links"]|length > 0 %}
-        <button class="btn btn-link mb-3 px-0" data-toggle="collapse" data-target="#git-missing">Did we miss one?</button>
+        <button class="btn btn-link mb-3 px-0" data-toggle="collapse" data-target="#git-missing">Did we miss any?</button>
         <form id="git-missing" class="collapse mb-3" onsubmit="return goto_commit('{{ cve_data['id'] }}')()">
             <div class="form-group">
                 <label for="repo">GitHub Repository Path:</label>
