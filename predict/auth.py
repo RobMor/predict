@@ -64,8 +64,7 @@ def load_user(username):
         .filter_by(username=username)
         .scalar()
     )
-
-    return user  
+    return user
 
 
 def valid_username(username):
@@ -73,7 +72,7 @@ def valid_username(username):
 
     Args:
         username (str): The username to be vetted
-    
+
     Returns:
         True if the username is valid, False otherwise.
     """
@@ -85,7 +84,7 @@ def valid_password(password):
 
     Args:
         password (str): The password to be vetted
-    
+
     Returns:
         True if the password is valid, False otherwise.
     """

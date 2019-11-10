@@ -9,18 +9,19 @@ def up(arguments):
 
     # Precedence order
     config_location = arguments.config or os.environ.get("PREDICT_CONFIG") or os.path.expanduser("~/.predict/config.ini")
-    
+
     config = predict.config.load_config(config_location)
-        
+
     if config is None:
         config = predict.config.create_default_config()
         predict.config.write_config(config, config_location)
 
     config["SECURITY"]["LOGIN_REQUIRED"] = str(config.getboolean("SECURITY","LOGIN_REQUIRED") or arguments.secured)
-    
+
     app = predict.configure_app(config)
 
     # TODO remove `debug` later
+    # If debug is set to True login required is ignored, if false it is not removed
     app.run(debug=True)
 
 

@@ -78,6 +78,12 @@ def create_default_config():
     config["AUTHENTICATION"]["PASSWORD_REGEX"] = "\\w{8,}"
     config["AUTHENTICATION"]["PASSWORD_FEEDBACK"] = "Passwords must be at least eight alphanumeric characters"
 
+    config.add_section("DATABASE")
+    config.set(
+        "DATABASE",
+        "; This section lets you configure location of the database used by predict.",
+    )
+    config["DATABASE"]["LOCATION"] = "sqlite:///" + str(os.path.expanduser("~\\.predict\\db.sqlite"))
     return config
 
 

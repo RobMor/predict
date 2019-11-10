@@ -22,7 +22,7 @@ def configure_app(config):
     import predict.db
 
     # TODO get database location from the config
-    engine = sqlalchemy.create_engine("sqlite:///db.sqlite")
+    engine = sqlalchemy.create_engine(config["DATABASE"]["LOCATION"])
     predict.db.SessionFactory.configure(bind=engine)
     app.teardown_appcontext(predict.db.teardown_session)
 
@@ -42,5 +42,5 @@ def configure_app(config):
     # Configure Views
     import predict.views
     app.register_blueprint(predict.views.blueprint)
-	
+
     return app
