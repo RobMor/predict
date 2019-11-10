@@ -1,6 +1,5 @@
 .diff-body {
     border-collapse: collapse;
-    font-family: 'Courier New', Courier, monospace;
 }
 
 .line.insert {
@@ -38,21 +37,43 @@
 .code .highlight {
     display: inline-block;
     white-space: pre;
+
+    font-family: 'Courier New', Courier, monospace;
 }
 
-.code .blame-line {
-    display: none;
-    float: right;
+.blame-line {
+    visibility: hidden;
     user-select: none;
+
+    position: absolute;
+    right: 0.25rem;
+
+    border: none;
+    border-radius: 0.25rem;
+
+    padding: 0 0.25rem;
+
+    color: white;
+    background-color: #0366d6;
+    background-image: linear-gradient(#0372ef,#0366d6);
+
+    font-weight: 600;
 }
 
 .line:hover .blame-line {
-    display: inline-block;
+    visibility: visible;
+}
+
+.blame-line:hover {
+    color: white;
+    text-decoration: none;
 }
 
 .code.sep {
     padding-left: 0.5rem;
     padding-right: 0.5rem;
+
+    font-family: 'Courier New', Courier, monospace;
 }
 
 .line-num {
@@ -65,6 +86,7 @@
 
     font-size: 12px;
     line-height: 20px;
+    font-family: 'Courier New', Courier, monospace;
 
     user-select: none;
 
@@ -72,7 +94,9 @@
 }
 
 .code::before {
-    margin: 0.5rem;
+    display: inline-block;
+    width: 1rem;
+    text-align: center;
 }
 
 .code.equal::before {
@@ -85,10 +109,6 @@
 
 .code.delete::before {
     content: "-";
-}
-
-.code::selection, .code *::selection {
-    background-color: yellow;
 }
 
 .blame.description {

@@ -11,10 +11,9 @@
                 <tr class="line equal">
                     <td class="line-num old">{{ i1 + offset + group["old_start"] }}</td> {# Old Line Number #}
                     <td class="line-num new">{{ j1 + offset + group["new_start"] }}</td> {# New Line Number #}
-                    <td class="code equal">
-                        <span class="highlight">{{ group["new_code"][j1 + offset]|safe }}</span> {# The code itself #}
+                    <td class="code equal"><span class="highlight">{{ group["new_code"][j1 + offset]|safe }}</span> {# The code itself #}
                         <a class="blame-line" href="{{ file['blame_link'] }}#L{{ j1 + offset + group['new_start'] }}">
-                            Goto Blame
+                            Blame <i class="fas fa-arrow-right"></i>
                         </a>
                     </td>
                 </tr>
@@ -24,10 +23,9 @@
                 <tr class="line insert">
                     <td class="line-num old"></td> {# Old Line Number is Blank #}
                     <td class="line-num new">{{ line+group["new_start"] }}</td> {# New Line Number #}
-                    <td class="code insert">
-                        <span class="highlight">{{ group["new_code"][line]|safe }}</span> {# The code itself #}
+                    <td class="code insert"><span class="highlight">{{ group["new_code"][line]|safe }}</span> {# The code itself #}
                         <a class="blame-line" href="{{ file['blame_link'] }}#L{{ line+group["new_start"] }}">
-                            Goto Blame
+                            Blame <i class="fas fa-arrow-right"></i>
                         </a>
                     </td>
                 </tr>
@@ -37,8 +35,7 @@
                 <tr class="line delete">
                     <td class="line-num old">{{ line+group["old_start"] }}</td> {# Old Line Number #}
                     <td class="line-num new"></td> {# New Line Number is Blank #}
-                    <td class="code delete">
-                        <span class="highlight">{{ group["old_code"][line]|safe }}</span>
+                    <td class="code delete"><span class="highlight">{{ group["old_code"][line]|safe }}</span>
                     </td> {# Code itself #}
                 </tr>
             {% endfor %}
@@ -47,10 +44,9 @@
                 <tr class="line insert">
                     <td class="line-num old"></td> {# Old Line Number is Blank #}
                     <td class="line-num new">{{ line+group["new_start"] }}</td> {# New Line Number #}
-                    <td class="code insert">
-                        <span class="highlight">{{ group["new_code"][line]|safe }}</span> {# The code itself #}
+                    <td class="code insert"><span class="highlight">{{ group["new_code"][line]|safe }}</span> {# The code itself #}
                         <a class="blame-line" href="{{ file['blame_link'] }}#L{{ line+group["new_start"] }}">
-                            Goto Blame
+                            Blame <i class="fas fa-arrow-right"></i>
                         </a>
                     </td>
                 </tr>
@@ -59,8 +55,7 @@
                 <tr class="line delete">
                     <td class="line-num old">{{ line+group["old_start"] }}</td> {# Old Line Number #}
                     <td class="line-num new"></td> {# New Line Number is Blank #}
-                    <td class="code delete">
-                        <span class="highlight">{{ group["old_code"][line]|safe }}</span>
+                    <td class="code delete"><span class="highlight">{{ group["old_code"][line]|safe }}</span>
                     </td> {# Code itself #}
                 </tr>
             {% endfor %}
