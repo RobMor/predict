@@ -4,7 +4,6 @@ import datetime
 
 import flask
 import flask_login
-from flask import request
 
 import predict.cve
 import predict.auth
@@ -479,6 +478,11 @@ def create_label():
 def page_not_found(e):
     return flask.render_template("error.html", error=e)
 	
-@blueprint.route('/plug/handler', methods=['POST'])	
-def plugHandler():
-	return predict.plugins.export(request.form)
+@blueprint.route('/export', methods=['POST'])	
+def export():
+    filter_ = flask.request.form["filter"]
+    extra_data = flask.request.form["extra_data"]
+    strategy = flask.request.form["strategy"]
+    file_format = flask.request.form["file-format"]
+
+	return predict.plugins.export(filter_=filter_, extra_data=extra_data, strategy=strategy, file_format=file_format)

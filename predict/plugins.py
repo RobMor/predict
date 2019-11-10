@@ -3,20 +3,16 @@ import entrypoints
 import sys
 from flask import Response, request, Flask
 import flask
+
 # Data Export Process
 # 1. Select Data Filter (optional)
 # 2. Select Additional Data (optional)
 # 3. Select Conflict Resolution (optional)
 # 4. Select Output Format (required)
 
-def export(form):
-	type = form.get('file-format')
-	
-	if(type == 'csv'):
-		from predict.builtin.csv import createCSV
-		return createCSV(form)
-	else:
-		return type
+def export(filter_, extra_data, strategy, file_format):
+    file_format = entrypoints.get_single("predict.plugins", file_format)
+    return file_format()
 		
 # TODO
 class FilterPlugin(ABC):
@@ -37,7 +33,7 @@ class FormatPlugin(ABC):
 
 def load_plugins():
     plugins = {}
-    for entrypoint in entrypoints.get_group_named("predict.plugins").values():
+    for name, entrypoint in entrypoints.get_group_named("predict.plugins").items():
         source = entrypoint.load()
         
         if issubclass(source, FilterPlugin):

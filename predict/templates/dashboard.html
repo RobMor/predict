@@ -30,10 +30,10 @@
             <h3 class="card-title">Data Export</h3>
             <p class="card-text">Use the menu below to specify how you want your data exported.</p>
 
-            <form action="{{ url_for('main.plugHandler') }}" method='POST'>
+            <form action="{{ url_for('main.export') }}" method='POST'>
                 <div class="form-group">
                     <label for="filters">Filters</label>
-                    <select id="filters" name="filters" class="form-control">
+                    <select id="filters" name="filter" class="form-control">
                         <option value="none">None</option>
                     {% for plugin in plugins["filter"] %}
                         <option value="{{ plugin.id }}">{{ plugin.description }}</option>
@@ -45,8 +45,8 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="addData">Additional Data</label>
-                    <select id="addData" name="addData" class="form-control" multiple>
+                    <label for="extra-data">Additional Data</label>
+                    <select id="extra-data" name="extra-data" class="form-control" multiple>
                     {% for plugin in plugins["data"] %}
                         <option value="{{ plugin.id }}">{{ plugin.description }}</option>
                     {% endfor %}
@@ -57,8 +57,8 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="strategy">Conflict Resolution Strategy</label>
-                    <select id="strategy" name="strategy" class="form-control">
+                    <label for="strategies">Conflict Resolution Strategy</label>
+                    <select id="strategies" name="strategy" class="form-control">
                         <option value="none">None</option>
                     {% for plugin in plugins["conflict"] %}
                         <option value="{{ plugin.id }}">{{ plugin.description }}</option>
@@ -70,8 +70,8 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="file-format">File Format</label>
-                    <select id="file-format" name="file-format" class="form-control">
+                    <label for="file-formats">File Format</label>
+                    <select id="file-formats" name="file-format" class="form-control">
                     {% for plugin in plugins["format"] %}
                         <option value="{{ plugin.id }}">{{ plugin.description }}</option>
                     {% endfor %}
