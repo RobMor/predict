@@ -32,10 +32,9 @@ def scrape_commit_info(repo_user, repo_name, commit_hash):
 
     # Getting a split diff to make parsing diffs easier
     response = requests.get(url, params={"diff": "split"})
-    page_html = BeautifulSoup(response.text, "html.parser")
-
+    special_text = re.sub(r'(\</?)(?:span([^\>]*))(\>)', r'\1pre\2\3', response.text)
+    page_html = BeautifulSoup(special_text, "html.parser")
     # TODO check to see what happens when an invalid commit is given
-
     # Get the div containing commit information to improve searching speeds
     commit_information_div = page_html.find("div", {"class": "full-commit"})
 
@@ -221,14 +220,16 @@ def scrape_blame(cve_id, repo_user, repo_name, commit_hash, file_name):
     }
 
     raw_url = f"https://raw.githubusercontent.com/{repo_user}/{repo_name}/{commit_hash}^/{file_name}"
-    blame_data["old_code"] = requests.get(raw_url).text.splitlines(True)
+    raw_text = requests.get(raw_url).text.splitlines(True)
+    blame_data["old_code"] = raw_text
 
     url = f"https://github.com/{repo_user}/{repo_name}/blame/{commit_hash}/{file_name}"
     response = requests.get(url)
-    soup = BeautifulSoup(response.text, "html.parser")
-
+    special_text = re.sub(r'(\<div[^\>]*\>)([^\<\n]+)', r'\1<pre>\2</pre>', response.text)
+    soup = BeautifulSoup(special_text, "html.parser")
     blame_data["blame_meta"] = []
     blame_data["new_code"] = []
+    x = 0
     for blame_hunk in soup.find_all("div", {"class": "blame-hunk"}):
         desc = blame_hunk.find("div", {"class": "blame-commit-message"}).text
 
@@ -277,6 +278,7 @@ def scrape_blame(cve_id, repo_user, repo_name, commit_hash, file_name):
             else:
                 blame_data["new_code"].append(line.text)
             blame_data["blame_meta"].append(blame_meta)
+            x+=1
 
     return blame_data
 
