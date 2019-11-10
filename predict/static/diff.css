@@ -41,6 +41,10 @@
     font-family: 'Courier New', Courier, monospace;
 }
 
+.code .highlight::selection, .code .highlight *::selection {
+    background-color: yellow;
+}
+
 .blame-line {
     visibility: hidden;
     user-select: none;
