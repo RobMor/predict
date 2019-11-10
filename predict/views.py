@@ -485,7 +485,7 @@ def page_not_found(e):
 @blueprint.route("/export", methods=["POST"])
 def export():
     filter_ = flask.request.form["filter"]
-    extra_data = flask.request.form["extra_data"]
+    extra_data = flask.request.form.get("extra-data")  # Optional
     strategy = flask.request.form["strategy"]
     file_format = flask.request.form["file-format"]
 

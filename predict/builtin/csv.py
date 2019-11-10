@@ -1,49 +1,26 @@
-from predict.plugins import FormatPlugin
-import sqlalchemy
-import predict.db
-import predict.models
-from flask import Response, request, Flask
+import csv
+from io import StringIO
+
 import flask
 
-class CSV(FormatPlugin):
-    id="csv"
-    description="CSV"
+from predict.plugins import FormatPlugin
 
-def createCSV(form):
-	filt = form.get('filters')
-	add = form.get('addData')
-	conRes = form.get('strategy')
-	username = form.get('username')
-	if(filt == "current_user"):
-		labels = (
-			predict.db.Session.query(predict.models.Label)
-			.filter_by(username=username)
-			.all()
-		) or []
-		def generate():
-			for l in labels:
-				yield l.cve_id + "," + l.fix_hash + '\n'
-		return Response(
-			generate(), 
-			mimetype='text/csv',
-			headers={
-						"Content-Disposition":
-						"attachment;filename=export.csv"
-					}
-		)
-	else:
-		labels = (
-			predict.db.Session.query(predict.models.Label)
-			.all()
-		) or []
-		def generate():
-			for l in labels:
-				yield l.cve_id + "," + l.fix_hash + '\n'
-		return Response(
-			generate(), 
-			mimetype='text/csv', 
-			headers={
-					"Content-Disposition":
-					"attachment;filename=export.csv"
-				}
-		)
+
+class CSV(FormatPlugin):
+    id = "csv"
+    description = "CSV"
+
+    def __init__(self, rows):
+        self.rows = rows
+
+    def generate(self):
+        file = StringIO()
+        writer = csv.writer(file)
+
+        writer.writerows(self.rows)
+
+        output = flask.make_response(file.getvalue())
+        output.headers["Content-Disposition"] = "attachment; filename=export.csv"
+        output.headers["Content-type"] = "text/csv"
+
+        return output
