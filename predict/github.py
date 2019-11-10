@@ -225,6 +225,7 @@ def scrape_blame(cve_id, repo_user, repo_name, commit_hash, file_name):
     url = f"https://github.com/{repo_user}/{repo_name}/blame/{commit_hash}/{file_name}"
     response = requests.get(url)
     special_text = re.sub(r'(\<div[^\>]*\>)([^\<\n]+)', r'\1<pre>\2</pre>', response.text)
+    special_text = re.sub(r'(\</?)(?:span([^\>]*))(\>)', r'\1pre\2\3', special_text)
     soup = BeautifulSoup(special_text, "html.parser")
     blame_data["blame_meta"] = []
     blame_data["new_code"] = []
