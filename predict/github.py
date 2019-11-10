@@ -65,7 +65,6 @@ def scrape_commit_info(repo_user, repo_name, commit_hash):
     # master_dictionary["parent_commit_hashes"] = [
     #     link_tag.get("href").split("/")[-1] for link_tag in parent_span.find_all("a", {"class": "sha"})
     # ]  # Find all of the link tags in the span, then get the commit hash from their href values.
-
     # Find all the file divs
     file_divs = page_html.find(
         "div", {"class": "js-diff-progressive-container"}
