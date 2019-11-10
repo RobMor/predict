@@ -133,7 +133,10 @@ def dashboard():
     plugins = predict.plugins.load_plugins()
 
     return flask.render_template(
-        "dashboard.html", plugins=plugins, recent_labels=recent_labels, username=username
+        "dashboard.html",
+        plugins=plugins,
+        recent_labels=recent_labels,
+        username=username,
     )
 
 
@@ -477,12 +480,19 @@ def create_label():
 @blueprint.errorhandler(404)
 def page_not_found(e):
     return flask.render_template("error.html", error=e)
-	
-@blueprint.route('/export', methods=['POST'])	
+
+
+@blueprint.route("/export", methods=["POST"])
 def export():
     filter_ = flask.request.form["filter"]
     extra_data = flask.request.form["extra_data"]
     strategy = flask.request.form["strategy"]
     file_format = flask.request.form["file-format"]
 
-	return predict.plugins.export(filter_=filter_, extra_data=extra_data, strategy=strategy, file_format=file_format)
+    return predict.plugins.export(
+        filter_=filter_,
+        extra_data=extra_data,
+        strategy=strategy,
+        file_format=file_format,
+    )
+
