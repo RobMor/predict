@@ -9,13 +9,8 @@ import flask
 # 3. Select Conflict Resolution (optional)
 # 4. Select Output Format (required)
 
-plugbp = flask.Blueprint('plugins', __name__, template_folder='templates')
-
-@plugbp.route('/plug/handler', methods=['POST'])	
-def plugHandler():
-	form = request.form
-	type = request.form.get('file-format')
-	filt = request.form.get('filters')
+def export(form):
+	type = form.get('file-format')
 	
 	if(type == 'csv'):
 		from predict.builtin.csv import createCSV
