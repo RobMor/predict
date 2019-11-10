@@ -28,7 +28,7 @@ def createCSV(form):
 			mimetype='text/csv',
 			headers={
 						"Content-Disposition":
-						"attachment;filename=labels.csv"
+						"attachment;filename=export.csv"
 					}
 		)
 	else:
@@ -44,6 +44,6 @@ def createCSV(form):
 			mimetype='text/csv', 
 			headers={
 					"Content-Disposition":
-					"attachment;filename=labels.csv"
+					"attachment;filename=export.csv"
 				}
 		)
