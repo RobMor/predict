@@ -31,18 +31,7 @@
     justify-content: space-between;
 
     font-size: 13px;
-}
-
-#commit-authors {
     font-family: 'Courier New', Courier, monospace;
-}
-
-#commit-hash-container {
-    font-family: 'Courier New', Courier, monospace;
-}
-
-#commit-hash {
-    user-select: all;
 }
 
 .file {

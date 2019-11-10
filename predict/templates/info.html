@@ -13,12 +13,8 @@
     <div id="commit-description">{{ github_data["desc"] }}</div>
     <hr>
     <div id="commit-metadata">
-        <div id="commit-authors">
-            Authored by: {{ github_data["authors"]|join(", ") }}
-        </div>
-        <div id="commit-hash-container">
-            commit <span id="commit-hash">{{ github_data["hash"] }}</span>
-        </div>
+        <div id="commit-authors">Authored by: {{ github_data["authors"]|join(", ") }}</div>
+        <div id="commit-hash">commit {{ github_data["hash"] }}</div>
     </div>
 </div>
 
