@@ -57,7 +57,14 @@
 }
 
 .file-name {
+    position: relative; /* Hacky */
+    top: 0.2rem;
+
+    font-size: 14px;
     font-family: 'Courier New', Courier, monospace;
+    
+    color: black;
+    text-decoration: none;
 }
 
 .file-controls {
