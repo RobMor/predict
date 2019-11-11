@@ -33,14 +33,17 @@ def configure_app(config):
     login_manager.login_view = "main.login"
 
     import predict.auth
+
     login_manager.user_loader(predict.auth.load_user)
 
     # Configure Data Models
     import predict.models
+
     predict.models.Model.metadata.create_all(engine)
 
     # Configure Views
     import predict.views
+
     app.register_blueprint(predict.views.blueprint)
 
     return app

@@ -28,12 +28,6 @@ def login():
     return flask.render_template("login.html", invalidLogin=False)
 
 
-# TODO: Determine the idiomatic way to send the config regex vars to the template (if this is something we need to do) --
-# flashed messages usually only for messages? Might be cleaner to pass the variable to the render function?
-# Disadvantage is vars need to be sent to render_tempalte() every time register.html is created, and defined twice.
-# Advantage is that the template code is simple. You could alternatively parse the config from the Javascript? That seems bad.
-
-
 @blueprint.route("/login", methods=["POST"])
 def login_post():
     username = flask.request.form["username"]

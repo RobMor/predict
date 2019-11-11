@@ -30,6 +30,7 @@ def write_config(config, file_path):
     # Set file permissions to only this user
     os.chmod(file_path, stat.S_IRUSR | stat.S_IWUSR)
 
+
 def create_default_config():
     """Creates a default configuraion.
 
@@ -54,7 +55,10 @@ def create_default_config():
         "WHITELIST",
         "; register. Aside from WHITELIST_ENABLED, each line here should be a username. ",
     )
-    config.set("WHITELIST", "; Every username specified will be permitted to create an account.")
+    config.set(
+        "WHITELIST",
+        "; Every username specified will be permitted to create an account.",
+    )
     config["WHITELIST"]["WHITELIST_ENABLED"] = "True"
 
     config.add_section("SECURITY")
@@ -74,16 +78,23 @@ def create_default_config():
     )
 
     config["AUTHENTICATION"]["USERNAME_REGEX"] = "\\w+"
-    config["AUTHENTICATION"]["USERNAME_FEEDBACK"] = "Usernames must be at least one alphanumeric character"
+    config["AUTHENTICATION"][
+        "USERNAME_FEEDBACK"
+    ] = "Usernames must be at least one alphanumeric character"
     config["AUTHENTICATION"]["PASSWORD_REGEX"] = "\\w{8,}"
-    config["AUTHENTICATION"]["PASSWORD_FEEDBACK"] = "Passwords must be at least eight alphanumeric characters"
+    config["AUTHENTICATION"][
+        "PASSWORD_FEEDBACK"
+    ] = "Passwords must be at least eight alphanumeric characters"
 
     config.add_section("DATABASE")
     config.set(
         "DATABASE",
         "; This section lets you configure location of the database used by predict.",
     )
-    config["DATABASE"]["LOCATION"] = os.path.expanduser(os.path.join("~", ".predict", "db.sqlite"))
+    config["DATABASE"]["LOCATION"] = os.path.expanduser(
+        os.path.join("~", ".predict", "db.sqlite")
+    )
+
     return config
 
 
