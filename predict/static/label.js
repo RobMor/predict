@@ -18,32 +18,15 @@ function catchSelection(event) {
 // TODO
 document.addEventListener("selectionchange", catchSelection)
 
-function promptForFix(files) {
-    // TODO
-    return { file: "fs/attr.c", hash: "123ABC" }
-}
-
-function promptForComments() {
-    return prompt("Any Comments?")
+function introducesVulnerability(cve_id, repo_name, repo_user, intro_file, intro_hash) {
+    // TODO need to prompt user for fix file and fix hash here...
+    createLabel(cve_id, repo_name, repo_user, null, null, intro_file, intro_hash, null)
 }
 
 function fixesVulnerability(cve_id, repo_name, repo_user, fix_file, fix_hash) {
     createLabel(cve_id, repo_name, repo_user, fix_file, fix_hash, null, null, null)
 }
 
-function introducesVulnerability(cve_id, repo_name, repo_user, intro_file, intro_hash) {
-    fixOptions = getFixOptions(cve_id, repo_name, repo_user)
-
-    fix = promptForFix(fixOptions)
-
-    comment = promptForComments()
-
-    createLabel(cve_id, repo_name, repo_user, fix.file, fix.hash, intro_file, intro_hash, comment)
-}
-
-function getFixOptions(cve_id, repo_name, repo_user) {
-    return [{ file: "fs/attr.c", hash: "123ABC" }]
-}
 
 function createLabel(cve_id, repo_name, repo_user, fix_file, fix_hash, intro_file, intro_hash, comment) {
     params = new FormData()
@@ -68,18 +51,22 @@ function labelCreated(request) {
     return function () {
         if (request.readyState == XMLHttpRequest.DONE) {
             if (request.status = 200) {
-                labelCreationSucceeded()
+                labelCreationSucceeded(request)
             } else {
-                labelCreationFailed()
+                labelCreationFailed(request)
             }
         }
     }
 }
 
-function labelCreationSucceeded() {
-    console.log("SUCCESS")
+function labelCreationSucceeded(request) {
+    data = JSON.parse(request.responseText)
+
+    data.forEach(function (label) {
+        console.log(label)
+    })
 }
 
-function labelCreationFailed() {
-    console.log("FAILURE")
+function labelCreationFailed(request) {
+    alert("Failed to create label")
 }

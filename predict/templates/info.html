@@ -5,6 +5,7 @@
 <script type="text/javascript" src="{{ url_for('static', filename='label.js') }}"></script>
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='info.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='diff.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='label.css') }}">
 {% endblock %}
 
 {% block content %}
@@ -24,16 +25,16 @@
         <div class="card-header file-header">
             <a class="file-name" href="{{ file['blame_link'] }}">{{ file["path"] }}</a>
             <div class="file-controls">
-                <a class="file-btn" title="This fixes the vulnerability" onclick="fixesVulnerability('{{ cve_data['id'] }}', '{{ cve_data['repo_user'] }}', '{{ cve_data['repo_name'] }}', '{{ file['path'] }}', '{{ github_data['hash'] }}')">
+                <a class="file-btn" title="This change fixes the vulnerability" onclick="fixesVulnerability('{{ cve_data['id'] }}', '{{ cve_data['repo_user'] }}', '{{ cve_data['repo_name'] }}', '{{ file['path'] }}', '{{ github_data['hash'] }}')">
                     <!-- Fixes Vulnerability --> <i class="fas fa-check text-success"></i>
                 </a>
 
-                <a class="file-btn" title="This introduces the vulnerability" onclick="introducesVulnerability('{{ cve_data['id'] }}', '{{ cve_data['repo_user'] }}', '{{ cve_data['repo_name'] }}', '{{ file['path'] }}', '{{ github_data['hash'] }}')">
+                <a class="file-btn" title="This change introduces the vulnerability" onclick="introducesVulnerability('{{ cve_data['id'] }}', '{{ cve_data['repo_user'] }}', '{{ cve_data['repo_name'] }}', '{{ file['path'] }}', '{{ github_data['hash'] }}')">
                     <!-- Introduces Vulnerability --> <i class="fas fa-times text-danger"></i>
                 </a>
 
                 <a data-toggle="dropdown" class="file-btn">
-                    <i class="fas fa-ellipsis-v"></i>
+                    <i class="fas fa-ellipsis-h"></i>
                 </a>
                 <div class="dropdown-menu">
                     <a class="dropdown-item" href="{{ file['github_link'] }}">View on GitHub</a>
@@ -49,4 +50,6 @@
     </div>
     {% endfor %}
 </div>
+
+{% include "label_modal.html" %}
 {% endblock %}
