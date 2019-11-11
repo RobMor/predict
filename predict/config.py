@@ -83,7 +83,7 @@ def create_default_config():
         "DATABASE",
         "; This section lets you configure location of the database used by predict.",
     )
-    config["DATABASE"]["LOCATION"] = "sqlite:///" + str(os.path.expanduser("~\\.predict\\db.sqlite"))
+    config["DATABASE"]["LOCATION"] = os.path.expanduser(os.path.join("~", ".predict", "db.sqlite"))
     return config
 
 

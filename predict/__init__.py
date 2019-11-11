@@ -22,7 +22,7 @@ def configure_app(config):
     import predict.db
 
     # TODO get database location from the config
-    engine = sqlalchemy.create_engine(config["DATABASE"]["LOCATION"])
+    engine = sqlalchemy.create_engine("sqlite:///" + config["DATABASE"]["LOCATION"])
     predict.db.SessionFactory.configure(bind=engine)
     app.teardown_appcontext(predict.db.teardown_session)
 
