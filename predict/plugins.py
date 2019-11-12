@@ -44,8 +44,24 @@ class FilterPlugin(PluginBase, abc.ABC):
 
 # TODO
 class DataPlugin(PluginBase, abc.ABC):
+	@abc.abstractmethod
+	def __init__(self, data, query):
+		"""Defines the construction of this data plugin
+
+		Args:
+			data (list of lists): The data that will be exported later. Additional data must be added later.
+		"""
 	pass
 
+	@abc.abstractmethod
+	def add_data(self):
+		"""goes through list and adds the additional data we want.
+
+		Args:
+			data (list of lists): The data that will be exported later. Additional data must be added later.
+		"""
+	pass
+	
 
 # TODO
 class ConflictPlugin(PluginBase, abc.ABC):
@@ -102,7 +118,14 @@ def export(filter_, extra_data, strategy, file_format):
 		filter = entrypoints.get_single("predict.plugins", filter_).load()
 		filter = filter(q)
 		q = filter.filterq()
+	l = LtoList(q.all()) or []
+	
+	if(extra_data != "none"):
+		extra =  entrypoints.get_single("predict.plugins", extra_data).load()
+		extra = extra(l, q)
+		l = extra.add_data()
+	
 	file_format = entrypoints.get_single("predict.plugins", file_format).load()
-	file_format = file_format(LtoList(q.all()) or [])
+	file_format = file_format(l)
 
 	return file_format.generate()
