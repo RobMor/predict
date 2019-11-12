@@ -409,8 +409,11 @@ def cve_base(cve_id):
 @flask_login.login_required
 def info_page(cve_id, repo_user, repo_name, commit):
     cve_data = predict.cve.get_cve(cve_id)
+    if cve_data is None:
+        return "CVE Not Found!"
     github_data = predict.github.get_commit_info(cve_id, repo_user, repo_name, commit)
-
+    if github_data is None or isinstance(github_data, Exception):
+        return "Github data is not accessible" if github_data is None else github_data
     return flask.render_template(
         "info.html", cve_data=cve_data, github_data=github_data
     )
@@ -422,10 +425,13 @@ def info_page(cve_id, repo_user, repo_name, commit):
 @flask_login.login_required
 def blame_page(cve_id, repo_user, repo_name, commit, file_name):
     cve_data = predict.cve.get_cve(cve_id)
+    if cve_data is None:
+        return "CVE not found!"
     blame_data = predict.github.get_blame(
         cve_id, repo_user, repo_name, commit, file_name
     )
-
+    if blame_data is None or isinstance(blame_data, Exception):
+        return "Github blame data is not accessible" if blame_data is None else blame_data
     diff_enabled = flask.request.args.get("diff") is not None
 
     return flask.render_template(
