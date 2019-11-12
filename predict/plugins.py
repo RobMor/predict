@@ -98,8 +98,8 @@ def export(filter_, extra_data, strategy, file_format):
 	
 	if(filter_ != "none"):
 		filter = entrypoints.get_single("predict.plugins", filter_).load()
-		filter = filterq(something, q)
-		q = filter.filter()
+		filter = filter(q)
+		q = filter.filterq()
 	file_format = entrypoints.get_single("predict.plugins", file_format).load()
 	file_format = file_format(LtoList(q.all()) or [])
 
