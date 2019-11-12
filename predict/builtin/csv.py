@@ -1,6 +1,5 @@
 import csv
 from io import StringIO
-
 import flask
 
 from predict.plugins import FormatPlugin
