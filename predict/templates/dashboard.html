@@ -47,6 +47,7 @@
                 <div class="form-group">
                     <label for="extra-data">Additional Data</label>
                     <select id="extra-data" name="extra-data" class="form-control" multiple>
+						<option value="none">None</option>
                     {% for plugin in plugins["data"] %}
                         <option value="{{ plugin.id }}">{{ plugin.description }}</option>
                     {% endfor %}
