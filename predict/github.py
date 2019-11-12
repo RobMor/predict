@@ -18,9 +18,12 @@ def get_commit_info(cve_id, repo_user, repo_name, commit_hash):
             # TODO Retrieve the entry from the cache here...
             return None
         else:
-            raw_commit = scrape_commit_info(repo_user, repo_name, commit_hash)
-            if raw_commit is not None:
-                return process_commit_info(cve_id, raw_commit)
+            try:
+                raw_commit = scrape_commit_info(repo_user, repo_name, commit_hash)
+                if raw_commit is not None:
+                    return process_commit_info(cve_id, raw_commit)
+            except Exception as error:
+                return error
 
     return None
 
@@ -205,9 +208,12 @@ def get_blame(cve_id, repo_user, repo_name, commit_hash, file_name):
             # TODO Retrieve the entry from the cache here...
             return None
         else:
-            raw_blame = scrape_blame(cve_id, repo_user, repo_name, commit_hash, file_name)
-            if raw_blame is not None:
-                return process_blame(raw_blame)
+            try:
+                raw_blame = scrape_blame(cve_id, repo_user, repo_name, commit_hash, file_name)
+                if raw_blame is not None:
+                    return process_blame(raw_blame)
+            except Exception as error:
+                return error
     return None
 
 def scrape_blame(cve_id, repo_user, repo_name, commit_hash, file_name):
