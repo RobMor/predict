@@ -1,7 +1,7 @@
 import re
 import difflib
 import datetime
-
+import json
 import flask
 import requests
 import pygments
@@ -18,17 +18,16 @@ def get_commit_info(cve_id, repo_user, repo_name, commit_hash):
             # TODO Retrieve the entry from the cache here...
             return None
         else:
-            try:
-                raw_commit = scrape_commit_info(repo_user, repo_name, commit_hash)
-                if raw_commit is not None:
-                    return process_commit_info(cve_id, raw_commit)
-            except Exception as error:
-                return error
+            raw_commit = scrape_commit_info(repo_user, repo_name, commit_hash)
+            if raw_commit is not None:
+                return process_commit_info(cve_id, raw_commit)
 
     return None
 
 
 def scrape_commit_info(repo_user, repo_name, commit_hash):
+    if repo_name is None or repo_user is None or commit_hash is None:
+        return None
     github_data = {"repo_user": repo_user, "repo_name": repo_name, "hash": commit_hash}
 
     url = f"https://github.com/{repo_user}/{repo_name}/commit/{commit_hash}"
@@ -37,6 +36,8 @@ def scrape_commit_info(repo_user, repo_name, commit_hash):
     response = requests.get(url, params={"diff": "split"})
     special_text = re.sub(r'(\</?)(?:span([^\>]*))(\>)', r'\1pre\2\3', response.text)
     page_html = BeautifulSoup(special_text, "html.parser")
+    if page_html.find("img", {"alt": "404 “This is not the web page you are looking for”"}):
+        return None
     # TODO check to see what happens when an invalid commit is given
     # Get the div containing commit information to improve searching speeds
     commit_information_div = page_html.find("div", {"class": "full-commit"})
@@ -125,8 +126,8 @@ def scrape_commit_info(repo_user, repo_name, commit_hash):
                     {
                         "old_start": current_group_old_start,
                         "new_start": current_group_new_start,
-                        "old_code": "".join(current_group_old),
-                        "new_code": "".join(current_group_new),
+                        "old_code": "\n".join(current_group_old),
+                        "new_code": "\n".join(current_group_new),
                     }
                 )
 
@@ -143,15 +144,20 @@ def scrape_commit_info(repo_user, repo_name, commit_hash):
                     current_group_new = []
             else:
                 old_code, new_code = tuple(line.find_all("td", {"class": "blob-code"}))
-
+                #print(f"Old code: {old_code.text}, new code: {new_code.text}")
                 if old_code.text:
-                    old_code = old_code.text[1:]
+                    old_code = old_code.text.replace("\n","")
+                    if old_code == "" and len(current_group_old) == 0:
+                        old_code = "\t"
+
                     current_group_old.append(old_code)
 
                 if new_code.text:
-                    new_code = new_code.text[1:]
+                    new_code = new_code.text.replace("\n", "")
+                    if new_code == "" and len(current_group_new) == 0:
+                        new_code = "\t"
                     current_group_new.append(new_code)
-
+                #print(f"Old group: {current_group_old}, new group: {current_group_new}, Starts: {current_group_old_start}:{current_group_new_start}")
         # Add the last group if it wasn't already added
         # TODO better condition
         if match is not None:
@@ -159,11 +165,11 @@ def scrape_commit_info(repo_user, repo_name, commit_hash):
                 {
                     "old_start": current_group_old_start,
                     "new_start": current_group_new_start,
-                    "old_code": "".join(current_group_old),
-                    "new_code": "".join(current_group_new),
+                    "old_code": "\n".join(current_group_old),
+                    "new_code": "\n".join(current_group_new),
                 }
             )
-
+        print(json.dumps(file_data, indent=4))
         github_data["files"].append(file_data)
 
     return github_data
@@ -217,6 +223,8 @@ def get_blame(cve_id, repo_user, repo_name, commit_hash, file_name):
     return None
 
 def scrape_blame(cve_id, repo_user, repo_name, commit_hash, file_name):
+    if repo_name is None or repo_user is None or commit_hash is None or file_name is None:
+        return None
     blame_data = {
         "user_name": repo_user,
         "repository_name": repo_name,
@@ -233,6 +241,8 @@ def scrape_blame(cve_id, repo_user, repo_name, commit_hash, file_name):
     special_text = re.sub(r'(\<div[^\>]*\>)([^\<\n]+)', r'\1<pre>\2</pre>', response.text)
     special_text = re.sub(r'(\</?)(?:span([^\>]*))(\>)', r'\1pre\2\3', special_text)
     soup = BeautifulSoup(special_text, "html.parser")
+    if soup.find("img", {"alt": "404 “This is not the web page you are looking for”"}):
+        return None
     blame_data["blame_meta"] = []
     blame_data["new_code"] = []
     x = 0

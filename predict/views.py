@@ -402,7 +402,7 @@ def cve_base(cve_id):
     if len(cve_data.get("git_links", [])) > 0:
         return flask.redirect(cve_data["git_links"][0][1])
 
-    return flask.render_template("cve_sidebar.html", cve_data=cve_data)
+    return flask.render_template("sidebar_cve.html", cve_data=cve_data)
 
 
 @blueprint.route("/cve/<cve_id>/info/<repo_user>/<repo_name>/<commit>")
@@ -410,10 +410,10 @@ def cve_base(cve_id):
 def info_page(cve_id, repo_user, repo_name, commit):
     cve_data = predict.cve.get_cve(cve_id)
     if cve_data is None:
-        return "CVE Not Found!"
+        return flask.render_template("error.html", error={"code": "CVE_ERROR", "name": "CVE Error", "description": f"The CVE corresponding to {cve_id}, at {repo_user}/{repo_name}/{commit} could not be reached"})
     github_data = predict.github.get_commit_info(cve_id, repo_user, repo_name, commit)
-    if github_data is None or isinstance(github_data, Exception):
-        return "Github data is not accessible" if github_data is None else github_data
+    if github_data is None:
+        return flask.render_template("error.html", error={"code": "GitHub_COMMIT_ERROR", "name": "Github Commit Error", "description": f"The Github page for CVE {cve_id}, at {repo_user}/{repo_name}/{commit} could not be reached"})
     return flask.render_template(
         "info.html", cve_data=cve_data, github_data=github_data
     )
@@ -430,8 +430,11 @@ def blame_page(cve_id, repo_user, repo_name, commit, file_name):
     blame_data = predict.github.get_blame(
         cve_id, repo_user, repo_name, commit, file_name
     )
-    if blame_data is None or isinstance(blame_data, Exception):
-        return "Github blame data is not accessible" if blame_data is None else blame_data
+
+    if blame_data is None:
+        return flask.render_template("error.html",
+                                     error={"code": "GitHub_BLAME_ERROR", "name": "Github Blame Error",
+                                            "description": f"The Github blame page for CVE {cve_id}, at {repo_user}/{repo_name}/{commit}/{file_name} could not be reached"})
     diff_enabled = flask.request.args.get("diff") is not None
 
     return flask.render_template(
