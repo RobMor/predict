@@ -442,43 +442,21 @@ def blame_page(cve_id, repo_user, repo_name, commit, file_name):
     )
 
 
-@blueprint.route("/create/label", methods=["POST"])
+@blueprint.route("/label", methods=["POST"])
 @flask_login.login_required
 def create_label():
-    cve_id = flask.request.form["cve_id"]
+    cve_id = flask.request.args["cve_id"]
     username = flask_login.current_user.get_id() or socket.gethostname()
-    repo_user = flask.request.form["repo_user"]
-    repo_name = flask.request.form["repo_name"]
-    fix_file = flask.request.form["fix_file"]
-    fix_hash = flask.request.form["fix_hash"]
-    intro_file = flask.request.form.get("intro_file")
-    intro_hash = flask.request.form.get("intro_hash")
-    comment = flask.request.form.get("comment")
+    labels = flask.request.args["labels"]
     edit_date = datetime.datetime.now()
 
-    success = predict.labels.process_label(
-        cve_id=cve_id,
-        username=username,
-        repo_user=repo_user,
-        repo_name=repo_name,
-        fix_file=fix_file,
-        fix_hash=fix_hash,
-        intro_file=intro_file,
-        intro_hash=intro_hash,
-        comment=comment,
-        edit_date=edit_date,
-    )
+    success = predict.labels.process_labels(cve_id, username, labels, edit_date)
 
     if success:
         return json.dumps({"success": True}), 200, {"ContentType": "application/json"}
     else:
         # TODO provide more feedback as to why the request failed
         return json.dumps({"success": False}), 400, {"ContentType": "application/json"}
-
-
-@blueprint.errorhandler(404)
-def page_not_found(e):
-    return flask.render_template("error.html", error=e)
 
 
 @blueprint.route("/export", methods=["POST"])
@@ -494,3 +472,7 @@ def export():
         strategy=strategy,
         file_format=file_format,
     )
+
+@blueprint.errorhandler(404)
+def page_not_found(e):
+    return flask.render_template("error.html", error=e)
