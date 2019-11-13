@@ -1,8 +1,9 @@
-{% extends "sidebar.html" %}
+{% extends "sidebar_base.html" %}
 
 {% block head %}
 {{ super() }}
-<script type="text/javascript" src="{{ url_for('static', filename='cve_sidebar.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/sidebar_main.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/label.js') }}"></script>
 {% endblock %}
 
 {% block title %} {{ cve_data["id"] }} {% endblock %}

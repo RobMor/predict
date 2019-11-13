@@ -1,4 +1,4 @@
-function goto_commit(cve) {
+function missing_commit_info_page(cve) {
     return function () {
         repo = document.getElementById("repo").value
         commit = document.getElementById("commit").value
