@@ -1,7 +1,6 @@
 import re
 import difflib
 import datetime
-import json
 import flask
 import requests
 import pygments
@@ -144,7 +143,6 @@ def scrape_commit_info(repo_user, repo_name, commit_hash):
                     current_group_new = []
             else:
                 old_code, new_code = tuple(line.find_all("td", {"class": "blob-code"}))
-                #print(f"Old code: {old_code.text}, new code: {new_code.text}")
                 if old_code.text:
                     old_code = old_code.text.replace("\n","")
                     if old_code == "" and len(current_group_old) == 0:
@@ -157,7 +155,6 @@ def scrape_commit_info(repo_user, repo_name, commit_hash):
                     if new_code == "" and len(current_group_new) == 0:
                         new_code = "\t"
                     current_group_new.append(new_code)
-                #print(f"Old group: {current_group_old}, new group: {current_group_new}, Starts: {current_group_old_start}:{current_group_new_start}")
         # Add the last group if it wasn't already added
         # TODO better condition
         if match is not None:
@@ -169,7 +166,6 @@ def scrape_commit_info(repo_user, repo_name, commit_hash):
                     "new_code": "\n".join(current_group_new),
                 }
             )
-        print(json.dumps(file_data, indent=4))
         github_data["files"].append(file_data)
 
     return github_data
