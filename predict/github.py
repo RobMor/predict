@@ -145,16 +145,12 @@ def scrape_commit_info(repo_user, repo_name, commit_hash):
                 old_code, new_code = tuple(line.find_all("td", {"class": "blob-code"}))
                 if old_code.text:
                     old_code = old_code.text.replace("\n","")
-                    if old_code == "" and len(current_group_old) == 0:
-                        old_code = "\t"
-
                     current_group_old.append(old_code)
 
                 if new_code.text:
                     new_code = new_code.text.replace("\n", "")
-                    if new_code == "" and len(current_group_new) == 0:
-                        new_code = "\t"
                     current_group_new.append(new_code)
+
         # Add the last group if it wasn't already added
         # TODO better condition
         if match is not None:
@@ -191,10 +187,12 @@ def process_commit_info(cve_id, commit_info):
                 group["new_code"].splitlines(True),
             ).get_opcodes()
 
-            lexer = pygments.lexers.get_lexer_for_filename(file["path"])
+            lexer = pygments.lexers.get_lexer_for_filename(file["path"], stripnl=False)
+
             group["old_code"] = pygments.highlight(
                 group["old_code"], lexer, formatter
             ).splitlines(True)
+
             group["new_code"] = pygments.highlight(
                 group["new_code"], lexer, formatter
             ).splitlines(True)
