@@ -11,15 +11,9 @@ from bs4 import BeautifulSoup
 
 def get_commit_info(cve_id, repo_user, repo_name, commit_hash):
     if True:  # is_valid_github_link(repo_user, repo_name, commit_hash):
-        entry_in_cache = False
-
-        if entry_in_cache:
-            # TODO Retrieve the entry from the cache here...
-            return None
-        else:
-            raw_commit = scrape_commit_info(repo_user, repo_name, commit_hash)
-            if raw_commit is not None:
-                return process_commit_info(cve_id, raw_commit)
+        raw_commit = scrape_commit_info(repo_user, repo_name, commit_hash)
+        if raw_commit is not None:
+            return process_commit_info(cve_id, raw_commit)
 
     return None
 
@@ -35,9 +29,10 @@ def scrape_commit_info(repo_user, repo_name, commit_hash):
     response = requests.get(url, params={"diff": "split"})
     special_text = re.sub(r'(\</?)(?:span([^\>]*))(\>)', r'\1pre\2\3', response.text)
     page_html = BeautifulSoup(special_text, "html.parser")
+
     if page_html.find("img", {"alt": "404 “This is not the web page you are looking for”"}):
         return None
-    # TODO check to see what happens when an invalid commit is given
+
     # Get the div containing commit information to improve searching speeds
     commit_information_div = page_html.find("div", {"class": "full-commit"})
 
@@ -62,13 +57,6 @@ def scrape_commit_info(repo_user, repo_name, commit_hash):
         ]
     )
 
-    # NOTE I don't think we have a use for parent commits when appending a ^ works fine
-    # Get the span containing the parent(s) of the commit
-    # parent_span = commit_information_div.find("span", {"class": "sha-block"})
-    # master_dictionary["parent_commit_hashes"] = [
-    #     link_tag.get("href").split("/")[-1] for link_tag in parent_span.find_all("a", {"class": "sha"})
-    # ]  # Find all of the link tags in the span, then get the commit hash from their href values.
-    # Find all the file divs
     file_divs = page_html.find(
         "div", {"class": "js-diff-progressive-container"}
     ).find_all("div", recursive=False)
@@ -80,21 +68,7 @@ def scrape_commit_info(repo_user, repo_name, commit_hash):
         # Find the file path
         file_data["path"] = file_div.find("div", {"class": "file-header"})["data-path"]
 
-        # NOTE we are probably safe without number of changes too
-        # # Retrieve the number of changes: additions and deletions.
-        # text_label = file_div.find("span", {"class": "diffstat tooltipped tooltipped-e"}).get("aria-label").strip() # This string is of the form "{x+y} change(s): x addition(s) & y deletion(s)"
-        # change_counts = [""+f.replace(",", "") for f in re.findall(r"([\d,]+)", text_label)]  # Gather numbers, remove commas if present, and make sure they are regular strings
-
-        # file_data["change_count"] = change_counts[0]  # Write total changes
-        # file_data["addition_count"] = change_counts[1]  # Write additions
-        # file_data["deletion_count"] = change_counts[2]  # Write deletions
-
         file_data["github_link"] = url + "/" + file_data["path"]
-
-        # NOTE probably don't need this either
-        # # Find the history link
-        # link_prefix = "https://github.com/{}/{}/commits/{}/".format(master_dictionary["user_name"], master_dictionary["repository_name"], master_dictionary["commit_hash"])  # Replace this prefix with our version at some point
-        # file_data["history_link"] = "{}{}".format(link_prefix, file_data["file_path"])
 
         code_body = file_div.find("table")
         lines = code_body.find_all("tr")
@@ -202,18 +176,10 @@ def process_commit_info(cve_id, commit_info):
 
 def get_blame(cve_id, repo_user, repo_name, commit_hash, file_name):
     if True:  # is_valid_blame_link(repo_user, repo_name, commit_hash):
-        entry_in_cache = False
+        raw_blame = scrape_blame(cve_id, repo_user, repo_name, commit_hash, file_name)
+        if raw_blame is not None:
+            return process_blame(raw_blame)
 
-        if entry_in_cache:
-            # TODO Retrieve the entry from the cache here...
-            return None
-        else:
-            try:
-                raw_blame = scrape_blame(cve_id, repo_user, repo_name, commit_hash, file_name)
-                if raw_blame is not None:
-                    return process_blame(raw_blame)
-            except Exception as error:
-                return error
     return None
 
 def scrape_blame(cve_id, repo_user, repo_name, commit_hash, file_name):
@@ -232,14 +198,17 @@ def scrape_blame(cve_id, repo_user, repo_name, commit_hash, file_name):
 
     url = f"https://github.com/{repo_user}/{repo_name}/blame/{commit_hash}/{file_name}"
     response = requests.get(url)
+
     special_text = re.sub(r'(\<div[^\>]*\>)([^\<\n]+)', r'\1<pre>\2</pre>', response.text)
     special_text = re.sub(r'(\</?)(?:span([^\>]*))(\>)', r'\1pre\2\3', special_text)
+
     soup = BeautifulSoup(special_text, "html.parser")
+
     if soup.find("img", {"alt": "404 “This is not the web page you are looking for”"}):
         return None
+
     blame_data["blame_meta"] = []
     blame_data["new_code"] = []
-    x = 0
     for blame_hunk in soup.find_all("div", {"class": "blame-hunk"}):
         desc = blame_hunk.find("div", {"class": "blame-commit-message"}).text
 
