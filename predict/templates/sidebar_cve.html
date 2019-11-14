@@ -25,36 +25,36 @@
 
         <p>{{ cve_data["desc"] }}</p>
 
-        {% if cve_data["git_links"]|length > 0 %}
+        <div id="git-link-header">
             <h3>Git Links</h3>
+            <button class="btn btn-link" data-toggle="collapse" data-target="#git-missing">Did we miss any?</button>
+        </div>
 
-            <ul>
-            {% for normal, converted in cve_data["git_links"] %}
-                <li>
-                    <a href={{ converted }}>
-                        {{ normal }}
-                    </a>
-                </li>
-            {% endfor %}
-            </ul>
-        {% endif %}
+        <form id="git-missing" class="collapse" onsubmit="return goto_commit('{{ cve_data['id'] }}')()">
+            <div class="form-group">
+                <label for="repo">GitHub Repository Path:</label>
+                <input class="form-control" name="repo" id="repo" type="text" placeholder="Username/Repository" required>
+            </div>
+
+            <div class="form-group">
+                <label for="commit">Commit:</label>
+                <input class="form-control" name="commit" id="commit" type="text" placeholder="Commit" required>
+            </div>
+
+            <button id="missing-button" type="submit" class="btn btn-outline-dark">Search</button>
+        </form>
+
+        <ul>
+        {% for normal, converted in cve_data["git_links"] %}
+            <li>
+                <a href={{ converted }}>
+                    {{ normal }}
+                </a>
+            </li>
+        {% endfor %}
+        </ul>
 
         {% if cve_data["normal_links"]|length > 0 %}
-            <button class="btn btn-link mb-3 px-0" data-toggle="collapse" data-target="#git-missing">Did we miss any?</button>
-            <form id="git-missing" class="collapse mb-3" onsubmit="return goto_commit('{{ cve_data['id'] }}')()">
-                <div class="form-group">
-                    <label for="repo">GitHub Repository Path:</label>
-                    <input class="form-control" name="repo" id="repo" type="text" placeholder="Username/Repository" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="commit">Commit:</label>
-                    <input class="form-control" name="commit" id="commit" type="text" placeholder="Commit" required>
-                </div>
-
-                <button id="missing-button" type="submit" class="btn btn-primary">Search</button>
-            </form>
-            
             <h3>Non-Git Links</h3>
 
             <ul>

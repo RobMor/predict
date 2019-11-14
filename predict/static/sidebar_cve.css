@@ -2,6 +2,16 @@
     padding: 1rem;
 }
 
+#git-link-header {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
+#git-missing {
+    margin-bottom: 0.5rem;
+}
+
 #user-labels {
     margin-bottom: 1rem;
 }
