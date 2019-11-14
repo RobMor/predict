@@ -9,6 +9,14 @@ import pygments.lexers
 from bs4 import BeautifulSoup
 
 
+def valid_inputs(repo_user, repo_name, commit_hash, file_name):
+    valid = True
+    valid = valid and re.match(r"^([A-z0-9][A-z0-9\-]{0,38})$", repo_user) is not None
+    valid = valid and re.match(r"^([A-z0-9_\-]{1,100})$", repo_name) is not None
+    valid = valid and re.match(r'^([A-z0-9]{40})$', commit_hash) is not None
+    valid = valid and (file_name is None or re.match(r'^((?:[A-z_\-]+/?)+)\.[a-z]+$', file_name) is not None)
+    return valid
+
 def get_commit_info(cve_id, repo_user, repo_name, commit_hash):
     if True:  # is_valid_github_link(repo_user, repo_name, commit_hash):
         raw_commit = scrape_commit_info(repo_user, repo_name, commit_hash)
@@ -21,17 +29,18 @@ def get_commit_info(cve_id, repo_user, repo_name, commit_hash):
 def scrape_commit_info(repo_user, repo_name, commit_hash):
     if repo_name is None or repo_user is None or commit_hash is None:
         return None
+    if(not valid_inputs(repo_user, repo_name, commit_hash, None)):
+        return None
     github_data = {"repo_user": repo_user, "repo_name": repo_name, "hash": commit_hash}
 
     url = f"https://github.com/{repo_user}/{repo_name}/commit/{commit_hash}"
 
     # Getting a split diff to make parsing diffs easier
     response = requests.get(url, params={"diff": "split"})
+    if(response.text.strip() == "Not Found"):
+        return None
     special_text = re.sub(r'(\</?)(?:span([^\>]*))(\>)', r'\1pre\2\3', response.text)
     page_html = BeautifulSoup(special_text, "html.parser")
-
-    if page_html.find("img", {"alt": "404 “This is not the web page you are looking for”"}):
-        return None
 
     # Get the div containing commit information to improve searching speeds
     commit_information_div = page_html.find("div", {"class": "full-commit"})
@@ -185,6 +194,8 @@ def get_blame(cve_id, repo_user, repo_name, commit_hash, file_name):
 def scrape_blame(cve_id, repo_user, repo_name, commit_hash, file_name):
     if repo_name is None or repo_user is None or commit_hash is None or file_name is None:
         return None
+    if not valid_inputs(repo_user, repo_name, commit_hash, file_name):
+        return None
     blame_data = {
         "user_name": repo_user,
         "repository_name": repo_name,
@@ -204,7 +215,7 @@ def scrape_blame(cve_id, repo_user, repo_name, commit_hash, file_name):
 
     soup = BeautifulSoup(special_text, "html.parser")
 
-    if soup.find("img", {"alt": "404 “This is not the web page you are looking for”"}):
+    if soup.find("img", {"alt": "404 “This is not the web page you are looking for”"}):  # Might not be necessary.
         return None
 
     blame_data["blame_meta"] = []
@@ -257,7 +268,6 @@ def scrape_blame(cve_id, repo_user, repo_name, commit_hash, file_name):
             else:
                 blame_data["new_code"].append(line.text)
             blame_data["blame_meta"].append(blame_meta)
-            x+=1
 
     return blame_data
 
