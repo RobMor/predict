@@ -6,9 +6,9 @@ import predict.db
 import predict.models
 
 def LtoList(labels):
-	llist = [["CVE ID", "Username", "Repo User", "Repo Name", "Fix File", "Intro File", "Fix Hash", "Intro Hash", "Edit Date"]]
+	llist = [["CVE ID", "Username", "Repo User", "Repo Name", "Fix File", "Intro File", "Fix Hash", "Intro Hash"]]
 	for l in labels:
-		llist = llist + [[l.cve_id, l.username, l.repo_user, l.repo_name, l.fix_file, l.intro_file, l.fix_hash, l.intro_hash, l.edit_date]]
+		llist = llist + [[l.cve_id, l.username, l.repo_user, l.repo_name, l.fix_file, l.intro_file, l.fix_hash, l.intro_hash]]
 	return llist
 	
 class PluginBase(abc.ABC):
