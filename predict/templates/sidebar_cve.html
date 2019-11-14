@@ -4,57 +4,91 @@
 {{ super() }}
 <script type="text/javascript" src="{{ url_for('static', filename='js/sidebar_cve.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/label.js') }}"></script>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='sidebar_cve.css') }}">
 {% endblock %}
 
 {% block title %} {{ cve_data["id"] }} {% endblock %}
 
 {% block sidebar_content %}
-    <h1>{{ cve_data["id"] }}</h1>
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item">
+        <a class="nav-link active" id="cve-tab" data-toggle="tab" href="#cve-info" role="tab" aria-controls="cve" aria-selected="true">CVE Info</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" id="label-tab" data-toggle="tab" href="#labels" role="tab" aria-controls="labels" aria-selected="false">Labels</a>
+    </li>
+</ul>
 
-    <p>{{ cve_data["desc"] }}</p>
+<div class="tab-content bg-white">
+    <div id="cve-info" class="tab-pane show active" role="tabpanel" aria-labelledby="CVE-tab">
+        <h1>{{ cve_data["id"] }}</h1>
 
-    {% if cve_data["git_links"]|length > 0 %}
-        <h3>Git Links</h3>
+        <p>{{ cve_data["desc"] }}</p>
 
-        <ul>
-        {% for normal, converted in cve_data["git_links"] %}
-            <li>
-                <a href={{ converted }}>
-                    {{ normal }}
-                </a>
-            </li>
-        {% endfor %}
-        </ul>
-    {% endif %}
+        {% if cve_data["git_links"]|length > 0 %}
+            <h3>Git Links</h3>
 
-    {% if cve_data["normal_links"]|length > 0 %}
-        <button class="btn btn-link mb-3 px-0" data-toggle="collapse" data-target="#git-missing">Did we miss any?</button>
-        <form id="git-missing" class="collapse mb-3" onsubmit="return goto_commit('{{ cve_data['id'] }}')()">
-            <div class="form-group">
-                <label for="repo">GitHub Repository Path:</label>
-                <input class="form-control" name="repo" id="repo" type="text" placeholder="Username/Repository" required>
+            <ul>
+            {% for normal, converted in cve_data["git_links"] %}
+                <li>
+                    <a href={{ converted }}>
+                        {{ normal }}
+                    </a>
+                </li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+
+        {% if cve_data["normal_links"]|length > 0 %}
+            <button class="btn btn-link mb-3 px-0" data-toggle="collapse" data-target="#git-missing">Did we miss any?</button>
+            <form id="git-missing" class="collapse mb-3" onsubmit="return goto_commit('{{ cve_data['id'] }}')()">
+                <div class="form-group">
+                    <label for="repo">GitHub Repository Path:</label>
+                    <input class="form-control" name="repo" id="repo" type="text" placeholder="Username/Repository" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="commit">Commit:</label>
+                    <input class="form-control" name="commit" id="commit" type="text" placeholder="Commit" required>
+                </div>
+
+                <button id="missing-button" type="submit" class="btn btn-primary">Search</button>
+            </form>
+            
+            <h3>Non-Git Links</h3>
+
+            <ul>
+            {% for link in cve_data["normal_links"] %}
+                <li>
+                    <a href={{ link }} class="external-link" target="_blank">
+                        {{ link }}
+                    </a>
+                </li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+
+    <div id="labels" class="tab-pane" role="tabpanel" aria-labelledby="labels-tab">
+        <h1>Current Labels</h1>
+
+        <div id="user-labels">
+            {% for label in labels %}
+            <div class="single-label input-group">
+                <input type="text" class="form-control" placeholder="Fix Filepath" value="{{ label.fix_file }}">
+                <label class="input-group-text input-group-addon">@</label>
+                <input type="text" class="form-control" placeholder="Fix Commit Hash" value="{{ label.fix_hash }}">
+                <label class="input-group-text input-group-addon">←</label>
+                <input type="text" class="form-control" placeholder="Intro Filepath" value="{{ label.intro_file }}">
+                <label class="input-group-text input-group-addon">@</label>
+                <input type="text" class="form-control" placeholder="Intro Commit Hash" value="{{ label.intro_hash }}">
+                {# TODO comment input here #}
             </div>
-
-            <div class="form-group">
-                <label for="commit">Commit:</label>
-                <input class="form-control" name="commit" id="commit" type="text" placeholder="Commit" required>
-            </div>
-
-            <button id="missing-button" type="submit" class="btn btn-primary">Search</button>
-        </form>
+            {% endfor %}
+        </div>
         
-        <h3>Non-Git Links</h3>
-
-        <ul>
-        {% for link in cve_data["normal_links"] %}
-            <li>
-                <a href={{ link }} class="external-link" target="_blank">
-                    {{ link }}
-                </a>
-            </li>
-        {% endfor %}
-        </ul>
-    {% endif %}
-
+        <button class="form-control" onclick="addLabel()">New Label</button>
+    </div>
+</div>
 
 {% endblock %}

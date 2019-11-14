@@ -1,4 +1,5 @@
 import re
+import socket
 
 import flask
 import flask_login
@@ -7,6 +8,12 @@ import sqlalchemy
 
 import predict.db
 import predict.models
+
+
+def current_user():
+    """Return the currently authenticated user, or a placeholder"""
+    return flask_login.current_user.get_id() or socket.gethostname()
+
 
 def create_user(username, password):
     """Attempts to create a new user

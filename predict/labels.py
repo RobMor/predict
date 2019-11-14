@@ -23,7 +23,7 @@ def load_recent(username):
     return itertools.groupby(labels, key=lambda l: l.cve_id)
 
 
-def load_label(cve_id, username, repo_user, repo_name, fix_file, intro_file):
+def load_labels(cve_id, username):
     """Loads the label with the given primary key information.
 
     Possibly returns labels that have no intro file. This is meant to allow for
@@ -40,16 +40,9 @@ def load_label(cve_id, username, repo_user, repo_name, fix_file, intro_file):
     query = predict.db.Session.query(predict.models.Label).filter_by(
         cve_id=cve_id,
         username=username,
-        repo_user=repo_user,
-        repo_name=repo_name,
-        fix_file=fix_file,
     )
 
-    label = query.filter_by(intro_file=intro_file).first()
-    if label is not None:
-        return label
-    else:
-        return query.filter_by(intro_file=None).first()
+    return query.all()
 
 
 def process_labels(cve_id, username, labels, edit_date):

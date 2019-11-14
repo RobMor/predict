@@ -1,0 +1,18 @@
+#user-labels {
+    margin-bottom: 1rem;
+}
+
+.single-label + .single-label {
+    margin-top: 0.5rem;
+}
+
+.input-group-addon {
+    border-radius: 0;
+
+    margin-left: -1px;
+    margin-right: -1px;
+}
+
+.external-link:after {
+    content: " " url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAVklEQVR4Xn3PgQkAMQhDUXfqTu7kTtkpd5RA8AInfArtQ2iRXFWT2QedAfttj2FsPIOE1eCOlEuoWWjgzYaB/IkeGOrxXhqB+uA9Bfcm0lAZuh+YIeAD+cAqSz4kCMUAAAAASUVORK5CYII=);
+}
