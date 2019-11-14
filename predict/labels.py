@@ -15,11 +15,20 @@ def load_recent(username):
     labels = (
         predict.db.Session.query(predict.models.Label)
         .filter_by(username=username)
-        .order_by(predict.models.Label.edit_date)
+        .order_by(predict.models.Label.cve_id,predict.models.Label.edit_date)
         .limit(10)
         .all()
     ) or []
-
+    """
+    Itertools groupby usage example:
+    Input: list= ["a","a", "b", "b", "c", "a"]
+    Output:
+        group a: "a", "a"
+        group b: "b", "b"
+        group c: "c"
+        group a: "a"
+    Hence need to order labels before passing it in
+    """
     return itertools.groupby(labels, key=lambda l: l.cve_id)
 
 
