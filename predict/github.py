@@ -9,16 +9,8 @@ import pygments.lexers
 from bs4 import BeautifulSoup
 
 
-def valid_inputs(repo_user, repo_name, commit_hash, file_name):
-    valid = True
-    valid = valid and re.match(r"^([A-z0-9][A-z0-9\-]{0,38})$", repo_user) is not None
-    valid = valid and re.match(r"^([A-z0-9_\-]{1,100})$", repo_name) is not None
-    valid = valid and re.match(r'^([A-z0-9]{40})$', commit_hash) is not None
-    valid = valid and (file_name is None or re.match(r'^((?:[A-z_\-]+/?)+)\.[a-z]+$', file_name) is not None)
-    return valid
-
 def get_commit_info(cve_id, repo_user, repo_name, commit_hash):
-    if True:  # is_valid_github_link(repo_user, repo_name, commit_hash):
+    if valid_inputs(repo_user, repo_name, commit_hash, None):
         raw_commit = scrape_commit_info(repo_user, repo_name, commit_hash)
         if raw_commit is not None:
             return process_commit_info(cve_id, raw_commit)
@@ -27,10 +19,6 @@ def get_commit_info(cve_id, repo_user, repo_name, commit_hash):
 
 
 def scrape_commit_info(repo_user, repo_name, commit_hash):
-    if repo_name is None or repo_user is None or commit_hash is None:
-        return None
-    if(not valid_inputs(repo_user, repo_name, commit_hash, None)):
-        return None
     github_data = {"repo_user": repo_user, "repo_name": repo_name, "hash": commit_hash}
 
     url = f"https://github.com/{repo_user}/{repo_name}/commit/{commit_hash}"
@@ -184,7 +172,7 @@ def process_commit_info(cve_id, commit_info):
 
 
 def get_blame(cve_id, repo_user, repo_name, commit_hash, file_name):
-    if True:  # is_valid_blame_link(repo_user, repo_name, commit_hash):
+    if valid_inputs(repo_user, repo_name, commit_hash, file_name):
         raw_blame = scrape_blame(cve_id, repo_user, repo_name, commit_hash, file_name)
         if raw_blame is not None:
             return process_blame(raw_blame)
@@ -282,3 +270,12 @@ def process_blame(blame_data):
     blame_data["new_code"] = pygments.highlight("".join(blame_data["new_code"]), lexer, formatter).splitlines(True)
 
     return blame_data
+
+
+def valid_inputs(repo_user, repo_name, commit_hash, file_name):
+    valid = None not in [repo_user, repo_name, commit_hash]
+    valid = valid and re.match(r"^([A-z0-9][A-z0-9\-]{0,38})$", repo_user) is not None
+    valid = valid and re.match(r"^([A-z0-9_\-]{1,100})$", repo_name) is not None
+    valid = valid and re.match(r'^([A-z0-9]{40})$', commit_hash) is not None
+    valid = valid and (file_name is None or re.match(r'^((?:[A-z_\-]+/?)+)\.[a-z]+$', file_name) is not None)
+    return valid

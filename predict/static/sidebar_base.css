@@ -68,6 +68,8 @@
     padding-left: 1rem;
     padding-right: 1rem;
 
+    background-color: white;
+
     flex: 1;
 
     z-index: 1000;
