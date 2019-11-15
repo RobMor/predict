@@ -6,6 +6,19 @@ function toggleSidebar() {
     }
 }
 
+function setSidebarOpenOnPageLoad() {
+    // Set the users local state to have the sidebar open
+    if (typeof (Storage) !== "undefined") {
+        localStorage.setItem("sidebar_status", "open")
+    }
+}
+
+function setSidebarClosedOnPageLoad() {
+    // Set the users local state to have the sidebar open
+    if (typeof (Storage) !== "undefined") {
+        localStorage.setItem("sidebar_status", "closed")
+    }
+}
 
 window.onload = function () {
     // Sidebar functionality
