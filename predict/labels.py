@@ -44,7 +44,7 @@ def load_labels(cve_id, username):
         username=username,
     ).all()
 
-    return itertools.groupby(labels, key=lambda l: (l.repo_user, l.repo_name))
+    return itertools.groupby(labels, key=lambda l: (l.group_num, l.repo_user, l.repo_name))
 
 
 def process_labels(cve_id, username, labels, edit_date):

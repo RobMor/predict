@@ -77,7 +77,7 @@
         <span id="hidden-text"></span>
         
         <div id="user-labels" data-cve="{{ cve_data['id'] }}">
-            {% for (repo_user, repo_name), labels in label_groups %}
+            {% for (_, repo_user, repo_name), labels in label_groups %}
             <div class="card user-label-group">
                 <div class="card-header user-label-group-header">
                     <input type="text" class="hidden-input repo-input repo-user" placeholder="Repository Username" value="{{ repo_user }}">
