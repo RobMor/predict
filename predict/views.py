@@ -194,7 +194,7 @@ def blame_page(cve_id, repo_user, repo_name, commit, file_name):
         cve_id, repo_user, repo_name, commit, file_name
     )
 
-    diff_enabled = flask.request.args.get("diff") is not None
+    diff_enabled = flask.request.args.get("diff") == "True"
 
     return flask.render_template(
         "blame.html",

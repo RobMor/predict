@@ -10,16 +10,35 @@
 
 {% block content %}
 {% if github_data is not none %}
-    <div id="header">
-        <h1>{{ github_data["file_name"] }}</h1>
-        <select class="form-control">
-            <option value="" disabled selected>Relation to Vulnerability</option>
-            <option value="fix"> Fixes Vulnerability</option>
-            <option value="intro"> Introduces Vulnerability</option>
-        </select>
+    <div id="header" class="bg-light">
+        <div id="file-info">
+            <span id="repository-user">{{ github_data["repo_user"] }}</span>
+            <span id="repository-name">{{ github_data["repo_name"] }}</span>
+            <span id="file-name">{{ github_data["file_name"] }}</span>
+            <span id="commit-hash">{{ github_data["hash"] }}</span>
+        </div>
+        <div id="header-controls">
+            <a class="file-btn" title="This change fixes the vulnerability" onclick="fixesVulnerability('{{ github_data['repo_user'] }}', '{{ github_data['repo_name'] }}', '{{ github_data['file_name'] }}', '{{ github_data['hash'] }}')">
+                <!-- Fixes Vulnerability --> {{ svg("check", "text-success") }}
+            </a>
+            <a class="file-btn" title="This change introduces the vulnerability" onclick="introducesVulnerability('{{ github_data['repo_user'] }}', '{{ github_data['repo_name'] }}', '{{ github_data['file_name'] }}', '{{ github_data['hash'] }}')">
+                <!-- Introduces Vulnerability --> {{ svg("x", "text-danger") }}
+            </a>
+            <a data-toggle="dropdown" class="file-btn">
+                {{ svg("kebab-horizontal") }}
+            </a>
+            <div class="dropdown-menu">
+                {% if diff_enabled %}
+                    <a class="dropdown-item" href="{{ url_for('main.blame_page', cve_id=cve_data['id'], repo_user=github_data['repo_user'], repo_name=github_data['repo_name'], commit=github_data['hash'], file_name=github_data['file_name']) }}">Disable Diff</a>
+                {% else %}
+                    <a class="dropdown-item" href="{{ url_for('main.blame_page', cve_id=cve_data['id'], repo_user=github_data['repo_user'], repo_name=github_data['repo_name'], commit=github_data['hash'], file_name=github_data['file_name'], diff=True) }}">Enable Diff</a>
+                {% endif %}
+                <a class="dropdown-item" href="{{ github_data['github_link'] }}">View on GitHub</a>
+            </div>
+        </div>
     </div>
 
-    <div id="blame" class="content">
+    <div id="blame">
         {% include "blame_diff.html" %}
     </div>
 {% else %}

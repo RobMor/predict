@@ -186,9 +186,9 @@ def scrape_blame(cve_id, repo_user, repo_name, commit_hash, file_name):
     if not valid_inputs(repo_user, repo_name, commit_hash, file_name):
         return None
     blame_data = {
-        "user_name": repo_user,
-        "repository_name": repo_name,
-        "commit_hash": commit_hash,
+        "repo_user": repo_user,
+        "repo_name": repo_name,
+        "hash": commit_hash,
         "file_name": file_name,
     }
 
@@ -197,6 +197,7 @@ def scrape_blame(cve_id, repo_user, repo_name, commit_hash, file_name):
     blame_data["old_code"] = raw_text
 
     url = f"https://github.com/{repo_user}/{repo_name}/blame/{commit_hash}/{file_name}"
+    blame_data["github_link"] = url
     response = requests.get(url)
 
     special_text = re.sub(r'(\<div[^\>]*\>)([^\<\n]+)', r'\1<pre>\2</pre>', response.text)

@@ -1,11 +1,55 @@
+.container {
+    max-width: max-content;
+}
+
 #header {
-    background: white;
+    display: flex;
     width: 100%;
-
+    justify-content: space-between;
+    
     padding: 0.5rem;
-
     position: sticky;
     top: 0;
 
+    box-shadow: 0 2px 2px -2px rgba(0,0,0,.2);
+}
+
+#header-controls {
+    display: flex;
+}
+
+#file-name {
+    font-family: 'Courier New', Courier, monospace;
+}
+
+#blame {
+    background-color: white;
+    padding-top: 1rem;
+    margin-bottom: 10rem;
+
+    border: 1px rgba(0,0,0,.03);
+    border-style: solid;
+    border-top-style: hidden;
+}
+
+.file-btn {
     text-align: center;
+    padding: 0;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+
+    border: none;
+    border-radius: 0.25rem;
+
+    min-width: 2rem;
+
+    cursor: pointer;
+}
+
+.file-btn:hover {
+    background-color: lightgray;
+}
+
+.diff-body .line.equal:nth-child(even) {
+    background-color: #fafafc;
 }

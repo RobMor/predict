@@ -2,10 +2,8 @@
 
 {% block head %}
 {{ super() }}
-<script type="text/javascript" src="{{ url_for('static', filename='js/label.js') }}"></script>
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='info.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='diff.css') }}">
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='label.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='info.css') }}">
 {% endblock %}
 
 {% block title %}{% if github_data is not none %}{{ github_data["title"] }}{% else %}Commit Not Found{% endif %}{% endblock %}
