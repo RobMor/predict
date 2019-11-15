@@ -33,25 +33,8 @@ def login_post():
     username = flask.request.form["username"]
     password = flask.request.form["password"]
 
-    # TODO decide whether we should validate login
-    # argument against: it's possible registration requirements get out of sync
-    # with login requirements and people get locked out. Also there's virtually
-    # no point...
-
-    # user_regex = flask.current_app.config["USERNAME_REGEX"]
-    # password_regex = flask.current_app.config["PASSWORD_REGEX"]
-
-    # if not predict.auth.valid_username(username):
-    #     flask.flash(user_regex)
-    #     return flask.render_template("login.html")
-
-    # if not predict.auth.valid_password(password):
-    #     flask.flash(password_regex)
-    #     return flask.render_template("login.html")
-
     authorized = predict.auth.authenticate_user(username, password)
 
-    # If valid send the user to the dashboard
     if authorized:
         return flask.redirect(
             flask.request.args.get("next", flask.url_for("main.dashboard"))
