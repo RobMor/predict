@@ -124,7 +124,6 @@ def conflict_resolution():
     entries.sort(key=lambda entry: entry.username)
     entries.sort(key=lambda entry: entry.cve_id, reverse=True)
 
-
     currentUser = flask_login.current_user.get_id()
     blocks = predict.conflict_resolution.processEntries(entries, currentUser)
     #    blocks = predict.conflict_resolution.splitByCveId(entries)
@@ -159,7 +158,9 @@ def cve_base(cve_id):
     if cve_data is not None and len(cve_data.get("git_links", [])) > 0:
         return flask.redirect(cve_data["git_links"][0][1])
 
-    return flask.render_template("sidebar_cve.html", cve_data=cve_data, label_groups=label_groups)
+    return flask.render_template(
+        "sidebar_cve.html", cve_data=cve_data, label_groups=label_groups
+    )
 
 
 @blueprint.route("/cve/<cve_id>/info/<repo_user>/<repo_name>/<commit>")
@@ -172,7 +173,10 @@ def info_page(cve_id, repo_user, repo_name, commit):
     github_data = predict.github.get_commit_info(cve_id, repo_user, repo_name, commit)
 
     return flask.render_template(
-        "info.html", cve_data=cve_data, label_groups=label_groups, github_data=github_data
+        "info.html",
+        cve_data=cve_data,
+        label_groups=label_groups,
+        github_data=github_data,
     )
 
 
@@ -230,6 +234,7 @@ def export():
         strategy=strategy,
         file_format=file_format,
     )
+
 
 @blueprint.errorhandler(404)
 def page_not_found(e):

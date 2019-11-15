@@ -7,7 +7,7 @@ class CurrentUser(FilterPlugin):
 	description="Only Me"
 
 	def __init__(self, query):
-			self.username = flask_login.current_user.get_id() or socket.gethostname()
+			self.username = predict.auth.current_user()
 			self.query = query
 
 	def filterq(self):
