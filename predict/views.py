@@ -237,7 +237,7 @@ def export():
     )
 
 
-@blueprint.errorhandler(404)
+@blueprint.app_errorhandler(404)
 def page_not_found(e):
     return flask.render_template("error.html", error=e)
 
