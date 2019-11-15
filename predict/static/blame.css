@@ -30,6 +30,8 @@
     border: 1px rgba(0,0,0,.03);
     border-style: solid;
     border-top-style: hidden;
+
+    overflow-x: scroll;
 }
 
 .file-btn {

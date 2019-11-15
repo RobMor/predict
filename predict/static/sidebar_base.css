@@ -1,16 +1,16 @@
 #sidebar {
     height: 100%;
-    width: 30%;
+    width: 40rem;
     position: fixed;
 
     display: flex;
     flex-direction: column;
 
     /* Hidden initially */
-    margin-left: -30%;
+    margin-left: -40rem;
 
     /* Above everything */
-    z-index: 999;
+    z-index: 1000;
 
     /* Top left corner */
     top: 0;
@@ -46,6 +46,9 @@
     position: fixed;
     top: 1rem;
     left: 1rem;
+
+    /* just below overlay */
+    z-index: 998;
 
     text-align: center;
 }
@@ -104,7 +107,7 @@
     opacity: 0;
 
     /* Above everything except sidebar*/
-    z-index: 998;
+    z-index: 999;
 
     /* TODO animate the overlay!!! */
 }
