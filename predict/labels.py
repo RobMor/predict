@@ -3,6 +3,7 @@ import itertools
 
 import predict.db
 
+from sqlalchemy import desc
 
 def load_recent(username):
     """Loads the 10 most recent labels by the given user
@@ -12,13 +13,18 @@ def load_recent(username):
     Returns:
         A dictionary mapping CVE IDs to labels
     """
-    labels = (
+    
+    # Labels first determines the 10 most recent labels before ordering it
+    # by cve_id to be passed into itertools.groupby
+    labels = sorted(
+    (
         predict.db.Session.query(predict.models.Label)
         .filter_by(username=username)
-        .order_by(predict.models.Label.cve_id, predict.models.Label.edit_date)
+        .order_by(desc(predict.models.Label.edit_date))
         .limit(10)
         .all()
-    ) or []
+    ), key=lambda l: l.cve_id)
+    or []
 
     # Itertools groupby is weird, here's an example:
     # Input: list= ["a","a", "b", "b", "c", "a"]
@@ -47,7 +53,7 @@ def load_labels(cve_id, username):
     ) or []
 
     # Group on repo user and repo name (which will be unique to the group)
-    # because we want to use the repo user and repo name conveniently in the 
+    # because we want to use the repo user and repo name conveniently in the
     # template
     return itertools.groupby(
         labels, key=lambda l: (l.group_num, l.repo_user, l.repo_name)
@@ -73,6 +79,7 @@ def process_labels(cve_id, username, labels, edit_date):
     ).delete()
 
     # Replace them with the new labels.
+    i=0
     for label in labels:
         new_label = predict.models.Label(
             cve_id=cve_id,
@@ -86,8 +93,9 @@ def process_labels(cve_id, username, labels, edit_date):
             intro_file=label.get("intro_file"),
             intro_hash=label.get("intro_hash"),
             comment=label.get("comment"),
-            edit_date=edit_date,
+            edit_date=edit_date.replace(second=i),
         )
+        i = i + 1
 
         predict.db.Session.add(new_label)
 
@@ -131,7 +139,6 @@ def create_test_labels(username):
                     "comment": str(2 * i + 6),
                 }
             )
-
         process_labels(
             cve_id=f"CVE-2019-000{i}",
             username=username,
