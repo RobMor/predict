@@ -157,8 +157,9 @@ def process_commit_info(cve_id, commit_info):
                 group["old_code"].splitlines(True),
                 group["new_code"].splitlines(True),
             ).get_opcodes()
-
-            lexer = pygments.lexers.get_lexer_for_filename(file["path"], stripnl=False)
+            
+            # We assume new_code and old_code are the same language
+            lexer = get_lexer(file["path"], group["old_code"])
 
             group["old_code"] = pygments.highlight(
                 group["old_code"], lexer, formatter
@@ -263,13 +264,31 @@ def scrape_blame(cve_id, repo_user, repo_name, commit_hash, file_name):
 def process_blame(blame_data):
     blame_data["diff"] = difflib.SequenceMatcher(lambda x: x in " \t", blame_data["old_code"], blame_data["new_code"]).get_opcodes()
 
-    formatter = pygments.formatters.HtmlFormatter(nowrap=True)
-    lexer = pygments.lexers.get_lexer_for_filename(blame_data["file_name"])
+    old_code = "".join(blame_data["old_code"])
+    new_code = "".join(blame_data["new_code"])
 
-    blame_data["old_code"] = pygments.highlight("".join(blame_data["old_code"]), lexer, formatter).splitlines(True)
-    blame_data["new_code"] = pygments.highlight("".join(blame_data["new_code"]), lexer, formatter).splitlines(True)
+    formatter = pygments.formatters.HtmlFormatter(nowrap=True)
+    
+    # We assume that the new_code and old_code are in the same language...
+    lexer = get_lexer(blame_data["file_name"], new_code)
+
+    blame_data["old_code"] = pygments.highlight(old_code, lexer, formatter).splitlines(True)
+    blame_data["new_code"] = pygments.highlight(new_code, lexer, formatter).splitlines(True)
 
     return blame_data
+
+
+def get_lexer(filename, code):
+    try:
+        try:
+            # Try to guess the lexer by filename
+            return pygments.lexers.guess_lexer_for_filename(filename, code, stripnl=False)
+        except pygments.util.ClassNotFound:
+            # Try to guess the lexer just by code structure
+            return pygments.lexers.guess_lexer(code, stripnl=False)
+    except pygments.util.ClassNotFound:
+        # Just return a plaintext lexer if the other two didn't work
+        return pygments.lexers.special.TextLexer(stripnl=False)
 
 
 def valid_inputs(repo_user, repo_name, commit_hash, file_name):
