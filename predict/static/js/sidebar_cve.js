@@ -99,11 +99,11 @@ function addLabelToGroup(group) {
 
     newFixFile = newHiddenInput("Fix File", "hidden-input label-input fix-file")
     newFixSep = newSeparator("@")
-    newFixHash = newHiddenInput("Fix Hash", "hidden-input label-input fix-hash")
+    newFixHash = newHiddenInput("Fix Hash", "hidden-input limited label-input fix-hash")
     newFixIntroSep = newSeparator("←")
     newIntroFile = newHiddenInput("Intro File", "hidden-input label-input intro-file")
     newIntroSep = newSeparator("@")
-    newIntroHash = newHiddenInput("Intro Hash", "hidden-input label-input intro-hash")
+    newIntroHash = newHiddenInput("Intro Hash", "hidden-input limited label-input intro-hash")
 
     newRemoveLabel = document.createElement("a")
     newRemoveLabel.className = "remove-label"

@@ -188,9 +188,6 @@ def info_page(cve_id, repo_user, repo_name, commit):
 
     github_data = predict.github.get_commit_info(cve_id, repo_user, repo_name, commit)
 
-    if github_data is None:
-        return flask.render_template("error.html", error={"code": "GitHub_COMMIT_ERROR", "name": "Github Commit Error", "description": f"The Github page for CVE {cve_id}, at {repo_user}/{repo_name}/{commit} could not be reached"})
-
     return flask.render_template(
         "info.html", cve_data=cve_data, label_groups=label_groups, github_data=github_data
     )
@@ -209,10 +206,6 @@ def blame_page(cve_id, repo_user, repo_name, commit, file_name):
         cve_id, repo_user, repo_name, commit, file_name
     )
 
-    if blame_data is None:
-        return flask.render_template("error.html",
-                                     error={"code": "GitHub_BLAME_ERROR", "name": "Github Blame Error",
-                                            "description": f"The Github blame page for CVE {cve_id}, at {repo_user}/{repo_name}/{commit}/{file_name} could not be reached"})
     diff_enabled = flask.request.args.get("diff") is not None
 
     return flask.render_template(

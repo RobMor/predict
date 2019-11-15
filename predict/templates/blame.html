@@ -6,10 +6,10 @@
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='blame.css') }}">
 {% endblock %}
 
-{% block title %}{{ github_data["file_name"] }}{% endblock %}
-{% block content %}
+{% block title %}{% if github_data is not none %}{{ github_data["file_name"] }}{% else %}Blame Not Found{% endif %}{% endblock %}
 
-    
+{% block content %}
+{% if github_data is not none %}
     <div id="header">
         <h1>{{ github_data["file_name"] }}</h1>
         <select class="form-control">
@@ -22,4 +22,9 @@
     <div id="blame" class="content">
         {% include "blame_diff.html" %}
     </div>
+{% else %}
+<center>
+    <h1>Blame Not Found</h1>
+</center>
+{% endif %}
 {% endblock%}

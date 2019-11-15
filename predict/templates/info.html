@@ -8,7 +8,10 @@
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='label.css') }}">
 {% endblock %}
 
+{% block title %}{% if github_data is not none %}{{ github_data["title"] }}{% else %}Commit Not Found{% endif %}{% endblock %}
+
 {% block content %}
+{% if github_data is not none %}
 <div id="commit-info">
     <div id="commit-title">{{ github_data["title"] }}</div>
     <div id="commit-description">{{ github_data["desc"] }}</div>
@@ -50,4 +53,9 @@
     </div>
     {% endfor %}
 </div>
+{% else %}
+<center>
+    <h1>Commit Not Found</h1>
+</center>
+{% endif %}
 {% endblock %}
