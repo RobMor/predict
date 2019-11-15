@@ -15,20 +15,20 @@ def load_recent(username):
     labels = (
         predict.db.Session.query(predict.models.Label)
         .filter_by(username=username)
-        .order_by(predict.models.Label.cve_id,predict.models.Label.edit_date)
+        .order_by(predict.models.Label.cve_id, predict.models.Label.edit_date)
         .limit(10)
         .all()
     ) or []
-    """
-    Itertools groupby usage example:
-    Input: list= ["a","a", "b", "b", "c", "a"]
-    Output:
-        group a: "a", "a"
-        group b: "b", "b"
-        group c: "c"
-        group a: "a"
-    Hence need to order labels before passing it in
-    """
+
+    # Itertools groupby is weird, here's an example:
+    # Input: list= ["a","a", "b", "b", "c", "a"]
+    # Output:
+    #     group a: "a", "a"
+    #     group b: "b", "b"
+    #     group c: "c"
+    #     group a: "a"
+    # Hence need to order labels before passing it in
+
     return itertools.groupby(labels, key=lambda l: l.cve_id)
 
 
@@ -39,12 +39,19 @@ def load_labels(cve_id, username):
         cve (str): The CVE ID to find
         username (str): The username to find
     """
-    labels = predict.db.Session.query(predict.models.Label).filter_by(
-        cve_id=cve_id,
-        username=username,
-    ).all()
+    labels = (
+        predict.db.Session.query(predict.models.Label)
+        .filter_by(cve_id=cve_id, username=username)
+        .order_by(predict.models.Label.group_num, predict.models.Label.label_num)
+        .all()
+    ) or []
 
-    return itertools.groupby(labels, key=lambda l: (l.group_num, l.repo_user, l.repo_name))
+    # Group on repo user and repo name (which will be unique to the group)
+    # because we want to use the repo user and repo name conveniently in the 
+    # template
+    return itertools.groupby(
+        labels, key=lambda l: (l.group_num, l.repo_user, l.repo_name)
+    )
 
 
 def process_labels(cve_id, username, labels, edit_date):
@@ -61,7 +68,9 @@ def process_labels(cve_id, username, labels, edit_date):
         False - The label could not be created
     """
     # Delete the users current labels.
-    predict.db.Session.query(predict.models.Label).filter_by(cve_id=cve_id, username=username).delete()
+    predict.db.Session.query(predict.models.Label).filter_by(
+        cve_id=cve_id, username=username
+    ).delete()
 
     # Replace them with the new labels.
     for label in labels:
@@ -93,32 +102,36 @@ def create_test_labels(username):
     Args:
         username (str): The username to create dummy labels for
     """
-    for i in range(1,6):
-        labels = [{
-            "group_num": 0,
-            "label_num": 0,
-            "repo_user": str(i),
-            "repo_name": str(i + 1),
-            "fix_file": str(i + 2),
-            "fix_hash": str(i + 3),
-            "intro_file": str(i + 4),
-            "intro_hash": str(i + 5),
-            "comment": str(i + 6),
-        }]
+    for i in range(1, 6):
+        labels = [
+            {
+                "group_num": 0,
+                "label_num": 0,
+                "repo_user": str(i),
+                "repo_name": str(i + 1),
+                "fix_file": str(i + 2),
+                "fix_hash": str(i + 3),
+                "intro_file": str(i + 4),
+                "intro_hash": str(i + 5),
+                "comment": str(i + 6),
+            }
+        ]
 
         if i % 2 == 0:
-            labels.append({
-                "group_num": 1,
-                "label_num": 0,
-                "repo_user": str(2 * i),
-                "repo_name": str(2 * i + 1),
-                "fix_file": str(2 * i + 2),
-                "fix_hash": str(2 * i + 3),
-                "intro_file": str(2 * i + 4),
-                "intro_hash": str(2 * i + 5),
-                "comment": str(2 * i + 6),
-            })
-        
+            labels.append(
+                {
+                    "group_num": 1,
+                    "label_num": 0,
+                    "repo_user": str(2 * i),
+                    "repo_name": str(2 * i + 1),
+                    "fix_file": str(2 * i + 2),
+                    "fix_hash": str(2 * i + 3),
+                    "intro_file": str(2 * i + 4),
+                    "intro_hash": str(2 * i + 5),
+                    "comment": str(2 * i + 6),
+                }
+            )
+
         process_labels(
             cve_id=f"CVE-2019-000{i}",
             username=username,
