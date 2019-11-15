@@ -90,7 +90,7 @@ function newSeparator(contents) {
 function addLabel(button) {
     group = button.closest(".user-label-group")
 
-    addLabelToGroup(group)
+    addLabelToGroup(group, null, null, null, null)
 
     labelsChanged()
 }
