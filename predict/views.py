@@ -217,7 +217,7 @@ def blame_page(cve_id, repo_user, repo_name, commit, file_name):
     )
 
 
-@blueprint.route("/label", methods=["POST"])
+@blueprint.route("/label", methods=["PUT"])
 @flask_login.login_required
 def label():
     cve_id = flask.request.json["cve_id"]

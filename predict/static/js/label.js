@@ -69,7 +69,7 @@ function updateLabels() {
     }
 
     $.ajax({
-        type: "POST",
+        type: "PUT",
         url: "/label", 
         data: JSON.stringify(data),
         contentType: "application/json",
