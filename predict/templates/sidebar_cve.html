@@ -80,21 +80,21 @@
             {% for (_, repo_user, repo_name), labels in label_groups %}
             <div class="card user-label-group">
                 <div class="card-header user-label-group-header">
-                    <input type="text" class="hidden-input repo-input repo-user" placeholder="Repository Username" value="{{ repo_user }}">
+                    <input type="text" class="hidden-input repo-input repo-user" placeholder="Repository Username" value="{{ repo_user }}" autocomplete="off">
                     <span class="hidden-input-sep">/</span>
-                    <input type="text" class="hidden-input repo-input repo-name" placeholder="Repository Name" value="{{ repo_name }}">
+                    <input type="text" class="hidden-input repo-input repo-name" placeholder="Repository Name" value="{{ repo_name }}" autocomplete="off">
                     <a class="remove-group" onclick="removeGroup(this)"><i class="fas fa-times"></i></a> {# TODO prettier symbol #}
                 </div>
                 <ul class="list-group list-group-flush user-label-group-list">
                     {% for label in labels %}
                     <li class="list-group-item user-label">
-                        <input type="text" class="hidden-input label-input fix-file" placeholder="Fix File" value="{{ label.fix_file }}">
+                        <input type="text" class="hidden-input label-input fix-file" placeholder="Fix File" value="{{ label.fix_file }}" autocomplete="off">
                         <span class="hidden-input-sep">@</span>
-                        <input type="text" class="hidden-input limited label-input fix-hash" placeholder="Fix Hash" value="{{ label.fix_hash }}">
+                        <input type="text" class="hidden-input limited label-input fix-hash" placeholder="Fix Hash" value="{{ label.fix_hash }}" autocomplete="off">
                         <span class="hidden-input-sep">←</span>
-                        <input type="text" class="hidden-input label-input intro-file" placeholder="Intro File" value="{{ label.intro_file }}">
+                        <input type="text" class="hidden-input label-input intro-file" placeholder="Intro File" value="{{ label.intro_file }}" autocomplete="off">
                         <span class="hidden-input-sep">@</span>
-                        <input type="text" class="hidden-input limited label-input intro-hash" placeholder="Intro Hash" value="{{ label.intro_hash }}">
+                        <input type="text" class="hidden-input limited label-input intro-hash" placeholder="Intro Hash" value="{{ label.intro_hash }}" autocomplete="off">
                         {# TODO comment input here #}
                         <a class="remove-label" onclick="removeLabel(this)"><i class="text-danger fas fa-times"></i></a> {# TODO prettier symbol #}
                     </li>
