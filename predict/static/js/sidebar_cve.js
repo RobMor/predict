@@ -113,8 +113,11 @@ function addLabelToGroup(group, fixFile, fixHash, introFile, introHash) {
     newRemoveLabel.className = "remove-label"
     newRemoveLabel.onclick = function() { removeLabel(this) }
 
-    newRemoveLabelIcon = document.createElement("i")
-    newRemoveLabelIcon.className = "text-danger fas fa-times"
+    newRemoveLabelIcon = document.createElement("img")
+    newRemoveLabelIcon.className = "text-danger icon"
+    newRemoveLabelIcon.src = "/static/svg/x.svg"
+
+    replaceImgWithSVG(newRemoveLabelIcon)
 
     newRemoveLabel.appendChild(newRemoveLabelIcon)
 
@@ -166,8 +169,11 @@ function addGroup(repoUser, repoName) {
     newRemoveGroup.className = "remove-group"
     newRemoveGroup.onclick = function() { removeGroup(this) }
 
-    newRemoveGroupIcon = document.createElement("i")
-    newRemoveGroupIcon.className = "fas fa-times"
+    newRemoveGroupIcon = document.createElement("img")
+    newRemoveGroupIcon.className = "icon"
+    newRemoveGroupIcon.src = "/static/svg/x.svg"
+
+    replaceImgWithSVG(newRemoveGroupIcon)
 
     newRemoveGroup.appendChild(newRemoveGroupIcon)
 
@@ -183,8 +189,11 @@ function addGroup(repoUser, repoName) {
     addLabelButton.className = "add-label"
     addLabelButton.onclick = function() { addLabel(this) }
     
-    addLabelIcon = document.createElement("i")
-    addLabelIcon.className = "fas fa-plus"
+    addLabelIcon = document.createElement("img")
+    addLabelIcon.className = "icon"
+    addLabelIcon.src = "/static/svg/plus.svg"
+
+    replaceImgWithSVG(addLabelIcon)
     
     addLabelText = document.createTextNode(" New Label")
     

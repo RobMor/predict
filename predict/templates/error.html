@@ -8,7 +8,7 @@
     <h2>{{ error.code }} {{ error.name }}</h2>
     <p>{{ error.description }}</p>
     <a href="{{ url_for("main.dashboard") }}" class="btn btn-primary">
-        <span class="fas fa-home"></span>
+        {{ svg("home") }}
         Take Me Home
     </a>
 </div>

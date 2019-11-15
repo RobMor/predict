@@ -45,4 +45,7 @@ def configure_app(config):
 
     app.register_blueprint(predict.views.blueprint)
 
+    # Allow us to load svg images within templates.
+    app.jinja_env.globals.update(svg=predict.views.svg)
+
     return app

@@ -4,6 +4,7 @@ import datetime
 
 import flask
 import flask_login
+import jinja2
 
 import predict.cve
 import predict.auth
@@ -239,3 +240,9 @@ def export():
 @blueprint.errorhandler(404)
 def page_not_found(e):
     return flask.render_template("error.html", error=e)
+
+
+def svg(name, class_name=""):
+    """Insert an image tag to be replaced with an svg"""
+    file = flask.url_for("static", filename="svg/"+name+".svg")
+    return jinja2.Markup(f"<img class='icon {class_name}' src='{file}'>")

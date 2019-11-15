@@ -29,15 +29,15 @@
             <a class="file-name" href="{{ file['blame_link'] }}">{{ file["path"] }}</a>
             <div class="file-controls">
                 <a class="file-btn" title="This change fixes the vulnerability" onclick="fixesVulnerability('{{ github_data['repo_user'] }}', '{{ github_data['repo_name'] }}', '{{ file['path'] }}', '{{ github_data['hash'] }}')">
-                    <!-- Fixes Vulnerability --> <i class="fas fa-check text-success"></i>
+                    <!-- Fixes Vulnerability --> {{ svg("check", "text-success") }}
                 </a>
 
                 <a class="file-btn" title="This change introduces the vulnerability" onclick="introducesVulnerability('{{ github_data['repo_user'] }}', '{{ github_data['repo_name'] }}', '{{ file['path'] }}', '{{ github_data['hash'] }}')">
-                    <!-- Introduces Vulnerability --> <i class="fas fa-times text-danger"></i>
+                    <!-- Introduces Vulnerability --> {{ svg("x", "text-danger") }}
                 </a>
 
                 <a data-toggle="dropdown" class="file-btn">
-                    <i class="fas fa-ellipsis-h"></i>
+                    {{ svg("kebab-horizontal") }}
                 </a>
                 <div class="dropdown-menu">
                     <a class="dropdown-item" href="{{ file['github_link'] }}">View on GitHub</a>
