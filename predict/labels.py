@@ -93,7 +93,7 @@ def create_test_labels(username):
     Args:
         username (str): The username to create dummy labels for
     """
-    for i in range(5):
+    for i in range(1,6):
         labels = [{
             "group_num": 0,
             "label_num": 0,
