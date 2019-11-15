@@ -33,25 +33,18 @@ def load_recent(username):
 
 
 def load_labels(cve_id, username):
-    """Loads the label with the given primary key information.
-
-    Possibly returns labels that have no intro file. This is meant to allow for
-    replacement of the intro files in these labels.
+    """Loads the label with the given information grouped by repository.
 
     Args:
         cve (str): The CVE ID to find
         username (str): The username to find
-        repo_user (str): The repository user to find
-        repo_name (str): The repository name to find
-        intro_file (str): The intro file to find
-        fix_file (str): The fix file to find
     """
-    query = predict.db.Session.query(predict.models.Label).filter_by(
+    labels = predict.db.Session.query(predict.models.Label).filter_by(
         cve_id=cve_id,
         username=username,
-    )
+    ).all()
 
-    return query.all()
+    return itertools.groupby(labels, key=lambda l: (l.repo_user, l.repo_name))
 
 
 def process_labels(cve_id, username, labels, edit_date):
@@ -75,13 +68,15 @@ def process_labels(cve_id, username, labels, edit_date):
         new_label = predict.models.Label(
             cve_id=cve_id,
             username=username,
-            repo_user=label["repo_user"],
-            repo_name=label["repo_name"],
-            fix_file=label["fix_file"],
-            fix_hash=label["fix_hash"],
-            intro_file=label["intro_file"],
-            intro_hash=label["intro_hash"],
-            comment=label["comment"],
+            group_num=label["group_num"],
+            label_num=label["label_num"],
+            repo_user=label.get("repo_user"),
+            repo_name=label.get("repo_name"),
+            fix_file=label.get("fix_file"),
+            fix_hash=label.get("fix_hash"),
+            intro_file=label.get("intro_file"),
+            intro_hash=label.get("intro_hash"),
+            comment=label.get("comment"),
             edit_date=edit_date,
         )
 
@@ -98,32 +93,34 @@ def create_test_labels(username):
         username (str): The username to create dummy labels for
     """
     for i in range(5):
+        labels = [{
+            "group_num": 0,
+            "label_num": 0,
+            "repo_user": str(i),
+            "repo_name": str(i + 1),
+            "fix_file": str(i + 2),
+            "fix_hash": str(i + 3),
+            "intro_file": str(i + 4),
+            "intro_hash": str(i + 5),
+            "comment": str(i + 6),
+        }]
+
+        if i % 2 == 0:
+            labels.append({
+                "group_num": 1,
+                "label_num": 0,
+                "repo_user": str(2 * i),
+                "repo_name": str(2 * i + 1),
+                "fix_file": str(2 * i + 2),
+                "fix_hash": str(2 * i + 3),
+                "intro_file": str(2 * i + 4),
+                "intro_hash": str(2 * i + 5),
+                "comment": str(2 * i + 6),
+            })
+        
         process_labels(
             cve_id=f"CVE-2019-000{i}",
             username=username,
-            labels=[{
-                "repo_user": str(i),
-                "repo_name": str(i + 1),
-                "fix_file": str(i + 2),
-                "fix_hash": str(i + 3),
-                "intro_file": str(i + 4),
-                "intro_hash": str(i + 5),
-                "comment": str(i + 6),
-            }],
+            labels=labels,
             edit_date=datetime.datetime.now(),
         )
-        if i % 2 == 0:
-            process_labels(
-                cve_id=f"CVE-2019-000{i}",
-                username=username,
-                labels=[{
-                    "repo_user": str(2 * i),
-                    "repo_name": str(2 * i + 1),
-                    "fix_file": str(2 * i + 2),
-                    "fix_hash": str(2 * i + 3),
-                    "intro_file": str(2 * i + 4),
-                    "intro_hash": str(2 * i + 5),
-                    "comment": str(2 * i + 6),
-                }],
-                edit_date=datetime.datetime.now(),
-            )

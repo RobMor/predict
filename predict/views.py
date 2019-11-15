@@ -171,15 +171,12 @@ def conflict_resolution():
 def cve_base(cve_id):
     cve_data = predict.cve.get_cve(cve_id)
 
-    if cve_data is None:
-        cve_data = {"id": "CVE Not Found"}
+    label_groups = predict.labels.load_labels(cve_id, predict.auth.current_user())
 
-    labels = predict.labels.load_labels(cve_id, predict.auth.current_user())
-
-    if len(cve_data.get("git_links", [])) > 0:
+    if cve_data is not None and len(cve_data.get("git_links", [])) > 0:
         return flask.redirect(cve_data["git_links"][0][1])
 
-    return flask.render_template("sidebar_cve.html", cve_data=cve_data, labels=labels)
+    return flask.render_template("sidebar_cve.html", cve_data=cve_data, label_groups=label_groups)
 
 
 @blueprint.route("/cve/<cve_id>/info/<repo_user>/<repo_name>/<commit>")
@@ -187,10 +184,7 @@ def cve_base(cve_id):
 def info_page(cve_id, repo_user, repo_name, commit):
     cve_data = predict.cve.get_cve(cve_id)
 
-    if cve_data is None:
-        cve_data = {"id": "CVE Not Found"}
-
-    labels = predict.labels.load_labels(cve_id, predict.auth.current_user())
+    label_groups = predict.labels.load_labels(cve_id, predict.auth.current_user())
 
     github_data = predict.github.get_commit_info(cve_id, repo_user, repo_name, commit)
 
@@ -198,7 +192,7 @@ def info_page(cve_id, repo_user, repo_name, commit):
         return flask.render_template("error.html", error={"code": "GitHub_COMMIT_ERROR", "name": "Github Commit Error", "description": f"The Github page for CVE {cve_id}, at {repo_user}/{repo_name}/{commit} could not be reached"})
 
     return flask.render_template(
-        "info.html", cve_data=cve_data, labels=labels, github_data=github_data
+        "info.html", cve_data=cve_data, label_groups=label_groups, github_data=github_data
     )
 
 
@@ -209,10 +203,7 @@ def info_page(cve_id, repo_user, repo_name, commit):
 def blame_page(cve_id, repo_user, repo_name, commit, file_name):
     cve_data = predict.cve.get_cve(cve_id)
 
-    if cve_data is None:
-        cve_data = {"id": "CVE Not Found"}
-
-    labels = predict.labels.load_labels(cve_id, predict.auth.current_user())
+    label_groups = predict.labels.load_labels(cve_id, predict.auth.current_user())
 
     blame_data = predict.github.get_blame(
         cve_id, repo_user, repo_name, commit, file_name
@@ -227,7 +218,7 @@ def blame_page(cve_id, repo_user, repo_name, commit, file_name):
     return flask.render_template(
         "blame.html",
         cve_data=cve_data,
-        labels=labels,
+        label_groups=label_groups,
         github_data=blame_data,
         diff_enabled=diff_enabled,
     )
@@ -236,9 +227,9 @@ def blame_page(cve_id, repo_user, repo_name, commit, file_name):
 @blueprint.route("/label", methods=["POST"])
 @flask_login.login_required
 def label():
-    cve_id = flask.request.args["cve_id"]
+    cve_id = flask.request.json["cve_id"]
     username = predict.auth.current_user()
-    labels = flask.request.args["labels"]
+    labels = flask.request.json["labels"]
     edit_date = datetime.datetime.now()
 
     success = predict.labels.process_labels(cve_id, username, labels, edit_date)

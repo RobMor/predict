@@ -7,20 +7,21 @@
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='sidebar_cve.css') }}">
 {% endblock %}
 
-{% block title %} {{ cve_data["id"] }} {% endblock %}
+{% block title %} {% if cve_data is not none %} {{ cve_data["id"] }} {% else %} CVE Not Found {% endif %} {% endblock %}
 
 {% block sidebar_content %}
-<ul class="nav nav-tabs bg-light" id="myTab" role="tablist">
+{% if cve_data is not none %}
+<ul class="nav nav-tabs bg-light" role="tablist">
     <li class="nav-item">
-        <a class="nav-link active" id="cve-tab" data-toggle="tab" href="#cve-info" role="tab" aria-controls="cve" aria-selected="true">CVE Info</a>
+        <a class="nav-link active" id="cve-tab">CVE Info</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" id="label-tab" data-toggle="tab" href="#labels" role="tab" aria-controls="labels" aria-selected="false">Labels</a>
+        <a class="nav-link" id="label-tab">Labels</a>
     </li>
 </ul>
 
 <div class="tab-content bg-white">
-    <div id="cve-info" class="tab-pane show active" role="tabpanel" aria-labelledby="CVE-tab">
+    <div id="cve-info" class="tab-pane active" role="tabpanel" aria-labelledby="CVE-tab">
         <h1>{{ cve_data["id"] }}</h1>
 
         <p>{{ cve_data["desc"] }}</p>
@@ -55,7 +56,7 @@
         </ul>
 
         {% if cve_data["normal_links"]|length > 0 %}
-            <h3>Non-Git Links</h3>
+            <h3>Other Links</h3>
 
             <ul>
             {% for link in cve_data["normal_links"] %}
@@ -72,23 +73,42 @@
     <div id="labels" class="tab-pane" role="tabpanel" aria-labelledby="labels-tab">
         <h1>Current Labels</h1>
 
-        <div id="user-labels">
-            {% for label in labels %}
-            <div class="single-label input-group">
-                <input type="text" class="form-control" placeholder="Fix Filepath" value="{{ label.fix_file }}">
-                <label class="input-group-text input-group-addon">@</label>
-                <input type="text" class="form-control" placeholder="Fix Commit Hash" value="{{ label.fix_hash }}">
-                <label class="input-group-text input-group-addon">←</label>
-                <input type="text" class="form-control" placeholder="Intro Filepath" value="{{ label.intro_file }}">
-                <label class="input-group-text input-group-addon">@</label>
-                <input type="text" class="form-control" placeholder="Intro Commit Hash" value="{{ label.intro_hash }}">
-                {# TODO comment input here #}
+        <!-- A hack to make the textboxes resize accurately.-->
+        <span id="hidden-text"></span>
+        
+        <div id="user-labels" data-cve="{{ cve_data['id'] }}">
+            {% for (repo_user, repo_name), labels in label_groups %}
+            <div class="card user-label-group">
+                <div class="card-header user-label-group-header">
+                    <input type="text" class="hidden-input repo-input repo-user" placeholder="Repository Username" value="{{ repo_user }}">
+                    <span class="hidden-input-sep">/</span>
+                    <input type="text" class="hidden-input repo-input repo-name" placeholder="Repository Name" value="{{ repo_name }}">
+                    <a class="remove-group" onclick="removeGroup(this)"><i class="fas fa-times"></i></a> {# TODO prettier symbol #}
+                </div>
+                <ul class="list-group list-group-flush user-label-group-list">
+                    {% for label in labels %}
+                    <li class="list-group-item user-label">
+                        <input type="text" class="hidden-input label-input fix-file" placeholder="Fix File" value="{{ label.fix_file }}">
+                        <span class="hidden-input-sep">@</span>
+                        <input type="text" class="hidden-input limited label-input fix-hash" placeholder="Fix Hash" value="{{ label.fix_hash }}">
+                        <span class="hidden-input-sep">←</span>
+                        <input type="text" class="hidden-input label-input intro-file" placeholder="Intro File" value="{{ label.intro_file }}">
+                        <span class="hidden-input-sep">@</span>
+                        <input type="text" class="hidden-input limited label-input intro-hash" placeholder="Intro Hash" value="{{ label.intro_hash }}">
+                        {# TODO comment input here #}
+                        <a class="remove-label" onclick="removeLabel(this)"><i class="text-danger fas fa-times"></i></a> {# TODO prettier symbol #}
+                    </li>
+                    {% endfor %}
+                </ul>
+                <button class="add-label" onclick="addLabel(this)"><i class="fas fa-plus"></i> New Label</button>
             </div>
             {% endfor %}
         </div>
-
-        <button class="form-control" onclick="addLabel()">New Label</button>
+        
+        <button class="add-group" onclick="addGroup()"><i class="fas fa-plus"></i> New Group</button>
     </div>
 </div>
-
+{% else %}
+<h1>CVE Not Found</h1>
+{% endif %}
 {% endblock %}

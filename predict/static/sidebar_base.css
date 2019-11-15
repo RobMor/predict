@@ -64,7 +64,6 @@
 
 #sidebar-content {
     /* Space for the sidebar-query */
-    /* padding: 1rem; */
     padding-bottom: 4em; /* A bit of a hack but there's no better way */
 
     background-color: white;

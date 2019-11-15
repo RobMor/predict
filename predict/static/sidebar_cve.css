@@ -1,3 +1,7 @@
+.nav-link {
+    cursor: pointer;
+}
+
 .tab-content {
     padding: 1rem;
 }
@@ -16,17 +20,114 @@
     margin-bottom: 1rem;
 }
 
-.single-label + .single-label {
-    margin-top: 0.5rem;
+.user-label-group-header {
+    display: flex;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 14px;
 }
 
-.input-group-addon {
-    border-radius: 0;
-
-    margin-left: -1px;
-    margin-right: -1px;
+.user-label-group + .user-label-group {
+    margin-top: 1rem;
 }
+
+.user-label {
+    display: flex;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 14px;
+}
+
+.remove-label, .remove-group {
+    margin-left: auto;
+
+    min-width: 2rem;
+    border-radius: 0.25rem;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.remove-label:hover, .remove-group:hover{
+    background: lightgray;
+}
+
+.add-label {
+    padding: 0.5rem;
+    border: none;
+
+    border-bottom-left-radius: 0.25rem;
+    border-bottom-right-radius: 0.25rem;
+
+    background: transparent;
+}
+
+.add-label:hover {
+    color: white;
+    background: slateblue;
+}
+
+.add-group {
+    width: 100%;
+    padding: 0.5rem;
+    border: none;
+
+    border-radius: 0.25rem;
+
+    background: transparent;
+}
+
+.add-group:hover {
+    color: white;
+    background: lightseagreen;
+}
+
 
 .external-link:after {
     content: " " url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAVklEQVR4Xn3PgQkAMQhDUXfqTu7kTtkpd5RA8AInfArtQ2iRXFWT2QedAfttj2FsPIOE1eCOlEuoWWjgzYaB/IkeGOrxXhqB+uA9Bfcm0lAZuh+YIeAD+cAqSz4kCMUAAAAASUVORK5CYII=);
+}
+
+/* Hacks to get the textboxes to look like normal text below this line */ 
+
+#hidden-text {
+    margin: 0;
+    padding: 0;
+    font: inherit;
+    position: absolute;
+    height: 0;
+    overflow: hidden;
+    white-space: pre;
+
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 14px;
+}
+
+input.hidden-input {
+    background: transparent;
+
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 0.25rem;
+    border-color: transparent;
+}
+
+input.hidden-input.limited {
+    max-width: 22%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+input.hidden-input:focus {
+    border-color: black;
+    background-color: white;
+}
+
+.hidden-input-sep {
+    text-indent: 0;
+    display: flex;
+    align-items: center;
+
+    line-height: 0;
+
+    margin: 0.2rem;
 }
