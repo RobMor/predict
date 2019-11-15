@@ -81,7 +81,8 @@ def process_labels(cve_id, username, labels, edit_date):
         )
 
         predict.db.Session.add(new_label)
-        predict.db.Session.commit()
+
+    predict.db.Session.commit()
 
     return True
 
