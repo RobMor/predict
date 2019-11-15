@@ -28,11 +28,11 @@
         <div class="card-header file-header">
             <a class="file-name" href="{{ file['blame_link'] }}">{{ file["path"] }}</a>
             <div class="file-controls">
-                <a class="file-btn" title="This change fixes the vulnerability" onclick="fixesVulnerability('{{ cve_data['id'] }}', '{{ cve_data['repo_user'] }}', '{{ cve_data['repo_name'] }}', '{{ file['path'] }}', '{{ github_data['hash'] }}')">
+                <a class="file-btn" title="This change fixes the vulnerability" onclick="fixesVulnerability('{{ github_data['repo_user'] }}', '{{ github_data['repo_name'] }}', '{{ file['path'] }}', '{{ github_data['hash'] }}')">
                     <!-- Fixes Vulnerability --> <i class="fas fa-check text-success"></i>
                 </a>
 
-                <a class="file-btn" title="This change introduces the vulnerability" onclick="introducesVulnerability('{{ cve_data['id'] }}', '{{ cve_data['repo_user'] }}', '{{ cve_data['repo_name'] }}', '{{ file['path'] }}', '{{ github_data['hash'] }}')">
+                <a class="file-btn" title="This change introduces the vulnerability" onclick="introducesVulnerability('{{ github_data['repo_user'] }}', '{{ github_data['repo_name'] }}', '{{ file['path'] }}', '{{ github_data['hash'] }}')">
                     <!-- Introduces Vulnerability --> <i class="fas fa-times text-danger"></i>
                 </a>
 

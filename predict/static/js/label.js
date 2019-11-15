@@ -14,13 +14,33 @@ document.addEventListener("DOMContentLoaded", (event) => {
     })
 })
 
-function introducesVulnerability(cve_id, repo_name, repo_user, intro_file, intro_hash) {
-    // TODO need to prompt user for fix file and fix hash here...
-    // createLabel(cve_id, repo_name, repo_user, null, null, intro_file, intro_hash, null)
+function getGroup(repoUser, repoName) {
+    groups = document.querySelectorAll(".user-label-group")
+
+    for (i = 0; i < groups.length; i++) {
+        existingUser = groups[i].querySelector(".repo-user").value
+        existingName = groups[i].querySelector(".repo-name").value
+
+        if (repoUser === existingUser && repoName === existingName) {
+            return groups[i]
+        }
+    }
+    
+    return addGroup(repoUser, repoName)
 }
 
-function fixesVulnerability(cve_id, repo_name, repo_user, fix_file, fix_hash) {
-    // createLabel(cve_id, repo_name, repo_user, fix_file, fix_hash, null, null, null)
+function introducesVulnerability(repoUser, repoName, introFile, introHash) {
+    group = getGroup(repoUser, repoName)
+    addLabelToGroup(group, null, null, introFile, introHash)
+    toggleSidebar()
+    openLabels()
+}
+
+function fixesVulnerability(repoUser, repoName, fixFile, fixHash) {
+    group = getGroup(repoUser, repoName)
+    addLabelToGroup(group, fixFile, fixHash, null, null)
+    toggleSidebar()
+    openLabels()
 }
 
 function labelsChanged() {

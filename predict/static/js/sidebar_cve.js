@@ -12,6 +12,26 @@ function missing_commit_info_page(cve) {
     }
 }
 
+function openLabels() {
+    labelTab.classList.add("active")
+    labelButton.classList.add("active")
+    cveTab.classList.remove("active")
+    cveButton.classList.remove("active")
+
+    // Make sure all label textboxes are properly sized when we switch tabs
+    labelInputs = document.querySelectorAll(".hidden-input")
+    labelInputs.forEach((element) => {
+        resize(element)()
+    })
+}
+
+function openCVE() {
+    cveTab.classList.add("active")
+    cveButton.classList.add("active")
+    labelTab.classList.remove("active")
+    labelButton.classList.remove("active")
+}
+
 document.addEventListener("DOMContentLoaded", (event) => {
     // Set up the resize event listener
     labelInputs = document.querySelectorAll(".hidden-input")
@@ -26,25 +46,8 @@ document.addEventListener("DOMContentLoaded", (event) => {
     labelButton = document.getElementById("label-tab")
     cveButton = document.getElementById("cve-tab")
 
-    labelButton.addEventListener("click", function() {
-        labelTab.classList.add("active")
-        labelButton.classList.add("active")
-        cveTab.classList.remove("active")
-        cveButton.classList.remove("active")
-
-        // Make sure all label textboxes are properly sized when we switch tabs
-        labelInputs = document.querySelectorAll(".hidden-input")
-        labelInputs.forEach((element) => {
-            resize(element)()
-        })
-    })
-
-    cveButton.addEventListener("click", function() {
-        cveTab.classList.add("active")
-        cveButton.classList.add("active")
-        labelTab.classList.remove("active")
-        labelButton.classList.remove("active")
-    })
+    labelButton.addEventListener("click", openLabels)
+    cveButton.addEventListener("click", openCVE)
 })
 
 function resize(element) {
@@ -61,10 +64,11 @@ function resize(element) {
     }
 }
 
-function newHiddenInput(placeholder, className) {
+function newHiddenInput(placeholder, value, className) {
     element = document.createElement("input")
 
     element.type = "text"
+    element.value = value
     element.placeholder = placeholder
     element.className = className
 
@@ -91,19 +95,19 @@ function addLabel(button) {
     labelsChanged()
 }
 
-function addLabelToGroup(group) {
+function addLabelToGroup(group, fixFile, fixHash, introFile, introHash) {
     groupList = group.querySelector(".user-label-group-list")
 
     newLabel = document.createElement("li")
     newLabel.className = "list-group-item user-label"
 
-    newFixFile = newHiddenInput("Fix File", "hidden-input label-input fix-file")
+    newFixFile = newHiddenInput("Fix File", fixFile, "hidden-input label-input fix-file")
     newFixSep = newSeparator("@")
-    newFixHash = newHiddenInput("Fix Hash", "hidden-input limited label-input fix-hash")
+    newFixHash = newHiddenInput("Fix Hash", fixHash, "hidden-input limited label-input fix-hash")
     newFixIntroSep = newSeparator("←")
-    newIntroFile = newHiddenInput("Intro File", "hidden-input label-input intro-file")
+    newIntroFile = newHiddenInput("Intro File", introFile, "hidden-input label-input intro-file")
     newIntroSep = newSeparator("@")
-    newIntroHash = newHiddenInput("Intro Hash", "hidden-input limited label-input intro-hash")
+    newIntroHash = newHiddenInput("Intro Hash", introHash, "hidden-input limited label-input intro-hash")
 
     newRemoveLabel = document.createElement("a")
     newRemoveLabel.className = "remove-label"
@@ -129,6 +133,8 @@ function addLabelToGroup(group) {
     resize(newFixHash)()
     resize(newIntroFile)()
     resize(newIntroHash)()
+
+    return newLabel
 }
 
 function removeLabel(button) {
@@ -138,7 +144,12 @@ function removeLabel(button) {
     labelsChanged()
 }
 
-function addGroup() {
+function addGroupWithLabel() {
+    group = addGroup(null, null)
+    addLabelToGroup(group, null, null, null, null)
+}
+
+function addGroup(repoUser, repoName) {
     groups = document.getElementById("user-labels")
 
     card = document.createElement("div")
@@ -147,9 +158,9 @@ function addGroup() {
     cardHeader = document.createElement("div")
     cardHeader.className = "card-header user-label-group-header"
 
-    newRepoUser = newHiddenInput("Repository Username", "hidden-input repo-input repo-user")
+    newRepoUser = newHiddenInput("Repository Username", repoUser, "hidden-input repo-input repo-user")
     newRepoSep = newSeparator("/")
-    newRepoName = newHiddenInput("Repository Name", "hidden-input repo-input repo-name")
+    newRepoName = newHiddenInput("Repository Name", repoName, "hidden-input repo-input repo-name")
 
     newRemoveGroup = document.createElement("a")
     newRemoveGroup.className = "remove-group"
@@ -183,15 +194,15 @@ function addGroup() {
     card.appendChild(cardHeader)
     card.appendChild(cardList)
     card.appendChild(addLabelButton)
-    
-    addLabelToGroup(card)
-    
+
     groups.append(card)
 
     resize(newRepoUser)()
     resize(newRepoName)()
 
     labelsChanged()
+
+    return card
 }
 
 function removeGroup(button) {
