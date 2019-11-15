@@ -16,6 +16,17 @@
     margin-bottom: 0.5rem;
 }
 
+#label-header {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#update-status {
+    display: none;
+}
+
 #user-labels {
     margin-bottom: 1rem;
 }

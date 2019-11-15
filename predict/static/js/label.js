@@ -4,13 +4,13 @@ document.addEventListener("DOMContentLoaded", (event) => {
     labelInputs = document.querySelectorAll(".label-input")
 
     labelInputs.forEach((element) => {
-        element.addEventListener("input", labelValueUpdated)
+        element.addEventListener("input", labelsChanged)
     })
 
     repoInputs = document.querySelectorAll(".repo-input")
 
     repoInputs.forEach((element) => {
-        element.addEventListener("input", labelValueUpdated)
+        element.addEventListener("input", labelsChanged)
     })
 })
 
@@ -23,10 +23,10 @@ function fixesVulnerability(cve_id, repo_name, repo_user, fix_file, fix_hash) {
     // createLabel(cve_id, repo_name, repo_user, fix_file, fix_hash, null, null, null)
 }
 
-function labelValueUpdated(e) {
-    // Update values after 3 seconds of no edits
+function labelsChanged() {
+    // Update values after .5 seconds of no edits
     clearTimeout(timer)
-    timer = setTimeout(updateLabels, 1000)
+    timer = setTimeout(updateLabels, 500)
 }
 
 function getLabels() {
@@ -79,10 +79,19 @@ function updateLabels() {
 }
 
 function labelUpdateSucceeded(data) {
-    console.log(data)
+    span = document.getElementById("update-status")
+    span.textContent = "Saved!"
+    span.className = "text-success"
+
+    $(span).fadeIn(100).fadeOut(200)
 }
 
 function labelUpdateFailed(data) {
-    alert("Failed to update labels")
+    span = document.getElementById("update-status")
+    span.textContent = "Failed to Save"
+    span.className = "text-danger"
+
+    $(span).fadeIn(100).fadeOut(200)
+
     console.log(data)
 }

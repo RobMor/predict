@@ -69,7 +69,7 @@ function newHiddenInput(placeholder, className) {
     element.className = className
 
     element.addEventListener("input", resize(element))
-    element.addEventListener("input", labelValueUpdated)
+    element.addEventListener("input", labelsChanged)
 
     return element
 }
@@ -88,7 +88,7 @@ function addLabel(button) {
 
     addLabelToGroup(group)
 
-    updateLabels()
+    labelsChanged()
 }
 
 function addLabelToGroup(group) {
@@ -135,7 +135,7 @@ function removeLabel(button) {
     label = button.closest(".user-label")
     label.remove()
 
-    updateLabels()
+    labelsChanged()
 }
 
 function addGroup() {
@@ -191,12 +191,12 @@ function addGroup() {
     resize(newRepoUser)()
     resize(newRepoName)()
 
-    updateLabels()
+    labelsChanged()
 }
 
 function removeGroup(button) {
     group = button.closest(".user-label-group")
     group.remove()
 
-    updateLabels()
+    labelsChanged()
 }
