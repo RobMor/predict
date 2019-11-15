@@ -13,7 +13,7 @@ def load_recent(username):
     Returns:
         A dictionary mapping CVE IDs to labels
     """
-    
+
     # Labels first determines the 10 most recent labels before ordering it
     # by cve_id to be passed into itertools.groupby
     labels = sorted(
@@ -23,8 +23,7 @@ def load_recent(username):
         .order_by(desc(predict.models.Label.edit_date))
         .limit(10)
         .all()
-    ), key=lambda l: l.cve_id)
-    or []
+    ), key=lambda l: l.cve_id) or []
 
     # Itertools groupby is weird, here's an example:
     # Input: list= ["a","a", "b", "b", "c", "a"]
