@@ -256,19 +256,19 @@ def datetime_format(dt):
     elif delta < threshold2:
         return "a few seconds ago"
     elif delta < threshold3:
-        return f"{delta.seconds // 60} minutes ago"
+        return "%d minutes ago" % (delta.seconds // 60)
     elif delta < threshold4:
-        return f"{delta.seconds // 3600} hours ago"
+        return "%d hours ago" % (delta.seconds // 3600)
     elif delta < threshold5:
-        timestring = dt.strftime("%I:%M").lstrip("0")
-        return f"yesterday at {timestring}"
+        timestring = dt.strftime("%I:%M %p").lstrip("0")
+        return "yesterday at %s" % timestring
     else:
         datestring = dt.strftime("%b %d").replace(" 0", " ")
-        timestring = dt.strftime("%I:%M").lstrip("0")
-        return f"{datestring} at {timestring}"
+        timestring = dt.strftime("%I:%M %p").lstrip("0")
+        return "{} at {}".format(datestring, timestring)
 
 
 def svg(name, class_name=""):
     """Insert an image tag to be replaced with an svg"""
     file = flask.url_for("static", filename="svg/"+name+".svg")
-    return jinja2.Markup(f"<img class='icon {class_name}' src='{file}'>")
+    return jinja2.Markup("<img class='icon {}' src='{}'>".format(class_name, file))

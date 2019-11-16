@@ -21,7 +21,7 @@ def get_commit_info(cve_id, repo_user, repo_name, commit_hash):
 def scrape_commit_info(repo_user, repo_name, commit_hash):
     github_data = {"repo_user": repo_user, "repo_name": repo_name, "hash": commit_hash}
 
-    url = f"https://github.com/{repo_user}/{repo_name}/commit/{commit_hash}"
+    url = "https://github.com/{}/{}/commit/{}".format(repo_user, repo_name, commit_hash)
 
     # Getting a split diff to make parsing diffs easier
     response = requests.get(url, params={"diff": "split"})
@@ -192,11 +192,11 @@ def scrape_blame(cve_id, repo_user, repo_name, commit_hash, file_name):
         "file_name": file_name,
     }
 
-    raw_url = f"https://raw.githubusercontent.com/{repo_user}/{repo_name}/{commit_hash}^/{file_name}"
+    raw_url = "https://raw.githubusercontent.com/{}/{}/{}^/{}".format(repo_user, repo_name, commit_hash, file_name)
     raw_text = requests.get(raw_url).text.splitlines(True)
     blame_data["old_code"] = raw_text
 
-    url = f"https://github.com/{repo_user}/{repo_name}/blame/{commit_hash}/{file_name}"
+    url = "https://github.com/{}/{}/blame/{}/{}".format(repo_user, repo_name, commit_hash, file_name)
     blame_data["github_link"] = url
     response = requests.get(url)
 

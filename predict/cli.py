@@ -8,12 +8,7 @@ def up(arguments):
     import predict
 
     # Precedence order
-    config_location = (
-        arguments.config
-        or os.environ.get("PREDICT_CONFIG")
-        or os.path.expanduser(os.path.join("~", ".predict", "config.ini"))
-    )
-
+    config_location = arguments.config or predict.config.config_location()
     config = predict.config.load_config(config_location)
 
     if config is None:
@@ -28,6 +23,16 @@ def up(arguments):
 
     # TODO remove `debug` later
     app.run(debug=True)
+
+
+def config(arguments):
+    # Precedence order
+    config_location = arguments.location or predict.config.config_location()
+    config = predict.config.load_config(config_location)
+
+    if config is None or input("Are you sure you want to overwrite the config at %s (Y/n)? " % config_location) == "Y":
+        config = predict.config.create_default_config()
+        predict.config.write_config(config, config_location)
 
 
 def main():
@@ -56,14 +61,12 @@ def main():
 
     # --- predict config ---
     config_parser = subparsers.add_parser(
-        "config", description="Configure this tool", help="Configure this tool"
+        "config", description="Create the default configuration", help="Create the default configuration"
     )
 
-    config_parser.set_defaults(target=None)
+    config_parser.set_defaults(target=config)
 
-    config_subparser = config_parser.add_subparsers(
-        title="Available commands", metavar="<command>", prog="predict"
-    )
+    config_parser.add_argument("location", nargs="?")
 
     arguments = parser.parse_args()
 

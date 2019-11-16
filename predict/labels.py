@@ -135,7 +135,7 @@ def create_test_labels(username):
                 }
             )
         process_labels(
-            cve_id=f"CVE-2019-000{i}",
+            cve_id="CVE-2019-000%d" % i,
             username=username,
             labels=labels,
             edit_date=datetime.datetime.now(),

@@ -5,6 +5,12 @@ import binascii
 import configparser
 
 
+def config_location():
+    return os.environ.get("PREDICT_CONFIG") or os.path.expanduser(
+        os.path.join("~", ".predict", "config.ini")
+    )
+
+
 def load_config(file_path):
     config = configparser.ConfigParser(allow_no_value=True)
     config.optionxform = str
