@@ -247,7 +247,7 @@ def datetime_format(dt):
 
     threshold1 = datetime.timedelta(seconds=15)
     threshold2 = datetime.timedelta(seconds=60)
-    threshold3 = datetime.timedelta(minutes=45)
+    threshold3 = datetime.timedelta(minutes=60)
     threshold4 = datetime.timedelta(hours=10)
     threshold5 = datetime.timedelta(days=1)
 
