@@ -31,6 +31,7 @@ def config(arguments):
     config = predict.config.load_config(config_location)
 
     if config is None or input("Are you sure you want to overwrite the config at %s (Y/n)? " % config_location) == "Y":
+        print("Writing default configuration to")
         config = predict.config.create_default_config()
         predict.config.write_config(config, config_location)
 
