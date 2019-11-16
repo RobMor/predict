@@ -15,7 +15,7 @@
         {% if not current_user.is_anonymous %}
             <div class="dropdown sidebar-control">
                 <a class="btn btn-outline-dark dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                {{ svg("person") }} Logged in as: {{ current_user.username }}
+                {{ svg("person") }} {{ current_user.username }}
                 </a>
 
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
