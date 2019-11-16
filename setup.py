@@ -20,6 +20,6 @@ setup(
         ]
     },
     package_data={
-        "predict": ["templates/*", "static/*"]
+        "predict": ["templates/*", "static/*, static/js/*, static/svg/*"]
     }
 )
