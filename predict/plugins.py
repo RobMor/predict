@@ -65,6 +65,22 @@ class DataPlugin(PluginBase, abc.ABC):
 
 # TODO
 class ConflictPlugin(PluginBase, abc.ABC):
+	def __init__(self, data, query):
+		"""Defines the construction of this export format.
+
+		Args:
+			data (list of lists): The data to be exported. Each sub-list is a datapoint
+			query is the query object
+		"""
+		pass
+
+	@abc.abstractmethod
+	def resolve(self):
+		"""Defines the functionality associated with this file format.
+
+		Handles construction of a flask response to be handed back to he user.
+		"""
+		pass
 	pass
 
 
@@ -124,6 +140,10 @@ def export(filter_, extra_data, strategy, file_format):
 		extra =  entrypoints.get_single("predict.plugins", extra_data).load()
 		extra = extra(l, q)
 		l = extra.add_data()
+	
+	if(strategy != "none"):
+		strat =  entrypoints.get_single("predict.plugins", strategy).load()
+		strat = strat(l, q)
 	
 	file_format = entrypoints.get_single("predict.plugins", file_format).load()
 	file_format = file_format(l)
