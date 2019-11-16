@@ -25,9 +25,9 @@ def scrape_commit_info(repo_user, repo_name, commit_hash):
 
     # Getting a split diff to make parsing diffs easier
     response = requests.get(url, params={"diff": "split"})
-    if(response.text.strip() == "Not Found"):
+    if response.text.strip() == "Not Found":
         return None
-    special_text = re.sub(r'(\</?)(?:span([^\>]*))(\>)', r'\1pre\2\3', response.text)
+    special_text = re.sub(r"(\</?)(?:span([^\>]*))(\>)", r"\1pre\2\3", response.text)
     page_html = BeautifulSoup(special_text, "html.parser")
 
     # Get the div containing commit information to improve searching speeds
@@ -48,11 +48,10 @@ def scrape_commit_info(repo_user, repo_name, commit_hash):
     github_data["authors"] = [f.text.strip() for f in authors]
 
     # Parse datetime by cutting out the Z at the end
-    github_data["datetime"] = datetime.datetime.fromisoformat(
-        commit_information_div.find("relative-time", {"class": "no-wrap"})["datetime"][
-            :-1
-        ]
-    )
+    date = commit_information_div.find("relative-time", {"class": "no-wrap"})[
+        "datetime"
+    ]
+    github_data["datetime"] = datetime.datetime.strptime(date, "%Y-%m-%dT%H:%M:%SZ")
 
     file_divs = page_html.find(
         "div", {"class": "js-diff-progressive-container"}
@@ -115,7 +114,7 @@ def scrape_commit_info(repo_user, repo_name, commit_hash):
             else:
                 old_code, new_code = tuple(line.find_all("td", {"class": "blob-code"}))
                 if old_code.text:
-                    old_code = old_code.text.replace("\n","")
+                    old_code = old_code.text.replace("\n", "")
                     current_group_old.append(old_code)
 
                 if new_code.text:
@@ -157,7 +156,7 @@ def process_commit_info(cve_id, commit_info):
                 group["old_code"].splitlines(True),
                 group["new_code"].splitlines(True),
             ).get_opcodes()
-            
+
             # We assume new_code and old_code are the same language
             lexer = get_lexer(file["path"], group["old_code"])
 
@@ -180,8 +179,14 @@ def get_blame(cve_id, repo_user, repo_name, commit_hash, file_name):
 
     return None
 
+
 def scrape_blame(cve_id, repo_user, repo_name, commit_hash, file_name):
-    if repo_name is None or repo_user is None or commit_hash is None or file_name is None:
+    if (
+        repo_name is None
+        or repo_user is None
+        or commit_hash is None
+        or file_name is None
+    ):
         return None
     if not valid_inputs(repo_user, repo_name, commit_hash, file_name):
         return None
@@ -192,20 +197,28 @@ def scrape_blame(cve_id, repo_user, repo_name, commit_hash, file_name):
         "file_name": file_name,
     }
 
-    raw_url = "https://raw.githubusercontent.com/{}/{}/{}^/{}".format(repo_user, repo_name, commit_hash, file_name)
+    raw_url = "https://raw.githubusercontent.com/{}/{}/{}^/{}".format(
+        repo_user, repo_name, commit_hash, file_name
+    )
     raw_text = requests.get(raw_url).text.splitlines(True)
     blame_data["old_code"] = raw_text
 
-    url = "https://github.com/{}/{}/blame/{}/{}".format(repo_user, repo_name, commit_hash, file_name)
+    url = "https://github.com/{}/{}/blame/{}/{}".format(
+        repo_user, repo_name, commit_hash, file_name
+    )
     blame_data["github_link"] = url
     response = requests.get(url)
 
-    special_text = re.sub(r'(\<div[^\>]*\>)([^\<\n]+)', r'\1<pre>\2</pre>', response.text)
-    special_text = re.sub(r'(\</?)(?:span([^\>]*))(\>)', r'\1pre\2\3', special_text)
+    special_text = re.sub(
+        r"(\<div[^\>]*\>)([^\<\n]+)", r"\1<pre>\2</pre>", response.text
+    )
+    special_text = re.sub(r"(\</?)(?:span([^\>]*))(\>)", r"\1pre\2\3", special_text)
 
     soup = BeautifulSoup(special_text, "html.parser")
 
-    if soup.find("img", {"alt": "404 “This is not the web page you are looking for”"}):  # Might not be necessary.
+    if soup.find(
+        "img", {"alt": "404 “This is not the web page you are looking for”"}
+    ):  # Might not be necessary.
         return None
 
     blame_data["blame_meta"] = []
@@ -213,8 +226,10 @@ def scrape_blame(cve_id, repo_user, repo_name, commit_hash, file_name):
     for blame_hunk in soup.find_all("div", {"class": "blame-hunk"}):
         desc = blame_hunk.find("div", {"class": "blame-commit-message"}).text
 
-        date = blame_hunk.find("div", {"class": "blame-commit-date"}).find("time-ago")["datetime"]
-        date = datetime.datetime.fromisoformat(date[:-1])
+        date = blame_hunk.find("div", {"class": "blame-commit-date"}).find("time-ago")[
+            "datetime"
+        ]
+        date = datetime.datetime.strptime(date, "%Y-%m-%dT%H:%M:%SZ")
 
         blamed_commit_hash = (
             blame_hunk.find("div", {"class": "blame-commit-message"})
@@ -254,7 +269,7 @@ def scrape_blame(cve_id, repo_user, repo_name, commit_hash, file_name):
 
         for line in blame_hunk.find_all("div", {"class": "blob-code"}):
             if not line.text.endswith("\n"):
-                blame_data["new_code"].append(line.text+"\n")
+                blame_data["new_code"].append(line.text + "\n")
             else:
                 blame_data["new_code"].append(line.text)
             blame_data["blame_meta"].append(blame_meta)
@@ -263,18 +278,24 @@ def scrape_blame(cve_id, repo_user, repo_name, commit_hash, file_name):
 
 
 def process_blame(blame_data):
-    blame_data["diff"] = difflib.SequenceMatcher(lambda x: x in " \t", blame_data["old_code"], blame_data["new_code"]).get_opcodes()
+    blame_data["diff"] = difflib.SequenceMatcher(
+        lambda x: x in " \t", blame_data["old_code"], blame_data["new_code"]
+    ).get_opcodes()
 
     old_code = "".join(blame_data["old_code"])
     new_code = "".join(blame_data["new_code"])
 
     formatter = pygments.formatters.HtmlFormatter(nowrap=True)
-    
+
     # We assume that the new_code and old_code are in the same language...
     lexer = get_lexer(blame_data["file_name"], new_code)
 
-    blame_data["old_code"] = pygments.highlight(old_code, lexer, formatter).splitlines(True)
-    blame_data["new_code"] = pygments.highlight(new_code, lexer, formatter).splitlines(True)
+    blame_data["old_code"] = pygments.highlight(old_code, lexer, formatter).splitlines(
+        True
+    )
+    blame_data["new_code"] = pygments.highlight(new_code, lexer, formatter).splitlines(
+        True
+    )
 
     return blame_data
 
@@ -283,7 +304,9 @@ def get_lexer(filename, code):
     try:
         try:
             # Try to guess the lexer by filename
-            return pygments.lexers.guess_lexer_for_filename(filename, code, stripnl=False)
+            return pygments.lexers.guess_lexer_for_filename(
+                filename, code, stripnl=False
+            )
         except pygments.util.ClassNotFound:
             # Try to guess the lexer just by code structure
             return pygments.lexers.guess_lexer(code, stripnl=False)
@@ -296,6 +319,9 @@ def valid_inputs(repo_user, repo_name, commit_hash, file_name):
     valid = None not in [repo_user, repo_name, commit_hash]
     valid = valid and re.match(r"^([A-z0-9][A-z0-9\-]{0,38})$", repo_user) is not None
     valid = valid and re.match(r"^([A-z0-9_\-]{1,100})$", repo_name) is not None
-    valid = valid and re.match(r'^([A-z0-9]{40})$', commit_hash) is not None
-    valid = valid and (file_name is None or re.match(r'^((?:[A-z_\-]+/?)+)\.[a-z]+$', file_name) is not None)
+    valid = valid and re.match(r"^([A-z0-9]{40})$", commit_hash) is not None
+    valid = valid and (
+        file_name is None
+        or re.match(r"^((?:[A-z_\-]+/?)+)\.[a-z]+$", file_name) is not None
+    )
     return valid
