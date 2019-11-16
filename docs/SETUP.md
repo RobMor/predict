@@ -149,8 +149,7 @@ Here's an example finished configuration file:
 </VirtualHost>
 ```
 
-Now we simply move this configuration file into somewhere Apache will be able to
-find it like `/etc/apache2/sites-available/`:
+Now we simply move this configuration file into somewhere Apache can find it:
 
 ```
 $ sudo cp ~/prod/predict.conf /etc/apache2/sites-available
