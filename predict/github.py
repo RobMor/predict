@@ -79,8 +79,8 @@ def scrape_commit_info(repo_user, repo_name, commit_hash):
 
         # If the first row is the @@ thing
         if match is not None:
-            current_group_old_start = int(match[1])
-            current_group_new_start = int(match[2])
+            current_group_old_start = int(match.group(1))
+            current_group_new_start = int(match.group(2))
             lines = lines[1:]  # Skip the first row
         else:
             current_group_old_start = 1
@@ -107,8 +107,8 @@ def scrape_commit_info(repo_user, repo_name, commit_hash):
 
                 # The last row will not have @@ in it
                 if match is not None:
-                    current_group_old_start = int(match[1])
-                    current_group_new_start = int(match[2])
+                    current_group_old_start = int(match.group(1))
+                    current_group_new_start = int(match.group(2))
                     current_group_old = []
                     current_group_new = []
             else:
