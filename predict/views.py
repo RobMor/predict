@@ -19,9 +19,11 @@ blueprint = flask.Blueprint("main", __name__)
 
 
 @blueprint.route("/")
-@flask_login.login_required
 def base():
-    return flask.redirect(flask.url_for("main.dashboard"))
+    if flask.current_app.config["LOGIN_DISABLED"] or flask_login.current_user.is_authenticated:
+        return flask.redirect(flask.url_for("main.dashboard"))
+    else:
+        return flask.redirect(flask.url_for("main.login"))
 
 
 @blueprint.route("/login", methods=["GET"])
