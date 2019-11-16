@@ -100,7 +100,7 @@
                 {% for (cve_id, edit_date), labels in recent_labels %}
                 <div class="card border-dark review-card">
                     <div class="card-header review-header">
-                        <a href="{{ url_for('main.cve_base', cve_id=cve_id) }}" class="text-reset">
+                        <a class="review-cve-link" href="{{ url_for('main.cve_base', cve_id=cve_id) }}">
                             {{ cve_id }}
                         </a>
                         <small>{{ datetime_format(edit_date) }}</small>
@@ -109,13 +109,13 @@
                     {% for label in labels %}
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item">
-                            <a class="text-reset" href="{{ url_for('main.info_page', cve_id=cve_id, repo_user=label.repo_user, repo_name=label.repo_name, commit=label.fix_hash) }}">{{ label.fix_file }}</a>
+                            <a class="review-label-link" href="{{ url_for('main.info_page', cve_id=cve_id, repo_user=label.repo_user, repo_name=label.repo_name, commit=label.fix_hash) }}">{{ label.fix_file }}</a>
                             @
-                            <a class="text-reset" href="{{ url_for('main.info_page', cve_id=cve_id, repo_user=label.repo_user, repo_name=label.repo_name, commit=label.fix_hash) }}">{{ label.fix_hash[:7] }}</a>
+                            <a class="review-label-link" href="{{ url_for('main.info_page', cve_id=cve_id, repo_user=label.repo_user, repo_name=label.repo_name, commit=label.fix_hash) }}">{{ label.fix_hash[:7] }}</a>
                             ←
-                            <a class="text-reset" href="{{ url_for('main.info_page', cve_id=cve_id, repo_user=label.repo_user, repo_name=label.repo_name, commit=label.intro_hash) }}">{{ label.intro_file }}</a>
+                            <a class="review-label-link" href="{{ url_for('main.info_page', cve_id=cve_id, repo_user=label.repo_user, repo_name=label.repo_name, commit=label.intro_hash) }}">{{ label.intro_file }}</a>
                             @
-                            <a class="text-reset" href="{{ url_for('main.info_page', cve_id=cve_id, repo_user=label.repo_user, repo_name=label.repo_name, commit=label.intro_hash) }}">{{ label.intro_hash[:7] }}</a>
+                            <a class="review-label-link" href="{{ url_for('main.info_page', cve_id=cve_id, repo_user=label.repo_user, repo_name=label.repo_name, commit=label.intro_hash) }}">{{ label.intro_hash[:7] }}</a>
                         </li>
                     </ul>
                     {% endfor %}

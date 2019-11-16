@@ -16,8 +16,17 @@
     display: flex;
     width: 100%;
     justify-content: space-between;
+    align-items: center;
 }
 
 .review-card {
     margin: 1rem;
+}
+
+.review-cve-link {
+    color: black;
+}
+
+.review-label-link {
+    color: black;
 }
