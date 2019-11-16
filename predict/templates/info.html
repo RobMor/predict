@@ -22,7 +22,7 @@
 
 <div id="files">
     {% for file in github_data["files"] %}
-    <div class="card file">
+    <div id="file-{{ hash(file['path']) }}" class="card file">
         <div class="card-header file-header">
             <a class="file-name" href="{{ file['blame_link'] }}">{{ file["path"] }}</a>
             <div class="file-controls">

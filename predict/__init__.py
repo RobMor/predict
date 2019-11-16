@@ -45,6 +45,9 @@ def configure_app(config):
 
     app.register_blueprint(predict.views.blueprint)
 
+    # Allow us to hash filenames so we can link to the info page
+    app.jinja_env.globals.update(hash=hash)
+
     # Give us a consistent function to display datetimes with
     app.jinja_env.globals.update(datetime_format=predict.views.datetime_format)
 
