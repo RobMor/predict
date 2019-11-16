@@ -100,7 +100,7 @@
                 {% for (cve_id, edit_date), labels in recent_labels %}
                 <div class="card border-dark review-card">
                     <div class="card-header review-header">
-                        <a class="review-cve-link" href="{{ url_for('main.cve_base', cve_id=cve_id) }}">
+                        <a class="review-cve-link" onclick="setSidebarOpenOnPageLoad()" href="{{ url_for('main.cve_base', cve_id=cve_id) }}">
                             {{ cve_id }}
                         </a>
                         <small>{{ datetime_format(edit_date) }}</small>

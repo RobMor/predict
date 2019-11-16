@@ -11,7 +11,7 @@
 <!-- Actual sidebar -->
 <div id="sidebar" class="bg-light">
     <div id="sidebar-controls" class="sidebar-element bg-light">
-        <a class="sidebar-control btn btn-outline-dark" role="button" href="{{ url_for("main.dashboard") }}">{{ svg("home") }} Dashboard </a>
+        <a class="sidebar-control btn btn-outline-dark" role="button" onclick="setSidebarClosedOnPageLoad()" href="{{ url_for("main.dashboard") }}">{{ svg("home") }} Dashboard </a>
         {% if not current_user.is_anonymous %}
             <div class="dropdown sidebar-control">
                 <a class="btn btn-outline-dark dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -19,8 +19,8 @@
                 </a>
 
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                    <a class="dropdown-item" href="{{ url_for("main.logout") }}">{{ svg("sign-out") }} Log Out </a>
-                    <a class="dropdown-item" href="{{ url_for("main.conflict_resolution") }}">{{ svg("organization") }} Conflict Resolution</a>
+                    <a class="dropdown-item" onclick="setSidebarClosedOnPageLoad()" href="{{ url_for("main.conflict_resolution") }}">{{ svg("organization") }} Conflict Resolution</a>
+                    <a class="dropdown-item" onclick="setSidebarClosedOnPageLoad()" href="{{ url_for("main.logout") }}">{{ svg("sign-out") }} Log Out </a>
                 </div>
             </div>
         {% endif %}
