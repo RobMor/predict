@@ -45,6 +45,9 @@ def configure_app(config):
 
     app.register_blueprint(predict.views.blueprint)
 
+    # Give us a consistent function to display datetimes with
+    app.jinja_env.globals.update(datetime_format=predict.views.datetime_format)
+
     # Allow us to load svg images within templates.
     app.jinja_env.globals.update(svg=predict.views.svg)
 

@@ -35,9 +35,9 @@
                     <label for="filters">Filters</label>
                     <select id="filters" name="filter" class="form-control">
                         <option value="none">None</option>
-                    {% for plugin in plugins["filter"] %}
+                        {% for plugin in plugins["filter"] %}
                         <option value="{{ plugin.id }}">{{ plugin.description }}</option>
-                    {% endfor %}
+                        {% endfor %}
                     </select>
                     <small class="form-text text-muted">
                         Select filters to apply to the data.
@@ -47,10 +47,10 @@
                 <div class="form-group">
                     <label for="extra-data">Additional Data</label>
                     <select id="extra-data" name="extra-data" class="form-control" multiple>
-						<option value="none">None</option>
-                    {% for plugin in plugins["data"] %}
+                        <option value="none">None</option>
+                        {% for plugin in plugins["data"] %}
                         <option value="{{ plugin.id }}">{{ plugin.description }}</option>
-                    {% endfor %}
+                        {% endfor %}
                     </select>
                     <small class="form-text text-muted">
                         Select what additional data you would like to export.
@@ -61,9 +61,9 @@
                     <label for="strategies">Conflict Resolution Strategy</label>
                     <select id="strategies" name="strategy" class="form-control">
                         <option value="none">None</option>
-                    {% for plugin in plugins["conflict"] %}
+                        {% for plugin in plugins["conflict"] %}
                         <option value="{{ plugin.id }}">{{ plugin.description }}</option>
-                    {% endfor %}
+                        {% endfor %}
                     </select>
                     <small class="form-text text-muted">
                         Select the strategy to use when there are conflicts in the data.
@@ -73,15 +73,15 @@
                 <div class="form-group">
                     <label for="file-formats">File Format</label>
                     <select id="file-formats" name="file-format" class="form-control">
-                    {% for plugin in plugins["format"] %}
+                        {% for plugin in plugins["format"] %}
                         <option value="{{ plugin.id }}">{{ plugin.description }}</option>
-                    {% endfor %}
+                        {% endfor %}
                     </select>
                     <small class="form-text text-muted">
                         Select the file format you want the data in.
                     </small>
                 </div>
-				 <input type="hidden" id="username" name="username" value={{username}}>
+                <input type="hidden" id="username" name="username" value={{username}}>
                 <input type="submit" class="form-control" value="Export">
             </form>
         </div>
@@ -97,29 +97,30 @@
 
             {# TODO this needs to be in order of most recently edited!!!! #}
             <div id="review-cards">
-            {% for group, labels in recent_labels %}
-              <div class="card border-dark review-card">
-                  <a href="{{ url_for('main.cve_base', cve_id=group) }}" class="card-header text-reset">
-                      {{ group }}
-                  </a>
-                  {% for label in labels %}
-                      <ul class="list-group list-group-flush">
-                          <li class="list-group-item {% if conflicted %}text-danger{% endif %} d-flex w-100 justify-content-between">
-                              <div class="label-desc">
-                                  <a {# href="{{ fix_file_link }}" #}>{{ label.fix_file }}</a>
-                                  @
-                                  <a {# href="{{ fix_hash_link }}" #}>{{ label.fix_hash[:7] }}</a>
-                                  ←
-                                  <a {# href="{{ intro_file_link }}" #}>{{ label.intro_file }}</a>
-                                  @
-                                  <a {# href="{{ intro_hash_link }}" #}>{{ label.intro_hash[:7] }}</a>
-                              </div>
-                              <small>{{ label.edit_date }}</small>
-                          </li>
-                      </ul>
-                  {% endfor %}
-              </div>
-            {% endfor %}
+                {% for (cve_id, edit_date), labels in recent_labels %}
+                <div class="card border-dark review-card">
+                    <div class="card-header review-header">
+                        <a href="{{ url_for('main.cve_base', cve_id=cve_id) }}" class="text-reset">
+                            {{ cve_id }}
+                        </a>
+                        <small>{{ datetime_format(edit_date) }}</small>
+                    </div>
+                    
+                    {% for label in labels %}
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <a class="text-reset" href="{{ url_for('main.info_page', cve_id=cve_id, repo_user=label.repo_user, repo_name=label.repo_name, commit=label.fix_hash) }}">{{ label.fix_file }}</a>
+                            @
+                            <a class="text-reset" href="{{ url_for('main.info_page', cve_id=cve_id, repo_user=label.repo_user, repo_name=label.repo_name, commit=label.fix_hash) }}">{{ label.fix_hash[:7] }}</a>
+                            ←
+                            <a class="text-reset" href="{{ url_for('main.info_page', cve_id=cve_id, repo_user=label.repo_user, repo_name=label.repo_name, commit=label.intro_hash) }}">{{ label.intro_file }}</a>
+                            @
+                            <a class="text-reset" href="{{ url_for('main.info_page', cve_id=cve_id, repo_user=label.repo_user, repo_name=label.repo_name, commit=label.intro_hash) }}">{{ label.intro_hash[:7] }}</a>
+                        </li>
+                    </ul>
+                    {% endfor %}
+                </div>
+                {% endfor %}
             </div>
         </div>
     </div>

@@ -12,6 +12,12 @@
     height: 33rem; /* TODO make this more dynamic */
 }
 
+.review-header {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
 .review-card {
     margin: 1rem;
 }

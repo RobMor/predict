@@ -3,7 +3,6 @@ import itertools
 
 import predict.db
 
-from sqlalchemy import desc
 
 def load_recent(username):
     """Loads the 10 most recent labels by the given user
@@ -16,14 +15,13 @@ def load_recent(username):
 
     # Labels first determines the 10 most recent labels before ordering it
     # by cve_id to be passed into itertools.groupby
-    labels = sorted(
-    (
+    labels = (
         predict.db.Session.query(predict.models.Label)
         .filter_by(username=username)
-        .order_by(desc(predict.models.Label.edit_date))
+        .order_by(predict.models.Label.edit_date.desc())
         .limit(10)
         .all()
-    ), key=lambda l: l.cve_id) or []
+    ) or []
 
     # Itertools groupby is weird, here's an example:
     # Input: list= ["a","a", "b", "b", "c", "a"]
@@ -34,7 +32,7 @@ def load_recent(username):
     #     group a: "a"
     # Hence need to order labels before passing it in
 
-    return itertools.groupby(labels, key=lambda l: l.cve_id)
+    return itertools.groupby(labels, key=lambda l: (l.cve_id, l.edit_date))
 
 
 def load_labels(cve_id, username):
@@ -78,7 +76,6 @@ def process_labels(cve_id, username, labels, edit_date):
     ).delete()
 
     # Replace them with the new labels.
-    i=0
     for label in labels:
         new_label = predict.models.Label(
             cve_id=cve_id,
@@ -92,9 +89,8 @@ def process_labels(cve_id, username, labels, edit_date):
             intro_file=label.get("intro_file"),
             intro_hash=label.get("intro_hash"),
             comment=label.get("comment"),
-            edit_date=edit_date.replace(second=i),
+            edit_date=edit_date,
         )
-        i = i + 1
 
         predict.db.Session.add(new_label)
 

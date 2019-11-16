@@ -242,6 +242,32 @@ def page_not_found(e):
     return flask.render_template("error.html", error=e)
 
 
+def datetime_format(dt):
+    delta = datetime.datetime.now() - dt
+
+    threshold1 = datetime.timedelta(seconds=15)
+    threshold2 = datetime.timedelta(seconds=60)
+    threshold3 = datetime.timedelta(minutes=45)
+    threshold4 = datetime.timedelta(hours=10)
+    threshold5 = datetime.timedelta(days=1)
+
+    if delta < threshold1:
+        return "just now"
+    elif delta < threshold2:
+        return "a few seconds ago"
+    elif delta < threshold3:
+        return f"{delta.seconds // 60} minutes ago"
+    elif delta < threshold4:
+        return f"{delta.seconds // 3600} hours ago"
+    elif delta < threshold5:
+        timestring = dt.strftime("%I:%M").lstrip("0")
+        return f"yesterday at {timestring}"
+    else:
+        datestring = dt.strftime("%b %d").replace(" 0", " ")
+        timestring = dt.strftime("%I:%M").lstrip("0")
+        return f"{datestring} at {timestring}"
+
+
 def svg(name, class_name=""):
     """Insert an image tag to be replaced with an svg"""
     file = flask.url_for("static", filename="svg/"+name+".svg")
