@@ -19,6 +19,7 @@ def get_cve(cve_id: str) -> dict:
             "git_links": A list of tuples of the form (old link, converted link)
             "normal_links": A list of strings representing the links
     """
+    cve_id = cve_id.upper()
     if is_valid_cve_id(cve_id):
         entry_in_database = False
 
@@ -29,7 +30,7 @@ def get_cve(cve_id: str) -> dict:
             raw_cve = scrape_cve(cve_id)
             if raw_cve is not None:
                 return process_cve(raw_cve)
-    
+
     return None
 
 
