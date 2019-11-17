@@ -12,7 +12,7 @@
                     <td class="line-num old">{{ i1 + offset + group["old_start"] }}</td> {# Old Line Number #}
                     <td class="line-num new">{{ j1 + offset + group["new_start"] }}</td> {# New Line Number #}
                     <td class="code equal"><span class="highlight">{{ group["new_code"][j1 + offset]|safe }}</span> {# The code itself #}
-                        <a class="blame-line" href="{{ file['blame_link'] }}#L{{ j1 + offset + group['new_start']-2 }}">
+                        <a class="blame-line" href="{{ file['blame_link'] }}#L{{ j1 + offset + group['new_start'] }}">
                             Blame {{ svg("circuit-board") }}
                         </a>
                     </td>
@@ -24,7 +24,7 @@
                     <td class="line-num old"></td> {# Old Line Number is Blank #}
                     <td class="line-num new">{{ line+group["new_start"] }}</td> {# New Line Number #}
                     <td class="code insert"><span class="highlight">{{ group["new_code"][line]|safe }}</span> {# The code itself #}
-                        <a class="blame-line" href="{{ file['blame_link'] }}#L{{ line+group["new_start"]-2 }}">
+                        <a class="blame-line" href="{{ file['blame_link'] }}#L{{ line+group["new_start"] }}">
                             Blame {{ svg("circuit-board") }}
                         </a>
                     </td>
@@ -45,7 +45,7 @@
                     <td class="line-num old"></td> {# Old Line Number is Blank #}
                     <td class="line-num new">{{ line+group["new_start"] }}</td> {# New Line Number #}
                     <td class="code insert"><span class="highlight">{{ group["new_code"][line]|safe }}</span> {# The code itself #}
-                        <a class="blame-line" href="{{ file['blame_link'] }}#L{{ line+group["new_start"]-2 }}">
+                        <a class="blame-line" href="{{ file['blame_link'] }}#L{{ line+group["new_start"] }}">
                             Blame {{ svg("circuit-board") }}
                         </a>
                     </td>
