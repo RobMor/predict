@@ -115,7 +115,7 @@ function addLabelToGroup(group, fixFile, fixHash, introFile, introHash) {
 
     newRemoveLabelIcon = document.createElement("img")
     newRemoveLabelIcon.className = "text-danger icon"
-    newRemoveLabelIcon.src = "/static/svg/x.svg"
+    newRemoveLabelIcon.src = xUrl
 
     replaceImgWithSVG(newRemoveLabelIcon)
 
@@ -171,7 +171,7 @@ function addGroup(repoUser, repoName) {
 
     newRemoveGroupIcon = document.createElement("img")
     newRemoveGroupIcon.className = "icon"
-    newRemoveGroupIcon.src = "/static/svg/x.svg"
+    newRemoveGroupIcon.src = xUrl
 
     replaceImgWithSVG(newRemoveGroupIcon)
 
@@ -191,7 +191,7 @@ function addGroup(repoUser, repoName) {
     
     addLabelIcon = document.createElement("img")
     addLabelIcon.className = "icon"
-    addLabelIcon.src = "/static/svg/plus.svg"
+    addLabelIcon.src = plusUrl
 
     replaceImgWithSVG(addLabelIcon)
     

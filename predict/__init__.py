@@ -7,7 +7,7 @@ import sqlalchemy
 
 def configure_app(config):
     # Configure App
-    app = Flask("predict")
+    app = Flask("predict", static_url_path="")
 
     if config.getboolean("WHITELIST", "WHITELIST_ENABLED"):
         config.remove_option("WHITELIST", "WHITELIST_ENABLED")
