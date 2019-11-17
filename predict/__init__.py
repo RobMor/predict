@@ -10,6 +10,7 @@ def configure_app(config):
     app = Flask("predict", static_url_path="")
 
     if config.getboolean("WHITELIST", "WHITELIST_ENABLED"):
+        #If true, does not actually delete the WHITELIST_ENABLED key from the config file
         config.remove_option("WHITELIST", "WHITELIST_ENABLED")
         app.config["WHITELIST"] = config["WHITELIST"].keys()
 

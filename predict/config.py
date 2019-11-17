@@ -4,6 +4,15 @@ import stat
 import binascii
 import configparser
 
+WHITELIST_INFO = ["This section of the configuration is for specifying which users are allowed to", 
+"register. Aside from WHITELIST_ENABLED, each line here should be a username. ",
+"Every username specified will be permitted to create an account."]
+
+SECURITY_INFO = ["This section lets you configure the security features of predict like secret",
+"keys and whether or not authentication is required."]
+
+AUTH_INFO = "This section lets you configure the regular expressions used by the registration system."
+DB_INFO = "This section lets you configure location of the database used by predict."
 
 def config_location():
     return os.environ.get("PREDICT_CONFIG") or os.path.expanduser(
@@ -12,14 +21,24 @@ def config_location():
 
 
 def load_config(file_path):
+    """
+        If a config already exists at a given location, load it and return its configuration object
+    """
     config = configparser.ConfigParser(allow_no_value=True)
     config.optionxform = str
 
     if os.path.exists(file_path):
-        config.read(file_path)
+        try:
+            config.read(file_path)
+        except configparser.Error as e:
+            #If there is a malformed config, print a general error message, and do not let the application continue.
+            import sys
+            print(e)
+            print("Please visit the above location and line number and resolve the error.")
+            sys.exit(1)
         return config
 
-    return None
+    return None #Otherwise return None, because there is no config at given location
 
 
 def write_config(config, file_path):
@@ -36,7 +55,6 @@ def write_config(config, file_path):
     # Set file permissions to only this user
     os.chmod(file_path, stat.S_IRUSR | stat.S_IWUSR)
 
-
 def create_default_config():
     """Creates a default configuraion.
 
@@ -50,38 +68,22 @@ def create_default_config():
     config = configparser.ConfigParser(allow_no_value=True)
     config.optionxform = str
 
-    # TODO: Change these to config defaults?
-
     config.add_section("WHITELIST")
-    config.set(
-        "WHITELIST",
-        "; This section of the configuration is for specifying which users are allowed to",
-    )
-    config.set(
-        "WHITELIST",
-        "; register. Aside from WHITELIST_ENABLED, each line here should be a username. ",
-    )
-    config.set(
-        "WHITELIST",
-        "; Every username specified will be permitted to create an account.",
-    )
+    config.set("WHITELIST", "; " + WHITELIST_INFO[0])
+    config.set("WHITELIST", "; " + WHITELIST_INFO[1])
+    config.set("WHITELIST", "; " + WHITELIST_INFO[2])
+  
     config["WHITELIST"]["WHITELIST_ENABLED"] = "True"
 
     config.add_section("SECURITY")
-    config.set(
-        "SECURITY",
-        "; This section lets you configure the security features of predict like secret",
-    )
-    config.set("SECURITY", "; keys and whether or not authentication is required.")
+    config.set("SECURITY", "; " + SECURITY_INFO[0])
+    config.set("SECURITY", "; " + SECURITY_INFO[1])
 
     config["SECURITY"]["SECRET_KEY"] = random_secret_key(24)
     config["SECURITY"]["LOGIN_REQUIRED"] = "False"
 
     config.add_section("AUTHENTICATION")
-    config.set(
-        "AUTHENTICATION",
-        "; This section lets you configure the regular expressions used by the registration system.",
-    )
+    config.set("AUTHENTICATION", "; " + AUTH_INFO)
 
     config["AUTHENTICATION"]["USERNAME_REGEX"] = "\\w+"
     config["AUTHENTICATION"][
@@ -93,10 +95,8 @@ def create_default_config():
     ] = "Passwords must be at least eight alphanumeric characters"
 
     config.add_section("DATABASE")
-    config.set(
-        "DATABASE",
-        "; This section lets you configure location of the database used by predict.",
-    )
+    config.set("DATABASE", "; " + DB_INFO)
+
     config["DATABASE"]["LOCATION"] = os.path.expanduser(
         os.path.join("~", ".predict", "db.sqlite")
     )

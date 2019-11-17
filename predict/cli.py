@@ -9,15 +9,16 @@ def up(arguments):
 
     # Precedence order
     config_location = arguments.config or predict.config.config_location()
+    
     config = predict.config.load_config(config_location)
 
     if config is None:
         config = predict.config.create_default_config()
         predict.config.write_config(config, config_location)
 
-    config["SECURITY"]["LOGIN_REQUIRED"] = str(
-        config.getboolean("SECURITY", "LOGIN_REQUIRED") or arguments.secured
-    )
+        config["SECURITY"]["LOGIN_REQUIRED"] = str(
+            config.getboolean("SECURITY", "LOGIN_REQUIRED") or arguments.secured
+        )
 
     app = predict.configure_app(config)
 
