@@ -11,24 +11,24 @@ $(function(){
 
 function replaceImgWithSVG(img) {
     var $img = $(img);
-    var imgID = $img.attr('id');
-    var imgClass = $img.attr('class');
     var imgURL = $img.attr('src');
 
     if (imgURL in alreadySeen) {
-        replaceImgWithSVGData(alreadySeen[imgURL])
+        replaceImgWithSVGData(alreadySeen[imgURL], $img)
         return
     }
 
     jQuery.get(imgURL, function(data) {
         alreadySeen[imgURL] = data
-        replaceImgWithSVGData(data)
+        replaceImgWithSVGData(data, $img)
     }, 'xml');
 }
 
-function replaceImgWithSVGData(data) {
+function replaceImgWithSVGData(svgData, $img) {
+    var imgID = $img.attr('id');
+    var imgClass = $img.attr('class');
     // Get the SVG tag, ignore the rest
-    var $svg = jQuery(data).find('svg');
+    var $svg = jQuery(svgData).find('svg');
 
     // Add replaced image's ID to the new SVG
     if(typeof imgID !== 'undefined') {
