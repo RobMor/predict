@@ -1,13 +1,20 @@
-# Basic Setup Goes here
+# Basic Setup
+
+This section is for those simply looking to use Predict on their personal
+machine. These steps will be phrased rather generally so as to apply to as many
+platforms as possible.
+
+The first thing to do is obtain the source code.
+
 
 # Server Setup
 
 This section is for those trying to set Predict up as general use server, rather
 than for personal use.
 
-This guide assumes that you are on a Debian machine and are willing to use the
-Apache Web Server. It also assumes that you have root access to the machine you
-are trying to install Predict on.
+This guide will walk you through setting up Predict on a Debian machine using
+Apache from scratch. It assumes that you have root access to the machine you are
+trying to install Predict on.
 
 It is recommended that you create a dedicated user for the app. This user will
 also need root access to your machine. You can create a user on Debian with

@@ -73,11 +73,11 @@ def register_post():
         flask.flash("Passwords entered do not match! Please try again.")
         return flask.render_template("register.html")
 
-    if not predict.auth.isValidString(username, flask.current_app.config['USERNAME_REGEX']):
+    if not predict.auth.string_match(username, flask.current_app.config['USERNAME_REGEX']):
         flask.flash(flask.current_app.config["USERNAME_FEEDBACK"])
         return flask.render_template("register.html")
 
-    if not predict.auth.isValidString(password, flask.current_app.config['PASSWORD_REGEX']):
+    if not predict.auth.string_match(password, flask.current_app.config['PASSWORD_REGEX']):
         flask.flash(flask.current_app.config["PASSWORD_FEEDBACK"])
         return flask.render_template("register.html")
 

@@ -8,6 +8,7 @@
     // Single quotes because html has double quotes in it...
     var plusSVG = $.parseHTML('{{ svg("plus") }}')[0];
     var xSVG = $.parseHTML('{{ svg("x") }}')[0];
+    var label_url = "{{ url_for('main.label') }}";
 </script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/sidebar_cve.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/label.js') }}"></script>

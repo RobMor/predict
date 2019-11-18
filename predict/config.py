@@ -4,17 +4,23 @@ import stat
 import binascii
 import configparser
 
-from predict.auth import isValidString
+import predict.auth
 
-WHITELIST_INFO = ["This section of the configuration is for specifying which users are allowed to", 
-"register. Aside from WHITELIST_ENABLED, each line here should be a username which conformes to the",
-"regex standard specified in SECURITY_INFO. Every username specified will be permitted to create an account."]
 
-SECURITY_INFO = ["This section lets you configure the security features of predict like secret",
-"keys and whether or not authentication is required."]
+WHITELIST_INFO = [
+    "This section of the configuration is for specifying which users are allowed to",
+    "register. Aside from WHITELIST_ENABLED, each line here should be a username which conformes to the",
+    "regex standard specified in SECURITY_INFO. Every username specified will be permitted to create an account.",
+]
+
+SECURITY_INFO = [
+    "This section lets you configure the security features of predict like secret",
+    "keys and whether or not authentication is required.",
+]
 
 AUTH_INFO = "This section lets you configure the regular expressions used by the registration system."
 DB_INFO = "This section lets you configure location of the database used by predict."
+
 
 def config_location():
     return os.environ.get("PREDICT_CONFIG") or os.path.expanduser(
@@ -34,24 +40,33 @@ def load_config(file_path):
             config.read(file_path)
             validate_config(config, file_path)
         except configparser.Error as e:
-            #If there is a malformed config, print a general error message, and do not let the application continue.
+            # If there is a malformed config, print a general error message, and do not let the application continue.
             import sys
-            print(e)
-            print("Please visit the above location and resolve the error, and restart the predict application.")
+
+            print("Predict Configuration Error: {}".format(e))
             sys.exit(1)
         return config
 
-    return None #Otherwise return None, because there is no config at given location
+    return None  # Otherwise return None, because there is no config at given location
+
 
 def validate_config(config, file_path):
-    for k in config["WHITELIST"]:
-        if k != "WHITELIST_ENABLED":
-            if not isValidString(k, config["AUTHENTICATION"]["USERNAME_REGEX"]):
-                print ("For the configuration located at " + file_path)
-                print ("The username \'" + k + "\' does not conform to the regex standard of " + config["AUTHENTICATION"]["USERNAME_REGEX"])
-                for i in WHITELIST_INFO:
-                    print(i)
-                raise configparser.Error
+    # TODO make sure all required fields are there.
+    # TODO make sure that all fields that should be booleans are booleans...
+    # TODO make sure regular expressions are valid by trying to compile them
+
+    # TODO only run this check when whitelist is enabled
+    for username in config["WHITELIST"]:
+        if username != "WHITELIST_ENABLED":
+            if not predict.auth.string_match(
+                username, config["AUTHENTICATION"]["USERNAME_REGEX"]
+            ):
+                raise configparser.Error(
+                    "The username '{}' does not conform to the regex '{}'".format(
+                        username, config["AUTHENTICATION"]["USERNAME_REGEX"]
+                    )
+                )
+
 
 def write_config(config, file_path):
     """
@@ -66,6 +81,7 @@ def write_config(config, file_path):
 
     # Set file permissions to only this user
     os.chmod(file_path, stat.S_IRUSR | stat.S_IWUSR)
+
 
 def create_default_config():
     """Creates a default configuraion.
@@ -84,7 +100,7 @@ def create_default_config():
     config.set("WHITELIST", "; " + WHITELIST_INFO[0])
     config.set("WHITELIST", "; " + WHITELIST_INFO[1])
     config.set("WHITELIST", "; " + WHITELIST_INFO[2])
-  
+
     config["WHITELIST"]["WHITELIST_ENABLED"] = "True"
 
     config.add_section("SECURITY")

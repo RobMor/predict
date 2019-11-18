@@ -74,7 +74,7 @@ def load_user(username):
     return user
 
 
-def isValidString(string, regex):
+def string_match(string, regex):
     """Checks that a given string conforms to our regex constraints.
 
     Args:

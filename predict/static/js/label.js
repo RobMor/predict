@@ -90,7 +90,7 @@ function updateLabels() {
 
     $.ajax({
         type: "PUT",
-        url: "/label", 
+        url: label_url, 
         data: JSON.stringify(data),
         contentType: "application/json",
         success: labelUpdateSucceeded,
