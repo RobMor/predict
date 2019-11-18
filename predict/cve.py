@@ -21,15 +21,9 @@ def get_cve(cve_id: str) -> dict:
     """
     cve_id = cve_id.upper()
     if is_valid_cve_id(cve_id):
-        entry_in_database = False
-
-        if entry_in_database:
-            # TODO Retrieve the entry from the database here...
-            return None
-        else:
-            raw_cve = scrape_cve(cve_id)
-            if raw_cve is not None:
-                return process_cve(raw_cve)
+        raw_cve = scrape_cve(cve_id)
+        if raw_cve is not None:
+            return process_cve(raw_cve)
 
     return None
 

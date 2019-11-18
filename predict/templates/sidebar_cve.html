@@ -93,7 +93,7 @@
                     <input type="text" class="hidden-input repo-input repo-user" placeholder="Repository Username" value="{{ repo_user }}" autocomplete="off">
                     <span class="hidden-input-sep">/</span>
                     <input type="text" class="hidden-input repo-input repo-name" placeholder="Repository Name" value="{{ repo_name }}" autocomplete="off">
-                    <a class="remove-group" onclick="removeGroup(this)">{{ svg("x") }}</a> {# TODO prettier symbol #}
+                    <a class="remove-group" onclick="removeGroup(this)">{{ svg("x") }}</a>
                 </div>
                 <ul class="list-group list-group-flush user-label-group-list">
                     {% for label in labels %}
@@ -106,7 +106,7 @@
                         <span class="hidden-input-sep">@</span>
                         <input type="text" class="hidden-input limited label-input intro-hash" placeholder="Intro Hash" value="{{ label.intro_hash }}" autocomplete="off">
                         {# TODO comment input here #}
-                        <a class="remove-label" onclick="removeLabel(this)">{{ svg("x", "text-danger") }}</a> {# TODO prettier symbol #}
+                        <a class="remove-label" onclick="removeLabel(this)">{{ svg("x", "text-danger") }}</a>
                     </li>
                     {% endfor %}
                 </ul>

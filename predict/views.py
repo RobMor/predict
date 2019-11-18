@@ -220,7 +220,6 @@ def label():
     if success:
         return json.dumps({"success": True}), 200, {"ContentType": "application/json"}
     else:
-        # TODO provide more feedback as to why the request failed
         return json.dumps({"success": False}), 400, {"ContentType": "application/json"}
 
 

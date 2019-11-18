@@ -108,8 +108,6 @@
 
     /* Above everything except sidebar*/
     z-index: 999;
-
-    /* TODO animate the overlay!!! */
 }
 
 /* display overlay when it has the .active class */
