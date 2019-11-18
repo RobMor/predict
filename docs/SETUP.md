@@ -4,8 +4,78 @@ This section is for those simply looking to use Predict on their personal
 machine. These steps will be phrased rather generally so as to apply to as many
 platforms as possible.
 
-The first thing to do is obtain the source code.
+The first thing to do is obtain the source code. You can do this via any
+subversion client. The URL is [https://vis.cs.umd.edu/svn/projects/predict/prod].
+You can check out this code and move on to the next step, but make sure you put
+it somewhere you can find it again.
 
+After you obtain the code, you'll need to install it. Predict uses Python 3 for
+both installation and during run time. You will need to install Python 3.5 or
+above to install and use Predict. 
+
+After you have Python installed, you will need to access your command line. 
+Using your command line, navigate to the code you downloaded earlier. From
+within the `prod` directory you should see a file called `setup.py`. This means
+that you are in the correct location to run the next command.
+
+Now we will install Predict using Python. To do this, use the following command:
+
+```
+python -m pip install .
+```
+
+This installs predict on your system and you should now have access to the
+`predict` command. You can test that you have successfully installed Predict by
+running the following command:
+
+```
+predict -h
+```
+
+You should see something that looks like this:
+
+```
+usage: predict [-h] <command> ...
+
+Predict: CVE Labeling Tool
+
+optional arguments:
+  -h, --help  show this help message and exit
+
+Available commands:
+  <command>
+    up        Start the server
+    config    Create the default configuration
+```
+
+If you see this it means that predict is properly installed and you are ready to
+configure it. We can use the `predict` command to generate a default
+configuration file for us like so:
+
+```
+predict config
+```
+
+This places a configuration file in our home directory under a folder named
+.predict (On Linux this is `~/.predict/config.ini`, On Windows it's
+`C:\Users\<your username>\.predict\config.ini`). If you want to keep your
+configuration file somewhere else you can set the environment variable
+`PREDICT_CONFIG` to another location. Otherwise you can always specify the
+location of a configuration file when running Predict as we'll see later.
+
+At this point you should take a moment to configure Predict for your needs. The
+default configuration is compatible with most single user use cases for Predict
+but do checkout CONFIGURATION.md for more information. 
+
+Now we can actually run Predict. This is as simple as running the following
+command on the command line:
+
+```
+predict
+```
+
+Now you should be able to navigate to `localhost:5000` in your browser and see 
+Predict running!
 
 # Server Setup
 
