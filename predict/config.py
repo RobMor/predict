@@ -40,7 +40,6 @@ def load_config(file_path):
 
     return None #Otherwise return None, because there is no config at given location
 
-
 def write_config(config, file_path):
     """
         Writes the config file and creates a new configs directory if one

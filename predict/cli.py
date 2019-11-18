@@ -16,15 +16,14 @@ def up(arguments):
         config = predict.config.create_default_config()
         predict.config.write_config(config, config_location)
 
-        config["SECURITY"]["LOGIN_REQUIRED"] = str(
+    config["SECURITY"]["LOGIN_REQUIRED"] = str(
             config.getboolean("SECURITY", "LOGIN_REQUIRED") or arguments.secured
-        )
+    )
 
     app = predict.configure_app(config)
 
     # TODO remove `debug` later
     app.run(debug=True)
-
 
 def config(arguments):
     # Precedence order

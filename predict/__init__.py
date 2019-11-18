@@ -3,7 +3,9 @@ import sqlite3
 from flask import Flask
 import flask_login
 import sqlalchemy
+import configparser
 
+import predict.config
 
 def configure_app(config):
     # Configure App
