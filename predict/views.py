@@ -271,6 +271,10 @@ def datetime_format(dt):
 
 
 def svg(name, class_name=""):
-    """Insert an image tag to be replaced with an svg"""
-    file = flask.url_for("static", filename="svg/"+name+".svg")
-    return jinja2.Markup("<img class='icon {}' src='{}'>".format(class_name, file))
+    """Insert an svg"""
+    with flask.current_app.open_resource("static/svg/{}.svg".format(name), 'rt') as f:
+        svg = f.read()
+
+    svg = svg.replace("<svg ", "<svg class=\"icon {}\" ".format(class_name))
+
+    return jinja2.Markup(svg)

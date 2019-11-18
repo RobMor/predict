@@ -4,9 +4,10 @@
 {{ super() }}
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/sidebar_cve.css') }}">
 <script type="text/javascript">
-    // A hack to make the urls to the svgs accessible within the javascript
-    var plusUrl = "{{ url_for("static", filename="svg/plus.svg") }}";
-    var xUrl = "{{ url_for("static", filename="svg/x.svg") }}";
+    // A hack to make the svgs accessible within the javascript
+    // Single quotes because html has double quotes in it...
+    var plusSVG = $.parseHTML('{{ svg("plus") }}')[0];
+    var xSVG = $.parseHTML('{{ svg("x") }}')[0];
 </script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/sidebar_cve.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/label.js') }}"></script>
