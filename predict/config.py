@@ -4,9 +4,11 @@ import stat
 import binascii
 import configparser
 
+from predict.auth import isValidString
+
 WHITELIST_INFO = ["This section of the configuration is for specifying which users are allowed to", 
-"register. Aside from WHITELIST_ENABLED, each line here should be a username. ",
-"Every username specified will be permitted to create an account."]
+"register. Aside from WHITELIST_ENABLED, each line here should be a username which conformes to the",
+"regex standard specified in SECURITY_INFO. Every username specified will be permitted to create an account."]
 
 SECURITY_INFO = ["This section lets you configure the security features of predict like secret",
 "keys and whether or not authentication is required."]
@@ -30,15 +32,26 @@ def load_config(file_path):
     if os.path.exists(file_path):
         try:
             config.read(file_path)
+            validate_config(config, file_path)
         except configparser.Error as e:
             #If there is a malformed config, print a general error message, and do not let the application continue.
             import sys
             print(e)
-            print("Please visit the above location and line number and resolve the error.")
+            print("Please visit the above location and resolve the error, and restart the predict application.")
             sys.exit(1)
         return config
 
     return None #Otherwise return None, because there is no config at given location
+
+def validate_config(config, file_path):
+    for k in config["WHITELIST"]:
+        if k != "WHITELIST_ENABLED":
+            if not isValidString(k, config["AUTHENTICATION"]["USERNAME_REGEX"]):
+                print ("For the configuration located at " + file_path)
+                print ("The username \'" + k + "\' does not conform to the regex standard of " + config["AUTHENTICATION"]["USERNAME_REGEX"])
+                for i in WHITELIST_INFO:
+                    print(i)
+                raise configparser.Error
 
 def write_config(config, file_path):
     """

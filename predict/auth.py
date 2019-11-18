@@ -74,8 +74,8 @@ def load_user(username):
     return user
 
 
-def valid_username(username):
-    """Checks that a given username conforms to our constraints.
+def isValidString(string, regex):
+    """Checks that a given string conforms to our regex constraints.
 
     Args:
         username (str): The username to be vetted
@@ -83,17 +83,5 @@ def valid_username(username):
     Returns:
         True if the username is valid, False otherwise.
     """
-    return re.fullmatch(flask.current_app.config['USERNAME_REGEX'], username) is not None
+    return re.fullmatch(regex, string) is not None
 
-
-def valid_password(password):
-    """Checks that a given password conforms to our constraints.
-
-    Args:
-        password (str): The password to be vetted
-
-    Returns:
-        True if the password is valid, False otherwise.
-    """
-
-    return re.fullmatch(flask.current_app.config['PASSWORD_REGEX'], password) is not None
