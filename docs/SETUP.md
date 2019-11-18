@@ -21,7 +21,7 @@ that you are in the correct location to run the next command.
 Now we will install Predict using Python. To do this, use the following command:
 
 ```
-python -m pip install .
+python3 -m pip install .
 ```
 
 This installs predict on your system and you should now have access to the
