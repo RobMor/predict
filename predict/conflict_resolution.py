@@ -158,6 +158,9 @@ def eliminateRedundancies(subBlock):
         if i != 0:
             subBlock[i].cve = ""
             subBlock[i].username = ""
+# The following lines remove duplicate files/hashes within a sub block. Currently
+# we are choosing to show raw labels, but these can be uncommented in the future
+# if that decision changes.
 #            if containsOther(subBlock, subBlock[i].fix_hash, "fix_hash", i):
 #                subBlock[i].fix_hash = ""
 #            if containsOther(subBlock, subBlock[i].fix_file, "fix_file", i):

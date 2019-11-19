@@ -35,66 +35,68 @@
 
     <div id="collapse{{block[0][0]['cve']}}" class="collapse" aria-labelledby="{{block[0][0]['cve']}}">
       <div class="card-body p-0">
-        <table class="table table-striped table-bordered mb-0">
-          <thead>
-            <tr>
-              <th>User</th>
-              <th>Fix Commit</th>
-              <th>%</th>
-              <th>Fix File</th>
-              <th>%</th>
-              <th>Intro Commit</th>
-              <th>%</th>
-              <th>Intro File</th>
-              <th>%</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for subBlock in block %}
-              {% for entry in subBlock %}
-                {% if subBlock[0]["username"] == current_user.username %}
-                  <tr class="table-primary">
-                {% else %}
-                  <tr>
-                {% endif %}
-                <td>{{entry["username"]}}</td>
-                <td><a href={{entry["fix_hash_url"]}} title={{entry["fix_hash_url"]}}>{{entry["fix_hash"]}}</a></td>
-                {% if subBlock[0]["fix_hash_agree"] == "Match" %}
-                  <td class="table-success">{{entry["fix_hash_agree"]}}</td>
-                {% elif subBlock[0]["fix_hash_agree"] == "Conflict" %}
-                  <td class="table-danger">{{entry["fix_hash_agree"]}}</td>
-                {% else %}
-                  <td>{{entry["fix_hash_agree"]}}</td>
-                {% endif %}
-                <td><a href={{entry["fix_file_url"]}} title={{entry["fix_file_url"]}}>{{entry["fix_file"]}}</a></td>
-                {% if subBlock[0]["fix_file_agree"] == "Match" %}
-                  <td class="table-success">{{entry["fix_file_agree"]}}</td>
-                {% elif subBlock[0]["fix_file_agree"] == "Conflict" %}
-                  <td class="table-danger">{{entry["fix_file_agree"]}}</td>
-                {% else %}
-                  <td>{{entry["fix_file_agree"]}}</td>
-                {% endif %}
-                <td><a href={{entry["intro_hash_url"]}} title={{entry["intro_hash_url"]}}>{{entry["intro_hash"]}}</a></td>
-                {% if subBlock[0]["intro_hash_agree"] == "Match" %}
-                  <td class="table-success">{{entry["intro_hash_agree"]}}</td>
-                {% elif subBlock[0]["intro_hash_agree"] == "Conflict" %}
-                  <td class="table-danger">{{entry["intro_hash_agree"]}}</td>
-                {% else %}
-                  <td>{{entry["intro_hash_agree"]}}</td>
-                {% endif %}
-                <td><a href={{entry["intro_file_url"]}} title={{entry["intro_file_url"]}}>{{entry["intro_file"]}}</a></td>
-                {% if subBlock[0]["intro_file_agree"] == "Match" %}
-                  <td class="table-success">{{entry["intro_file_agree"]}}</td>
-                {% elif subBlock[0]["intro_file_agree"] == "Conflict" %}
-                  <td class="table-danger">{{entry["intro_file_agree"]}}</td>
-                {% else %}
-                  <td>{{entry["intro_file_agree"]}}</td>
-                {% endif %}
-                </tr>
+        <div class = "table-responsive">
+          <table class="table table-striped table-bordered mb-0">
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>Fix Commit</th>
+                <th>%</th>
+                <th>Fix File</th>
+                <th>%</th>
+                <th>Intro Commit</th>
+                <th>%</th>
+                <th>Intro File</th>
+                <th>%</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for subBlock in block %}
+                {% for entry in subBlock %}
+                  {% if subBlock[0]["username"] == current_user.username %}
+                    <tr class="table-primary">
+                  {% else %}
+                    <tr>
+                  {% endif %}
+                  <td>{{entry["username"]}}</td>
+                  <td><a href={{entry["fix_hash_url"]}} title={{entry["fix_hash_url"]}}>{{entry["fix_hash"]}}</a></td>
+                  {% if subBlock[0]["fix_hash_agree"] == "Match" %}
+                    <td class="table-success">{{entry["fix_hash_agree"]}}</td>
+                  {% elif subBlock[0]["fix_hash_agree"] == "Conflict" %}
+                    <td class="table-danger">{{entry["fix_hash_agree"]}}</td>
+                  {% else %}
+                    <td>{{entry["fix_hash_agree"]}}</td>
+                  {% endif %}
+                  <td><a href={{entry["fix_file_url"]}} title={{entry["fix_file_url"]}}>{{entry["fix_file"]}}</a></td>
+                  {% if subBlock[0]["fix_file_agree"] == "Match" %}
+                    <td class="table-success">{{entry["fix_file_agree"]}}</td>
+                  {% elif subBlock[0]["fix_file_agree"] == "Conflict" %}
+                    <td class="table-danger">{{entry["fix_file_agree"]}}</td>
+                  {% else %}
+                    <td>{{entry["fix_file_agree"]}}</td>
+                  {% endif %}
+                  <td><a href={{entry["intro_hash_url"]}} title={{entry["intro_hash_url"]}}>{{entry["intro_hash"]}}</a></td>
+                  {% if subBlock[0]["intro_hash_agree"] == "Match" %}
+                    <td class="table-success">{{entry["intro_hash_agree"]}}</td>
+                  {% elif subBlock[0]["intro_hash_agree"] == "Conflict" %}
+                    <td class="table-danger">{{entry["intro_hash_agree"]}}</td>
+                  {% else %}
+                    <td>{{entry["intro_hash_agree"]}}</td>
+                  {% endif %}
+                  <td><a href={{entry["intro_file_url"]}} title={{entry["intro_file_url"]}}>{{entry["intro_file"]}}</a></td>
+                  {% if subBlock[0]["intro_file_agree"] == "Match" %}
+                    <td class="table-success">{{entry["intro_file_agree"]}}</td>
+                  {% elif subBlock[0]["intro_file_agree"] == "Conflict" %}
+                    <td class="table-danger">{{entry["intro_file_agree"]}}</td>
+                  {% else %}
+                    <td>{{entry["intro_file_agree"]}}</td>
+                  {% endif %}
+                  </tr>
+                {% endfor %}
               {% endfor %}
-            {% endfor %}
-          </tbody>
-        </table>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
