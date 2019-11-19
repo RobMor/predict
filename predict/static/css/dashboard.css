@@ -23,8 +23,14 @@
     margin: 1rem;
 }
 
+.review-label {
+    font-size: 14px;
+    font-family: 'Courier New', Courier, monospace;
+}
+
 .review-cve-link {
     color: black;
+    font-size: 16px;
 }
 
 .review-label-link {
