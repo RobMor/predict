@@ -118,6 +118,8 @@ sections surrounded by `{{ }}`.
 * `error.html`: The error page. Users are directed here on 404 errors.
 * `info_diff.html`: The code sections of the info page (included multiple times)
 * `info.html`: The other parts of the info page
+* `label_group.html`: A group of labels that shows up in the CVE sidebar
+* `label.html`: A single label that shows up in a label group
 * `login.html`: The login page
 * `register.html`: The registration page
 * `sidebar_base.html`: The basic empty sidebar template
