@@ -226,7 +226,7 @@ def label():
 @blueprint.route("/export", methods=["POST"])
 def export():
     filter_ = flask.request.form["filter"]
-    extra_data = flask.request.form.get("extra-data")  # Optional
+    extra_data = flask.request.form.getlist("extra-data")  # Optional
     strategy = flask.request.form["strategy"]
     file_format = flask.request.form["file-format"]
 
