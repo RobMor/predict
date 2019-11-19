@@ -4,7 +4,7 @@
         {% if opcode == "equal" %}
             {% for offset in range(j2 - j1) %}
                 <tr class="line equal" id="L{{ j1 + offset + 1 }}">
-                    <td class="blame description"><a class="blame commit-link" href="{{ github_data["blame_meta"][j1 + offset]["commit_url"] }}">{{ github_data["blame_meta"][j1 + offset]["commit_desc"] }}</td>
+                    <td class="blame description"><a class="blame commit-link" href="{{ github_data["blame_meta"][j1 + offset]["commit_url"] }}" title="{{ github_data["blame_meta"][j1 + offset]["commit_desc"]|trim }}">{{ github_data["blame_meta"][j1 + offset]["commit_desc"] }}</td>
                     <td class="blame reblame">
                         {% if github_data["blame_meta"][j1 + offset]["blame_url"] %}
                             <a class="blame reblame-link" href="{{ github_data["blame_meta"][j1 + offset]["blame_url"] }}?diff=True#L{{ j1 + offset + 1 }}">
@@ -20,7 +20,7 @@
         {% elif opcode == "insert" %}
             {% for line in range(j1, j2) %}
                 <tr class="line insert" id="L{{ line+1 }}">
-                    <td class="blame description"><a class="blame commit-link" href="{{ github_data["blame_meta"][line]["commit_url"] }}">{{ github_data["blame_meta"][line]["commit_desc"] }}</td>
+                    <td class="blame description"><a class="blame commit-link" href="{{ github_data["blame_meta"][line]["commit_url"] }}" title="{{ github_data["blame_meta"][line]["commit_desc"]|trim }}">{{ github_data["blame_meta"][line]["commit_desc"] }}</td>
                     <td class="blame reblame">
                         {% if github_data["blame_meta"][line]["blame_url"] %}
                             <a class="blame reblame-link" href="{{ github_data["blame_meta"][line]["blame_url"] }}?diff=True#L{{ line+1 }}">
@@ -46,7 +46,7 @@
         {% elif opcode == "replace" %}
             {% for line in range(j1, j2) %}
                 <tr class="line insert" id="L{{ line+1 }}">
-                    <td class="blame description"><a class="blame commit-link" href="{{ github_data["blame_meta"][line]["commit_url"] }}">{{ github_data["blame_meta"][line]["commit_desc"] }}</td>
+                    <td class="blame description"><a class="blame commit-link" href="{{ github_data["blame_meta"][line]["commit_url"] }}" title="{{ github_data["blame_meta"][line]["commit_desc"]|trim }}">{{ github_data["blame_meta"][line]["commit_desc"] }}</td>
                     <td class="blame reblame">
                         {% if github_data["blame_meta"][line]["blame_url"] %}
                             <a class="blame reblame-link" href="{{ github_data["blame_meta"][line]["blame_url"] }}?diff=True#L{{ line+1 }}">
@@ -73,7 +73,7 @@
 {% else %}
     {% for line in range(github_data["new_code"]|length) %}
         <tr class="line equal" id="L{{ line+1 }}">
-            <td class="blame description"><a class="blame commit-link" href="{{ github_data["blame_meta"][line]["commit_url"] }}">{{ github_data["blame_meta"][line]["commit_desc"] }}</td>
+            <td class="blame description"><a class="blame commit-link" href="{{ github_data["blame_meta"][line]["commit_url"] }}" title="{{ github_data["blame_meta"][line]["commit_desc"]|trim }}">{{ github_data["blame_meta"][line]["commit_desc"] }}</td>
             <td class="blame reblame">
                 {% if github_data["blame_meta"][line]["blame_url"] %}
                     <a class="blame reblame-link" href="{{ github_data["blame_meta"][line]["blame_url"] }}#L{{ line+1 }}">
