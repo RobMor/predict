@@ -4,14 +4,18 @@
 {{ super() }}
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/sidebar_cve.css') }}">
 <script type="text/javascript">
-    // A hack to make the svgs accessible within the javascript
-    // Single quotes because html has double quotes in it...
-    var plusSVG = $.parseHTML('{{ svg("plus") }}')[0];
-    var xSVG = $.parseHTML('{{ svg("x") }}')[0];
-    var triangleDownSVG = $.parseHTML('{{ svg("triangle-down") }}')[0];
-    var triangleUpSVG = $.parseHTML('{{ svg("triangle-up") }}')[0];
+    {% with label = None %}
+    var labelElement = $.parseHTML(`{% include "label.html" %}`)
+    {% endwith %}
 
-    var label_url = "{{ url_for('main.label') }}";
+    {% with label_group = None %}
+    var labelGroupElement = $.parseHTML(`{% include "label_group.html" %}`)
+    {% endwith %}
+
+    var triangleDownSVG = $.parseHTML(`{{ svg("triangle-down") }}`)
+    var triangleUpSVG = $.parseHTML(`{{ svg("triangle-up") }}`)
+
+    var rootUrl = "{{ url_for('main.base') }}";
 </script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/sidebar_cve.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/label.js') }}"></script>
@@ -43,15 +47,13 @@
 
         <form id="git-missing" class="collapse" onsubmit="return goto_commit('{{ cve_data['id'] }}')()">
             <div class="form-group">
-                <label for="repo">GitHub Repository Path:</label>
-                <input class="form-control" name="repo" id="repo" type="text" placeholder="Username/Repository" required>
+                <label for="missing-repo">GitHub Repository Path:</label>
+                <input class="form-control" name="repo" id="missing-repo" type="text" placeholder="Username/Repository" required>
             </div>
-
             <div class="form-group">
-                <label for="commit">Commit:</label>
-                <input class="form-control" name="commit" id="commit" type="text" placeholder="Commit" required>
+                <label for="missing-commit">Commit:</label>
+                <input class="form-control" name="commit" id="missing-commit" type="text" placeholder="Commit" required>
             </div>
-
             <button id="missing-button" type="submit" class="btn btn-outline-dark">Search</button>
         </form>
 
@@ -66,17 +68,17 @@
         </ul>
 
         {% if cve_data["normal_links"]|length > 0 %}
-            <h3>Other Links</h3>
+        <h3>Other Links</h3>
 
-            <ul>
-            {% for link in cve_data["normal_links"] %}
-                <li>
-                    <a href={{ link }} class="external-link" target="_blank">
-                        {{ link }}
-                    </a>
-                </li>
-            {% endfor %}
-            </ul>
+        <ul>
+        {% for link in cve_data["normal_links"] %}
+            <li>
+                <a href={{ link }} class="external-link" target="_blank">
+                    {{ link }}
+                </a>
+            </li>
+        {% endfor %}
+        </ul>
         {% endif %}
     </div>
 
@@ -91,41 +93,7 @@
         
         <div id="user-labels" data-cve="{{ cve_data['id'] }}">
             {% for (_, repo_user, repo_name), labels in label_groups %}
-            <div class="card user-label-group">
-                <div class="card-header user-label-group-header">
-                    <input type="text" class="hidden-input repo-input repo-user" placeholder="Repository Username" value="{{ repo_user }}" autocomplete="off">
-                    <span class="hidden-input-sep">/</span>
-                    <input type="text" class="hidden-input repo-input repo-name" placeholder="Repository Name" value="{{ repo_name }}" autocomplete="off">
-                    <a class="remove-group" onclick="removeGroup(this)">{{ svg("x") }}</a>
-                </div>
-                <ul class="list-group list-group-flush user-label-group-list">
-                    {% for label in labels %}
-                    <li class="list-group-item user-label">
-                        <div class="label-container">
-                            <div class="label-inputs">
-                                <input type="text" class="hidden-input label-input fix-file" placeholder="Fix File" value="{{ label.fix_file }}" autocomplete="off">
-                                <span class="hidden-input-sep">@</span>
-                                <input type="text" class="hidden-input label-input fix-hash" placeholder="Fix Hash" value="{{ label.fix_hash }}" autocomplete="off">
-                                <span class="hidden-input-sep">←</span>
-                                <input type="text" class="hidden-input label-input intro-file" placeholder="Intro File" value="{{ label.intro_file }}" autocomplete="off">
-                                <span class="hidden-input-sep">@</span>
-                                <input type="text" class="hidden-input label-input intro-hash" placeholder="Intro Hash" value="{{ label.intro_hash }}" autocomplete="off">
-                            </div>
-
-                            <div class="label-controls">
-                                <a class="additional-data" onclick="showAdditionalDataInputs(this)">{{ svg("triangle-down") }}</a>
-                                <a class="remove-label" onclick="removeLabel(this)">{{ svg("x", "text-danger") }}</a>
-                            </div>
-                        </div>
-
-                        <div class="collapse additional-data-inputs">
-                            <textarea class="comments label-input" placeholder="Comments">{{ label.comment }}</textarea>
-                        </div>
-                    </li>
-                    {% endfor %}
-                </ul>
-                <button class="add-label" onclick="addLabel(this)">{{ svg("plus") }} New Label</button>
-            </div>
+                {% include "label_group.html" %}
             {% endfor %}
         </div>
         

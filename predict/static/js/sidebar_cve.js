@@ -1,11 +1,11 @@
 function missing_commit_info_page(cve) {
     return function () {
-        repo = document.getElementById("repo").value
-        commit = document.getElementById("commit").value
+        repo = $("#missing-repo").val()
+        commit = $("#missing-commit").val()
 
         document.getElementById("missing-button").innerHTML = "<span class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span>"
 
-        window.location.pathname = "cve/" + cve + "/info/" + repo + "/" + commit
+        window.location.pathname = rootUrl + "cve/" + cve + "/info/" + repo + "/" + commit
 
         // Return false to avoid the real form submission
         return false
@@ -13,78 +13,42 @@ function missing_commit_info_page(cve) {
 }
 
 function openLabels() {
-    labelTab.classList.add("active")
-    labelButton.classList.add("active")
-    cveTab.classList.remove("active")
-    cveButton.classList.remove("active")
+    $("#labels").addClass("active")
+    $("#label-tab").addClass("active")
+
+    $("#cve-info").removeClass("active")
+    $("#cve-tab").removeClass("active")
 
     // Make sure all label textboxes are properly sized when we switch tabs
-    labelInputs = document.querySelectorAll(".hidden-input")
-    labelInputs.forEach((element) => {
-        resize(element)()
-    })
+    $(".hidden-input").each(function() { resizeToContents(this) })
 }
 
 function openCVE() {
-    cveTab.classList.add("active")
-    cveButton.classList.add("active")
-    labelTab.classList.remove("active")
-    labelButton.classList.remove("active")
+    $("#cve-info").addClass("active")
+    $("#cve-tab").addClass("active")
+
+    $("#labels").removeClass("active")
+    $("#label-tab").removeClass("active")
 }
 
 document.addEventListener("DOMContentLoaded", (event) => {
-    // Set up the resize event listener
-    labelInputs = document.querySelectorAll(".hidden-input")
+    $("hidden-input").on("input", resize)
 
-    labelInputs.forEach((element) => {
-        element.addEventListener("input", resize(element))
-    })
-
-    labelTab = document.getElementById("labels")
-    cveTab = document.getElementById("cve-info")
-    
-    labelButton = document.getElementById("label-tab")
-    cveButton = document.getElementById("cve-tab")
-
-    labelButton.addEventListener("click", openLabels)
-    cveButton.addEventListener("click", openCVE)
+    $("#label-tab").on("click", openLabels)
+    $("#cve-tab").on("click", openCVE)
 })
 
-function resize(element) {
-    return function() {
-        hidden = document.getElementById("hidden-text")
-
-        text = element.value
-        if (text.length === 0) {
-            text = element.placeholder
-        }
-        
-        hidden.textContent = text
-        element.style.width = hidden.offsetWidth + 4 + "px"
-    }
+function resize(event) {
+    resizeToContents(event.target)
 }
 
-function newHiddenInput(placeholder, value, className) {
-    element = document.createElement("input")
+function resizeToContents(element) {
+    text = $(element).val()
+    if (text.length === 0)
+        text = element.placeholder
 
-    element.type = "text"
-    element.value = value
-    element.placeholder = placeholder
-    element.className = className
-
-    element.addEventListener("input", resize(element))
-    element.addEventListener("input", labelsChanged)
-
-    return element
-}
-
-function newSeparator(contents) {
-    element = document.createElement("span")
-
-    element.className = "hidden-input-sep"
-    element.innerText = contents
-
-    return element
+    $("#hidden-text").text(text)
+    $(element).width($("#hidden-text").width() + 4)
 }
 
 function addLabel(button) {
@@ -96,78 +60,30 @@ function addLabel(button) {
 }
 
 function addLabelToGroup(group, fixFile, fixHash, introFile, introHash) {
-    groupList = group.querySelector(".user-label-group-list")
+    newLabelItem = document.createElement("li")
+    newLabelItem.className = "list-group-item user-label"
 
-    newLabel = document.createElement("li")
-    newLabel.className = "list-group-item user-label"
+    newLabel = $(labelElement).clone()
 
-    newLabelContainer = document.createElement("div")
-    newLabelContainer.className = "label-container"
+    $(newLabel).find(".fix-file").val(fixFile)
+    $(newLabel).find(".fix-hash").val(fixHash)
+    $(newLabel).find(".intro-file").val(introFile)
+    $(newLabel).find(".intro-hash").val(introHash)
 
-    newLabelInputs = document.createElement("div")
-    newLabelInputs.className = "label-inputs"
+    $(newLabelItem).append(newLabel)
 
-    newFixFile = newHiddenInput("Fix File", fixFile, "hidden-input label-input fix-file")
-    newFixSep = newSeparator("@")
-    newFixHash = newHiddenInput("Fix Hash", fixHash, "hidden-input limited label-input fix-hash")
-    newFixIntroSep = newSeparator("←")
-    newIntroFile = newHiddenInput("Intro File", introFile, "hidden-input label-input intro-file")
-    newIntroSep = newSeparator("@")
-    newIntroHash = newHiddenInput("Intro Hash", introHash, "hidden-input limited label-input intro-hash")
+    $(group).find(".user-label-group-list").append(newLabelItem)
 
-    newLabelInputs.appendChild(newFixFile)
-    newLabelInputs.appendChild(newFixSep)
-    newLabelInputs.appendChild(newFixHash)
-    newLabelInputs.appendChild(newFixIntroSep)
-    newLabelInputs.appendChild(newIntroFile)
-    newLabelInputs.appendChild(newIntroSep)
-    newLabelInputs.appendChild(newIntroHash)
+    $(newLabel).find(".hidden-input").each(function () {
+        this.addEventListener("input", resize)
+        resizeToContents(this)
+    })
 
-    newLabelControls = document.createElement("div")
-    newLabelControls.className = "label-controls"
+    $(newLabel).find(".label-input").each(function () {
+        this.addEventListener("input", labelsChanged)
+    })
 
-    newAdditionalDataButton = document.createElement("a")
-    newAdditionalDataButton.className = "additional-data"
-    newAdditionalDataButton.onclick = function() { showAdditionalDataInputs(this) }
-
-    newAdditionalDataIcon = $(triangleDownSVG).clone()[0]
-
-    newAdditionalDataButton.appendChild(newAdditionalDataIcon)
-
-    newRemoveLabel = document.createElement("a")
-    newRemoveLabel.className = "remove-label text-danger"
-    newRemoveLabel.onclick = function() { removeLabel(this) }
-
-    newRemoveLabelIcon = $(xSVG).clone()[0]
-
-    newRemoveLabel.appendChild(newRemoveLabelIcon)
-    
-    newLabelControls.appendChild(newAdditionalDataButton)
-    newLabelControls.appendChild(newRemoveLabel)
-
-    newLabelContainer.appendChild(newLabelInputs)
-    newLabelContainer.appendChild(newLabelControls)
-    
-    newAdditionalData = document.createElement("div")
-    newAdditionalData.className = "collapse additional-data-inputs"
-
-    newComments = document.createElement("textarea")
-    newComments.className = "comments label-input"
-    newComments.placeholder = "Comments"
-
-    newComments.addEventListener("input", labelsChanged)
-
-    newAdditionalData.appendChild(newComments)
-
-    newLabel.appendChild(newLabelContainer)
-    newLabel.appendChild(newAdditionalData)
-
-    groupList.appendChild(newLabel)
-
-    resize(newFixFile)()
-    resize(newFixHash)()
-    resize(newIntroFile)()
-    resize(newIntroHash)()
+    labelsChanged()
 
     return newLabel
 }
@@ -209,57 +125,16 @@ function addGroupWithLabel() {
 }
 
 function addGroup(repoUser, repoName) {
-    groups = document.getElementById("user-labels")
+    newGroup = $(labelGroupElement).clone()
 
-    card = document.createElement("div")
-    card.className = "card user-label-group"
+    $(newGroup).find(".repo-user").val(repoUser)
+    $(newGroup).find(".repo-name").val(repoName)
 
-    cardHeader = document.createElement("div")
-    cardHeader.className = "card-header user-label-group-header"
-
-    newRepoUser = newHiddenInput("Repository Username", repoUser, "hidden-input repo-input repo-user")
-    newRepoSep = newSeparator("/")
-    newRepoName = newHiddenInput("Repository Name", repoName, "hidden-input repo-input repo-name")
-
-    newRemoveGroup = document.createElement("a")
-    newRemoveGroup.className = "remove-group"
-    newRemoveGroup.onclick = function() { removeGroup(this) }
-
-    newRemoveGroupIcon = $(xSVG).clone()[0]
-
-    newRemoveGroup.appendChild(newRemoveGroupIcon)
-
-    cardHeader.appendChild(newRepoUser)
-    cardHeader.appendChild(newRepoSep)
-    cardHeader.appendChild(newRepoName)
-    cardHeader.appendChild(newRemoveGroup)
-
-    cardList = document.createElement("ul")
-    cardList.className = "list-group list-group-flush user-label-group-list"
-
-    addLabelButton = document.createElement("button")
-    addLabelButton.className = "add-label"
-    addLabelButton.onclick = function() { addLabel(this) }
-    
-    addLabelIcon = $(plusSVG).clone()[0]
-    
-    addLabelText = document.createTextNode(" New Label")
-    
-    addLabelButton.appendChild(addLabelIcon)
-    addLabelButton.appendChild(addLabelText)
-    
-    card.appendChild(cardHeader)
-    card.appendChild(cardList)
-    card.appendChild(addLabelButton)
-
-    groups.append(card)
-
-    resize(newRepoUser)()
-    resize(newRepoName)()
+    $("#user-labels").append(newGroup)
 
     labelsChanged()
 
-    return card
+    return newGroup
 }
 
 function removeGroup(button) {

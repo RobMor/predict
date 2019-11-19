@@ -1,0 +1,20 @@
+<div class="label-container">
+    <div class="label-inputs">
+        <input type="text" class="hidden-input label-input fix-file" placeholder="Fix File" value="{{ label.fix_file }}" autocomplete="off">
+        <span class="hidden-input-sep">@</span>
+        <input type="text" class="hidden-input label-input fix-hash" placeholder="Fix Hash" value="{{ label.fix_hash }}" autocomplete="off">
+        <span class="hidden-input-sep">←</span>
+        <input type="text" class="hidden-input label-input intro-file" placeholder="Intro File" value="{{ label.intro_file }}" autocomplete="off">
+        <span class="hidden-input-sep">@</span>
+        <input type="text" class="hidden-input label-input intro-hash" placeholder="Intro Hash" value="{{ label.intro_hash }}" autocomplete="off">
+    </div>
+
+    <div class="label-controls">
+        <a class="additional-data" onclick="showAdditionalDataInputs(this)">{{ svg("triangle-down") }}</a>
+        <a class="remove-label" onclick="removeLabel(this)">{{ svg("x", "text-danger") }}</a>
+    </div>
+</div>
+
+<div class="collapse additional-data-inputs">
+    <textarea class="comments label-input" placeholder="Comments">{{ label.comment }}</textarea>
+</div>

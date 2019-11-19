@@ -10,7 +10,7 @@ function goto_cve(textbox_id, button_id) {
             setSidebarOpenOnPageLoad()
             
             // Navigate to the CVE's page
-            window.location.pathname = "cve/" + cve
+            window.location.pathname = rootUrl + "cve/" + cve
         }
         // Return false to avoid the real form submission
         return false
