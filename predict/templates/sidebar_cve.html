@@ -8,6 +8,9 @@
     // Single quotes because html has double quotes in it...
     var plusSVG = $.parseHTML('{{ svg("plus") }}')[0];
     var xSVG = $.parseHTML('{{ svg("x") }}')[0];
+    var triangleDownSVG = $.parseHTML('{{ svg("triangle-down") }}')[0];
+    var triangleUpSVG = $.parseHTML('{{ svg("triangle-up") }}')[0];
+
     var label_url = "{{ url_for('main.label') }}";
 </script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/sidebar_cve.js') }}"></script>
@@ -98,15 +101,26 @@
                 <ul class="list-group list-group-flush user-label-group-list">
                     {% for label in labels %}
                     <li class="list-group-item user-label">
-                        <input type="text" class="hidden-input label-input fix-file" placeholder="Fix File" value="{{ label.fix_file }}" autocomplete="off">
-                        <span class="hidden-input-sep">@</span>
-                        <input type="text" class="hidden-input limited label-input fix-hash" placeholder="Fix Hash" value="{{ label.fix_hash }}" autocomplete="off">
-                        <span class="hidden-input-sep">←</span>
-                        <input type="text" class="hidden-input label-input intro-file" placeholder="Intro File" value="{{ label.intro_file }}" autocomplete="off">
-                        <span class="hidden-input-sep">@</span>
-                        <input type="text" class="hidden-input limited label-input intro-hash" placeholder="Intro Hash" value="{{ label.intro_hash }}" autocomplete="off">
-                        {# TODO comment input here #}
-                        <a class="remove-label" onclick="removeLabel(this)">{{ svg("x", "text-danger") }}</a>
+                        <div class="label-container">
+                            <div class="label-inputs">
+                                <input type="text" class="hidden-input label-input fix-file" placeholder="Fix File" value="{{ label.fix_file }}" autocomplete="off">
+                                <span class="hidden-input-sep">@</span>
+                                <input type="text" class="hidden-input label-input fix-hash" placeholder="Fix Hash" value="{{ label.fix_hash }}" autocomplete="off">
+                                <span class="hidden-input-sep">←</span>
+                                <input type="text" class="hidden-input label-input intro-file" placeholder="Intro File" value="{{ label.intro_file }}" autocomplete="off">
+                                <span class="hidden-input-sep">@</span>
+                                <input type="text" class="hidden-input label-input intro-hash" placeholder="Intro Hash" value="{{ label.intro_hash }}" autocomplete="off">
+                            </div>
+
+                            <div class="label-controls">
+                                <a class="additional-data" onclick="showAdditionalDataInputs(this)">{{ svg("triangle-down") }}</a>
+                                <a class="remove-label" onclick="removeLabel(this)">{{ svg("x", "text-danger") }}</a>
+                            </div>
+                        </div>
+
+                        <div class="collapse additional-data-inputs">
+                            <textarea class="comments label-input" placeholder="Comments"></textarea>
+                        </div>
                     </li>
                     {% endfor %}
                 </ul>

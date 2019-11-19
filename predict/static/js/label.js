@@ -73,7 +73,7 @@ function getLabels() {
                 fix_hash: element.querySelector(".fix-hash").value,
                 intro_file: element.querySelector(".intro-file").value,
                 intro_hash: element.querySelector(".intro-hash").value,
-                comment: "comments not supported yet TODO",
+                comment: element.querySelector(".comments").value,
             })
         })
         group_num++
