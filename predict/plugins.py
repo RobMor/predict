@@ -131,7 +131,7 @@ def export(filter_, extra_data, strategy, file_format):
 	q = predict.db.Session.query(predict.models.Label)
 	l = LtoList(q.all()) or []
 	
-	if(extra_data != "none"):
+	if(extra_data != None):
 		extra =  entrypoints.get_single("predict.plugins", extra_data).load()
 		extra = extra(l, q)
 		l = extra.add_data()
@@ -141,7 +141,7 @@ def export(filter_, extra_data, strategy, file_format):
 		strat = strat(l, q)
 		l = strat.resolve()
 		
-	if(filter_ != "none" and filter_ != None):
+	if(filter_ != "none"):
 		filter = entrypoints.get_single("predict.plugins", filter_).load()
 		filter = filter(l)
 		l = filter.filterl()
