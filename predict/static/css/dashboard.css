@@ -7,7 +7,7 @@
 }
 
 #review-cards {
-    overflow-y: scroll;
+    overflow-y: auto;
     overflow-x: hidden;
     height: 33rem; /* TODO make this more dynamic */
 }
