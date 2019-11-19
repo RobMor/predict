@@ -158,14 +158,14 @@ def eliminateRedundancies(subBlock):
         if i != 0:
             subBlock[i].cve = ""
             subBlock[i].username = ""
-            if containsOther(subBlock, subBlock[i].fix_hash, "fix_hash", i):
-                subBlock[i].fix_hash = ""
-            if containsOther(subBlock, subBlock[i].fix_file, "fix_file", i):
-                subBlock[i].fix_file = ""
-            if containsOther(subBlock, subBlock[i].intro_hash, "intro_hash", i):
-                subBlock[i].intro_hash = ""
-            if containsOther(subBlock, subBlock[i].intro_file, "intro_file", i):
-                subBlock[i].intro_file = ""
+#            if containsOther(subBlock, subBlock[i].fix_hash, "fix_hash", i):
+#                subBlock[i].fix_hash = ""
+#            if containsOther(subBlock, subBlock[i].fix_file, "fix_file", i):
+#                subBlock[i].fix_file = ""
+#            if containsOther(subBlock, subBlock[i].intro_hash, "intro_hash", i):
+#                subBlock[i].intro_hash = ""
+#            if containsOther(subBlock, subBlock[i].intro_file, "intro_file", i):
+#                subBlock[i].intro_file = ""
         newSubBlock.append(subBlock[i])
     return newSubBlock
 
