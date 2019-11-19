@@ -32,7 +32,9 @@ function openCVE() {
 }
 
 document.addEventListener("DOMContentLoaded", (event) => {
-    $("hidden-input").on("input", resize)
+    $(".hidden-input").each(function () {
+        this.addEventListener("input", resize)
+    })
 
     $("#label-tab").on("click", openLabels)
     $("#cve-tab").on("click", openCVE)
@@ -48,7 +50,7 @@ function resizeToContents(element) {
         text = element.placeholder
 
     $("#hidden-text").text(text)
-    $(element).width($("#hidden-text").width() + 4)
+    $(element).width($("#hidden-text").width()+1)
 }
 
 function addLabel(button) {
@@ -129,7 +131,7 @@ function addGroup(repoUser, repoName) {
 
     $(newGroup).find(".repo-user").val(repoUser)
     $(newGroup).find(".repo-name").val(repoName)
-    
+
     $(newGroup).find(".hidden-input").each(function () {
         this.addEventListener("input", resize)
         resizeToContents(this)
