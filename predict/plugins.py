@@ -26,16 +26,16 @@ class PluginBase(abc.ABC):
 # TODO
 class FilterPlugin(PluginBase, abc.ABC):
 	@abc.abstractmethod
-	def __init__(self, query):
+	def __init__(self, l):
 		"""Defines the construction of this filter.
 
 		Args:
-			query: query object being used for export.
+			l: list object being used for export.
 		"""
 		pass
 	
 	@abc.abstractmethod
-	def filterq(self):
+	def filterl(self):
 		"""Defines the functionality associated with this filter.
 		Handles construction of a flask response to be handed back to he user.
 		"""
@@ -129,11 +129,6 @@ def load_plugins():
 
 def export(filter_, extra_data, strategy, file_format):
 	q = predict.db.Session.query(predict.models.Label)
-	
-	if(filter_ != "none"):
-		filter = entrypoints.get_single("predict.plugins", filter_).load()
-		filter = filter(q)
-		q = filter.filterq()
 	l = LtoList(q.all()) or []
 	
 	if(extra_data != "none"):
@@ -144,6 +139,12 @@ def export(filter_, extra_data, strategy, file_format):
 	if(strategy != "none"):
 		strat =  entrypoints.get_single("predict.plugins", strategy).load()
 		strat = strat(l, q)
+		l = strat.resolve()
+		
+	if(filter_ != "none" and filter_ != None):
+		filter = entrypoints.get_single("predict.plugins", filter_).load()
+		filter = filter(l)
+		l = filter.filterl()
 	
 	file_format = entrypoints.get_single("predict.plugins", file_format).load()
 	file_format = file_format(l)
