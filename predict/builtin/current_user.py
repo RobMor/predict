@@ -1,14 +1,18 @@
 from predict.plugins import FilterPlugin
-import flask_login
+import predict.auth
 import socket
 
 class CurrentUser(FilterPlugin):
 	id="current_user"
 	description="Only Me"
 
-	def __init__(self, query):
+	def __init__(self, l):
 			self.username = predict.auth.current_user()
-			self.query = query
+			self.l = l
 
-	def filterq(self):
-		return self.query.filter_by(username=self.username)
+	def filterl(self):
+		nl = [self.l[0]]
+		for item in self.l:
+			if item[1] == self.username:
+				nl += [item]
+		return nl
