@@ -216,19 +216,19 @@ def splitByUser(block):
 
 def setEquality(subBlock1, subBlock2, field):
     for entry in subBlock1:
-        if not contains(subBlock2, entry[field], field):
+        if not contains(subBlock2, entry[field], field, subBlock1):
             return False
 
     for entry in subBlock2:
-        if not contains(subBlock1, entry[field], field):
+        if not contains(subBlock1, entry[field], field, subBlock2):
             return False
 
     return True
 
 
-def contains(subBlock, element, field):
-    for entry in subBlock:
-        if entry[field] == element:
+def contains(subBlock, element, field, otherSubBlock):
+    for i in range(0, len(subBlock)):
+        if subBlock[i][field] == element and subBlock[i]["repo_name"] == otherSubBlock[i]["repo_name"] and subBlock[i]["repo_user"] == otherSubBlock[i]["repo_user"]:
             return True
     return False
 
