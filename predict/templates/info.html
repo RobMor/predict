@@ -44,9 +44,15 @@
         </div>
 
         <div class="card-body diff-container">
+        {% if not file["error"] %}
             {% with groups = file["groups"] %}
             {% include "info_diff.html" %}
             {% endwith %}
+        {% else %}
+            <div class="diff-error">
+                File diff too large, <a href="{{ file['github_link'] }}">view it on GitHub</a>
+            </div>
+        {% endif %}
         </div>
     </div>
     {% endfor %}

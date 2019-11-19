@@ -82,3 +82,10 @@
     padding: 0;
     overflow-x: auto;
 }
+
+.diff-error {
+    width: 100%;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    text-align: center;
+}
