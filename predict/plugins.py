@@ -130,11 +130,12 @@ def load_plugins():
 def export(filter_, extra_data, strategy, file_format):
 	q = predict.db.Session.query(predict.models.Label)
 	l = LtoList(q.all()) or []
-	
+
 	if(extra_data != None):
-		extra =  entrypoints.get_single("predict.plugins", extra_data).load()
-		extra = extra(l, q)
-		l = extra.add_data()
+		for data in extra_data:
+			extra =  entrypoints.get_single("predict.plugins", data).load()
+			extra = extra(l, q)
+			l = extra.add_data()
 	
 	if(strategy != "none"):
 		strat =  entrypoints.get_single("predict.plugins", strategy).load()
