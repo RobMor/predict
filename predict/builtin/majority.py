@@ -52,9 +52,17 @@ class Majority(ConflictPlugin):
 			for i in range(0, len(nl)):
 				temp2 = []
 				for j in range(0, len(nl[i])):		
-					if j != loc:
+					if j != loc and j != 1:
 						temp2 += [nl[i][j]]
 				temp += [temp2]
 			nl = temp
-		
+		else:
+			temp = []
+			for i in range(0, len(nl)):
+				temp2 = []
+				for j in range(0, len(nl[i])):		
+					if j != 1:
+						temp2 += [nl[i][j]]
+				temp += [temp2]
+			nl = temp
 		return nl
