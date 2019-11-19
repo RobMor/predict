@@ -68,9 +68,15 @@ def scrape_commit_info(repo_user, repo_name, commit_hash):
 
         code_body = file_div.find("table")
         if code_body is None:
+            file_data["groups"] = []
+            file_data["error"]= "table element not present"
+            github_data["files"].append(file_data)
             continue
         lines = code_body.find_all("tr")
-        if lines is None:
+        if lines is None or len(lines) == 0:
+            file_data["groups"] = []
+            file_data["error"] = "no tr elements present"
+            github_data["files"].append(file_data)
             continue
         file_data["groups"] = []
 
