@@ -50,7 +50,7 @@
     margin-left: auto;
 }
 
-.label-container {
+.label-main {
     display: flex;
     width: 100%;
     justify-content: space-between;
