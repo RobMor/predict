@@ -67,8 +67,11 @@ def scrape_commit_info(repo_user, repo_name, commit_hash):
         file_data["github_link"] = url + "/" + file_data["path"]
 
         code_body = file_div.find("table")
+        if code_body is None:
+            continue
         lines = code_body.find_all("tr")
-
+        if lines is None:
+            continue
         file_data["groups"] = []
 
         # Get the part between the two @@'s
