@@ -129,6 +129,15 @@ function addGroup(repoUser, repoName) {
 
     $(newGroup).find(".repo-user").val(repoUser)
     $(newGroup).find(".repo-name").val(repoName)
+    
+    $(newGroup).find(".hidden-input").each(function () {
+        this.addEventListener("input", resize)
+        resizeToContents(this)
+    })
+
+    $(newGroup).find(".repo-input").each(function () {
+        this.addEventListener("input", labelsChanged)
+    })
 
     $("#user-labels").append(newGroup)
 
