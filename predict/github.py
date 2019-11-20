@@ -10,6 +10,13 @@ from bs4 import BeautifulSoup
 
 
 def get_commit_info(cve_id, repo_user, repo_name, commit_hash):
+    """
+    :param cve_id: The CVE ID
+    :param repo_user: Username
+    :param repo_name: Repository Name
+    :param commit_hash: Commit hash of commit
+    :return: The value of process_commit_info, if possible, else none
+    """
     if valid_inputs(repo_user, repo_name, commit_hash, None):
         raw_commit = scrape_commit_info(repo_user, repo_name, commit_hash)
         if raw_commit is not None:
@@ -19,6 +26,13 @@ def get_commit_info(cve_id, repo_user, repo_name, commit_hash):
 
 
 def scrape_commit_info(repo_user, repo_name, commit_hash):
+    """
+    Scrape the commit info from github if possible and pass for cleanup
+    :param repo_user: Username
+    :param repo_name: Repository Name
+    :param commit_hash: Hash of commit
+    :return: dictionary containing data for this commit page.
+    """
     github_data = {"repo_user": repo_user, "repo_name": repo_name, "hash": commit_hash}
 
     url = "https://github.com/{}/{}/commit/{}".format(repo_user, repo_name, commit_hash)
@@ -150,6 +164,12 @@ def scrape_commit_info(repo_user, repo_name, commit_hash):
 
 
 def process_commit_info(cve_id, commit_info):
+    """
+    Clean up the given dictionary and prepare it for entry into a template
+    :param cve_id: cve id
+    :param commit_info: commit info dictionary
+    :return: formatted version of the dictionary
+    """
     formatter = pygments.formatters.HtmlFormatter(nowrap=True)
 
     for file in commit_info["files"]:
@@ -184,6 +204,15 @@ def process_commit_info(cve_id, commit_info):
 
 
 def get_blame(cve_id, repo_user, repo_name, commit_hash, file_name):
+    """
+    Get blame page for the given commit and file in dictionary form if possible
+    :param cve_id: The CVE ID
+    :param repo_user: Username
+    :param repo_name: Repository Name
+    :param commit_hash: Commit hash of commit
+    :param file_name: Name of file we are inspecting
+    :return: File data in dictionary form for the blame page on github
+    """
     if valid_inputs(repo_user, repo_name, commit_hash, file_name):
         raw_blame = scrape_blame(cve_id, repo_user, repo_name, commit_hash, file_name)
         if raw_blame is not None:
@@ -193,6 +222,15 @@ def get_blame(cve_id, repo_user, repo_name, commit_hash, file_name):
 
 
 def scrape_blame(cve_id, repo_user, repo_name, commit_hash, file_name):
+    """
+        Scrape the blame page info from github if possible and pass for cleanup to relevant method.
+        :param cve_id: CVE ID
+        :param repo_user: Username
+        :param repo_name: Repository Name
+        :param commit_hash: Hash of commit
+        :param file_name: Name of file inspected
+        :return: Dictionary containing data for this blame page from github, or None
+        """
     if (
         repo_name is None
         or repo_user is None
@@ -290,6 +328,11 @@ def scrape_blame(cve_id, repo_user, repo_name, commit_hash, file_name):
 
 
 def process_blame(blame_data):
+    """
+    Clean up the blame dictionary given for insertion in a template in the views.
+    :param blame_data: A dictionary from scrape_blame with data in it
+    :return: A formatted version of the given dictionary for use in templates.
+    """
     blame_data["diff"] = difflib.SequenceMatcher(
         lambda x: x in " \t", blame_data["old_code"], blame_data["new_code"]
     ).get_opcodes()
@@ -313,6 +356,12 @@ def process_blame(blame_data):
 
 
 def get_lexer(filename, code):
+    """
+    Get a code lexer for the filename and code given
+    :param filename: Name of the file
+    :param code: Code lines in the file
+    :return: A lexer for the code.
+    """
     try:
         try:
             # Try to guess the lexer by filename
@@ -328,6 +377,14 @@ def get_lexer(filename, code):
 
 
 def valid_inputs(repo_user, repo_name, commit_hash, file_name):
+    """
+    This method checks the input fields of the scraping methods to make sure they are valid
+    :param repo_user: Username
+    :param repo_name: Repository Name
+    :param commit_hash: Hash of commit
+    :param file_name: Name of file inspected
+    :return: Boolean representing the validity of the given inputs.
+    """
     valid = None not in [repo_user, repo_name, commit_hash]
     valid = valid and re.match(r"^([A-z0-9][A-z0-9\-]{0,38})$", repo_user) is not None
     valid = valid and re.match(r"^([A-z0-9_\-]{1,100})$", repo_name) is not None
