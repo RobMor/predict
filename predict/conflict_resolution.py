@@ -16,6 +16,14 @@ import flask_login
 
 
 def processEntries(entries, currentUser):
+    """Takes a list of label objects and converts them into a list of blocks of
+    subBlocks of dictionaries. Blocks are lists of subBlocks and subBlocks are
+    lists of dictionaries. Blocks are unique by CVE ID, subBlocks within a Block
+    are unique by username. Dictionaries within a subblock each contain one of
+    the user's labels for that cve_id, represented as a dictionary, plus some
+    additional information including the Match/Conflict information relative to
+    other subBlocks, and the url's for the commit info and blame pages for that
+    label's fix/intro hash/file."""
     blocks = splitByCveId(entries)
     for i in range(0, len(blocks)):
         newBlock = blocks[i]
@@ -48,6 +56,11 @@ def processEntries(entries, currentUser):
 
 
 def insertSubBlockAgreements(subBlock, currUserSubBlock):
+    """Inserts the Match/Conflict info for the fix/intro file/hash for the
+    subBlock relative to the current user's subBlock. Match/Conflict is determined
+    by set equality of the subBlock's labels and the current user's labels for
+    that cve. If the current user hasn't labeled this cve, then all entries get
+    N/A for those fields."""
     if currUserSubBlock is not None:
         fixCommitAgree = "Match" if setEquality(subBlock, currUserSubBlock, "fix_hash") else "Conflict"
         fixFileAgree = "Match" if setEquality(subBlock, currUserSubBlock, "fix_file") else "Conflict"
@@ -85,6 +98,9 @@ def insertSubBlockAgreements(subBlock, currUserSubBlock):
     return subBlock
 
 def appendURLs(entry):
+    """Returns a dictionary with the urls to the commit info and blame pages for
+    the argument label's fix/intro file/hash fields, along with all the
+    existing fields of the object."""
     fixCommitURL = flask.url_for("main.info_page", cve_id=entry.cve_id,
         repo_name = entry.repo_name, repo_user = entry.repo_user,
         commit = entry.fix_hash)
@@ -105,6 +121,12 @@ def appendURLs(entry):
         "comment": entry.comment, "edit_date": entry.edit_date}
 
 def insertPercentages(block):
+    """Calculates the percentage of the other subBlocks in the block that
+    match the first subBlock's (which is the current user's subBlock if they have
+    labeled this cve) labels and puts those percentages in the first subBlock's
+    agreement fields in lieu of Match/Conflict like in all the other subBlocks.
+    If the current user hasn't labeled this cve, then N/A is entered for those
+    fields instead."""
     length = len(block)-1
     fixCommitCount = 0.0
     fixFileCount = 0.0
@@ -173,6 +195,10 @@ def insertPercentages(block):
     return block
 
 def eliminateRedundancies(subBlock):
+    """Replaces the cve_id and username wth empty strings for all entrues in the
+    subBlocks except the first so that they are not repeatedly displayed within
+    the same subBlock, making it much easier for the user to visually identify
+    where subBlocks start and end."""
     newSubBlock = []
     for i in range(0, len(subBlock)):
         if i != 0:
@@ -193,6 +219,8 @@ def eliminateRedundancies(subBlock):
     return newSubBlock
 
 def moveUserToFront(block, user):
+    """If the specified user has labeled the block's cve_id, then that user's
+    subBlock of labels is moved to the front of the block."""
     index = -1
     for i in range(0,len(block)):
         if block[i][0].username == user:
@@ -208,6 +236,8 @@ def moveUserToFront(block, user):
 # Takes in a list of entries and returns a list of lists of entries, where each inner list contains all entries of a single CVE_ID
 # ASSUMES LIST IS SORTED BY CVE_ID
 def splitByCveId(entries):
+    """Splits a list of labels into a list of blocks by cve_id. Assumes labels
+    are sorted by cve_id already."""
     currCVE = ""
     blocks = []
     blockNum = -1
@@ -222,6 +252,8 @@ def splitByCveId(entries):
 # Takes in a list of entries of matching cve ids and returns a list of lists of entrues, where each inner list contains all entries of a single users
 # ASSUMES LIST IS SORTED BY CVE_ID
 def splitByUser(block):
+    """Splits a block into subBlocks by username. Assumes block is sorted by
+    username already."""
     currUser = ""
     blocks = []
     blockNum = -1
@@ -235,6 +267,9 @@ def splitByUser(block):
 
 
 def setEquality(subBlock1, subBlock2, field):
+    """Returns true if all entries for the specified field in subBlock1 are
+    contained in subBlock2 AND the entries have the same repo_name and repo_user
+     and vice versa, false otherwise."""
     for entry in subBlock1:
         if not contains(subBlock2, entry[field], field, subBlock1):
             return False
@@ -247,12 +282,17 @@ def setEquality(subBlock1, subBlock2, field):
 
 
 def contains(subBlock, element, field, otherSubBlock):
+    """Checks if the subBlock contains the element passed in for the field passed
+    in, for an entry where the repo_name and repo_user also match. True if found
+    false otherwise."""
     for i in range(0, len(subBlock)):
         if subBlock[i][field] == element and subBlock[i]["repo_name"] == otherSubBlock[i]["repo_name"] and subBlock[i]["repo_user"] == otherSubBlock[i]["repo_user"]:
             return True
     return False
 
 def containsOther(subBlock, element, field, index):
+    """Same as contains but only checks entries not at the specified index in
+    the subBlock. Currently not used, but may be in the future."""
     for i in range(0, len(subBlock)):
         if field == "fix_hash":
             if subBlock[i].fix_hash == element and i != index:
