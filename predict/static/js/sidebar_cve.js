@@ -1,18 +1,15 @@
-function missing_commit_info_page(cve) {
-    return function () {
-        repo = $("#missing-repo").val()
-        commit = $("#missing-commit").val()
+/* --- Sidebar Functionality --- */
 
-        document.getElementById("missing-button").innerHTML = "<span class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span>"
+document.addEventListener("DOMContentLoaded", (event) => {
+    $(".hidden-input").each(function () {
+        this.addEventListener("input", resize)
+    })
 
-        window.location.pathname = rootUrl + "cve/" + cve + "/info/" + repo + "/" + commit
+    $("#label-tab").on("click", openLabelTab)
+    $("#cve-tab").on("click", openCVETab)
+})
 
-        // Return false to avoid the real form submission
-        return false
-    }
-}
-
-function openLabels() {
+function openLabelTab() {
     $("#labels").addClass("active")
     $("#label-tab").addClass("active")
 
@@ -23,7 +20,7 @@ function openLabels() {
     $(".hidden-input").each(function() { resizeToContents(this) })
 }
 
-function openCVE() {
+function openCVETab() {
     $("#cve-info").addClass("active")
     $("#cve-tab").addClass("active")
 
@@ -31,37 +28,49 @@ function openCVE() {
     $("#label-tab").removeClass("active")
 }
 
-document.addEventListener("DOMContentLoaded", (event) => {
-    $(".hidden-input").each(function () {
+function missingCommitLink() {
+    repo = $("#missing-repo").val()
+    commit = $("#missing-commit").val()
+
+    // Set the button to a spinner
+    document.getElementById("missing-button").innerHTML = "<span class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span>"
+
+    window.location.pathname = rootUrl + "cve/" + currentCVE + "/info/" + repo + "/" + commit
+
+    // Return false to avoid the real form submission
+    return false
+}
+
+/* --- Label UI functionality --- */
+
+function addGroup(repoUser=null, repoName=null) {
+    newGroup = $(labelGroupElement).clone()
+
+    $(newGroup).find(".repo-user").val(repoUser)
+    $(newGroup).find(".repo-name").val(repoName)
+
+    $(newGroup).find(".hidden-input").each(function () {
         this.addEventListener("input", resize)
+        resizeToContents(this)
     })
 
-    $("#label-tab").on("click", openLabels)
-    $("#cve-tab").on("click", openCVE)
-})
+    $(newGroup).find(".repo-input").each(function () {
+        this.addEventListener("input", labelsChanged)
+    })
 
-function resize(event) {
-    resizeToContents(event.target)
-}
-
-function resizeToContents(element) {
-    text = $(element).val()
-    if (text.length === 0)
-        text = element.placeholder
-
-    $("#hidden-text").text(text)
-    $(element).width($("#hidden-text").width()+1)
-}
-
-function addLabel(button) {
-    group = button.closest(".user-label-group")
-
-    addLabelToGroup(group, null, null, null, null)
+    $("#user-labels").append(newGroup)
 
     labelsChanged()
+
+    return newGroup
 }
 
-function addLabelToGroup(group, fixFile, fixHash, introFile, introHash) {
+function addGroupWithLabel() {
+    group = addGroup()
+    addLabelToGroup(group)
+}
+
+function addLabelToGroup(group, fixFile=null, fixHash=null, introFile=null, introHash=null) {
     newLabelItem = document.createElement("li")
     newLabelItem.className = "list-group-item user-label"
 
@@ -90,6 +99,45 @@ function addLabelToGroup(group, fixFile, fixHash, introFile, introHash) {
     return newLabel
 }
 
+function addLabel(button) {
+    group = button.closest(".user-label-group")
+
+    addLabelToGroup(group)
+
+    labelsChanged()
+}
+
+function removeGroup(button) {
+    group = button.closest(".user-label-group")
+    group.remove()
+
+    labelsChanged()
+}
+
+function removeLabel(button) {
+    label = button.closest(".user-label")
+    label.remove()
+
+    labelsChanged()
+}
+
+/* --- Hidden Input Functionality --- */
+
+function resize(event) {
+    resizeToContents(event.target)
+}
+
+function resizeToContents(element) {
+    text = $(element).val()
+    if (text.length === 0)
+        text = element.placeholder
+
+    $("#hidden-text").text(text)
+    $(element).width($("#hidden-text").width()+1)
+}
+
+/* --- Collapsing Additional Data Functionality --- */
+
 function showAdditionalDataInputs(button) {
     button.onclick = function() { hideAdditionalDataInputs(this) }
 
@@ -114,57 +162,12 @@ function hideAdditionalDataInputs(button) {
     $(icon).replaceWith($(triangleDownSVG).clone()[0])
 }
 
-function removeLabel(button) {
-    label = button.closest(".user-label")
-    label.remove()
-
-    labelsChanged()
-}
-
-function addGroupWithLabel() {
-    group = addGroup(null, null)
-    addLabelToGroup(group, null, null, null, null)
-}
-
-function addGroup(repoUser, repoName) {
-    newGroup = $(labelGroupElement).clone()
-
-    $(newGroup).find(".repo-user").val(repoUser)
-    $(newGroup).find(".repo-name").val(repoName)
-
-    $(newGroup).find(".hidden-input").each(function () {
-        this.addEventListener("input", resize)
-        resizeToContents(this)
-    })
-
-    $(newGroup).find(".repo-input").each(function () {
-        this.addEventListener("input", labelsChanged)
-    })
-
-    $("#user-labels").append(newGroup)
-
-    labelsChanged()
-
-    return newGroup
-}
-
-function removeGroup(button) {
-    group = button.closest(".user-label-group")
-    group.remove()
-
-    labelsChanged()
-}
+/* --- Labeling Functionality --- */
 
 document.addEventListener("DOMContentLoaded", (event) => {
     labelInputs = document.querySelectorAll(".label-input")
     
     labelInputs.forEach((element) => {
-        element.addEventListener("input", labelsChanged)
-    })
-    
-    repoInputs = document.querySelectorAll(".repo-input")
-    
-    repoInputs.forEach((element) => {
         element.addEventListener("input", labelsChanged)
     })
 })
@@ -201,8 +204,9 @@ function fixesVulnerability(repoUser, repoName, fixFile, fixHash) {
 var timer;
 
 function labelsChanged() {
-    // Update values after .5 seconds of no edits
+    // Update labels after .5 seconds of no edits
     clearTimeout(timer)
+
     timer = setTimeout(function () {
         cve_id = document.getElementById("user-labels").dataset.cve
         labels = getLabels()
@@ -238,6 +242,7 @@ function getLabels() {
                 comment: element.querySelector(".comments").value,
             })
         })
+
         group_num++
     })
 
@@ -258,6 +263,4 @@ function labelUpdateFailed(data) {
     span.className = "text-danger"
 
     $(span).fadeIn(100).fadeOut(200)
-
-    console.log(data)
 }

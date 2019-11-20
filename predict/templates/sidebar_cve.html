@@ -5,17 +5,17 @@
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/sidebar_cve.css') }}">
 <script type="text/javascript">
     {% with label = None %}
-    var labelElement = $.parseHTML(`{% include "label.html" %}`)
+    var labelElement = $.parseHTML(`{% include "label.html" %}`);
     {% endwith %}
 
     {% with label_group = None %}
-    var labelGroupElement = $.parseHTML(`{% include "label_group.html" %}`)
+    var labelGroupElement = $.parseHTML(`{% include "label_group.html" %}`);
     {% endwith %}
 
-    var triangleDownSVG = $.parseHTML(`{{ svg("triangle-down") }}`)
-    var triangleUpSVG = $.parseHTML(`{{ svg("triangle-up") }}`)
+    var triangleDownSVG = $.parseHTML(`{{ svg("triangle-down") }}`);
+    var triangleUpSVG = $.parseHTML(`{{ svg("triangle-up") }}`);
 
-    var rootUrl = "{{ url_for('main.base') }}";
+    var currentCVE = "{{ cve_data['cve_id'] }}";
 </script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/sidebar_cve.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/label.js') }}"></script>
@@ -45,7 +45,7 @@
             <button class="btn btn-link" data-toggle="collapse" data-target="#git-missing">Did we miss any?</button>
         </div>
 
-        <form id="git-missing" class="collapse" onsubmit="return goto_commit('{{ cve_data['id'] }}')()">
+        <form id="git-missing" class="collapse" onsubmit="return missingCommitLink()">
             <div class="form-group">
                 <label for="missing-repo">GitHub Repository Path:</label>
                 <input class="form-control" name="repo" id="missing-repo" type="text" placeholder="Username/Repository" required>
