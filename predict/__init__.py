@@ -13,6 +13,7 @@ def configure_app(config):
 
     if config.getboolean("WHITELIST", "WHITELIST_ENABLED"):
         #If true, does not actually delete the WHITELIST_ENABLED key from the config file
+        app.config["WHITELIST_ENABLED"] = config.getboolean("WHITELIST", "WHITELIST_ENABLED")
         config.remove_option("WHITELIST", "WHITELIST_ENABLED")
         app.config["WHITELIST"] = config["WHITELIST"].keys()
 

@@ -42,7 +42,6 @@ def load_config(file_path):
         except configparser.Error as e:
             # If there is a malformed config, print a general error message, and do not let the application continue.
             import sys
-
             print("Predict Configuration Error: {}".format(e))
             sys.exit(1)
         return config
@@ -51,10 +50,18 @@ def load_config(file_path):
 
 
 def validate_config(config, file_path):
+    """
+        Validates a given configuration file, by ensuring the required predict whitelist options and
+        headers are present.
+
+        Args:
+            config: the configuration object to validate
+            file_path: the location of the given configuration.
+    """
+
     # TODO make sure all required fields are there.
     # TODO make sure that all fields that should be booleans are booleans...
     # TODO make sure regular expressions are valid by trying to compile them
-
     # TODO only run this check when whitelist is enabled
     for username in config["WHITELIST"]:
         if username != "WHITELIST_ENABLED":

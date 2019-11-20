@@ -81,8 +81,11 @@ def register_post():
         flask.flash(flask.current_app.config["PASSWORD_FEEDBACK"])
         return flask.render_template("register.html")
 
+    #DEBUG #print (type(flask.current_app.config["WHITELIST_ENABLED"]))
+
     if (
-        "WHITELIST" in flask.current_app.config
+        "WHITELIST" in flask.current_app.config and
+        flask.current_app.config["WHITELIST_ENABLED"]
         and username not in flask.current_app.config["WHITELIST"]
     ):
         flask.flash(
