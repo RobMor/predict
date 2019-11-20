@@ -6,7 +6,7 @@ function updateLabels(cve_id, labels, successCallback, failureCallback) {
 
     $.ajax({
         type: "PUT",
-        url: rootUrl + "label", 
+        url: rootUrl + "label",
         data: JSON.stringify(data),
         contentType: "application/json",
         success: successCallback,

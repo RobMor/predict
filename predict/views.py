@@ -132,24 +132,6 @@ def conflict_resolution():
 
     currentUser = flask_login.current_user.get_id()
     blocks = predict.conflict_resolution.processEntries(entries, currentUser)
-    #    blocks = predict.conflict_resolution.splitByCveId(entries)
-    #    newBlocks = []
-    #    for block in blocks:
-    #        block = predict.conflict_resolution.moveUserToFront(block, currentUser)
-    #        currUserEntry = block[0]
-    #        for i in range(0, len(block)):
-    #            block[i] = predict.conflict_resolution.appendURLs(block[i])
-    #            if block[0][1] == currentUser:
-    #                if i != 0:
-    #                    block[i] = predict.conflict_resolution.insertAgreements(
-    #                        block[i], currUserEntry
-    #                    )
-    #            else:
-    #                block[i] = predict.conflict_resolution.insertAgreements(block[i], None)
-    #        if block[0][1] == currentUser:
-    #            block = predict.conflict_resolution.insertPercentages(block)
-    #        if block is not None:
-    #            newBlocks.append(block)
 
     return flask.render_template("conflict_resolution.html", blocks=blocks)
 

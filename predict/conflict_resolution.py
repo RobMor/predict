@@ -60,21 +60,27 @@ def insertSubBlockAgreements(subBlock, currUserSubBlock):
         introFileAgree = "N/A"
     for i in range(0,len(subBlock)):
         if i == 0:
-            subBlock[i] = {"cve": subBlock[i]["cve"], "username": subBlock[i]["username"],
+            subBlock[i] = {"cve_id": subBlock[i]["cve_id"], "username": subBlock[i]["username"],
+            "group_num": subBlock[i]["group_num"], "label_num": subBlock[i]["label_num"],
+            "repo_name": subBlock[i]["repo_name"], "repo_user": subBlock[i]["repo_user"],
             "fix_hash": subBlock[i]["fix_hash"], "fix_hash_agree": fixCommitAgree,
             "fix_file": subBlock[i]["fix_file"], "fix_file_agree": fixFileAgree,
             "intro_hash": subBlock[i]["intro_hash"], "intro_hash_agree": introCommitAgree,
             "intro_file": subBlock[i]["intro_file"], "intro_file_agree": introFileAgree,
             "fix_hash_url": subBlock[i]["fix_hash_url"], "fix_file_url": subBlock[i]["fix_file_url"],
-            "intro_hash_url": subBlock[i]["intro_hash_url"], "intro_file_url": subBlock[i]["intro_file_url"]}
+            "intro_hash_url": subBlock[i]["intro_hash_url"], "intro_file_url": subBlock[i]["intro_file_url"],
+            "comment": subBlock[i]["comment"], "edit_date": subBlock[i]["edit_date"]}
         else:
-            subBlock[i] = {"cve": subBlock[i]["cve"], "username": subBlock[i]["username"],
+            subBlock[i] = {"cve_id": subBlock[i]["cve_id"], "username": subBlock[i]["username"],
+            "group_num": subBlock[i]["group_num"], "label_num": subBlock[i]["label_num"],
+            "repo_name": subBlock[i]["repo_name"], "repo_user": subBlock[i]["repo_user"],
             "fix_hash": subBlock[i]["fix_hash"], "fix_hash_agree": "",
             "fix_file": subBlock[i]["fix_file"], "fix_file_agree": "",
             "intro_hash": subBlock[i]["intro_hash"], "intro_hash_agree": "",
             "intro_file": subBlock[i]["intro_file"], "intro_file_agree": "",
             "fix_hash_url": subBlock[i]["fix_hash_url"], "fix_file_url": subBlock[i]["fix_file_url"],
-            "intro_hash_url": subBlock[i]["intro_hash_url"], "intro_file_url": subBlock[i]["intro_file_url"]}
+            "intro_hash_url": subBlock[i]["intro_hash_url"], "intro_file_url": subBlock[i]["intro_file_url"],
+            "comment": subBlock[i]["comment"], "edit_date": subBlock[i]["edit_date"]}
 
     return subBlock
 
@@ -91,10 +97,12 @@ def appendURLs(entry):
     introFileURL = flask.url_for("main.info_page", cve_id=entry.cve_id,
         repo_name = entry.repo_name, repo_user = entry.repo_user,
         commit = entry.intro_file)
-    return {"cve": entry.cve_id, "username": entry.username, "repo_name": entry.repo_name,
+    return {"cve_id": entry.cve_id, "username": entry.username, "repo_name": entry.repo_name,
+        "group_num": entry.group_num, "label_num": entry.label_num,
         "repo_user": entry.repo_user, "fix_hash": entry.fix_hash, "fix_file": entry.fix_file,
         "intro_hash": entry.intro_hash, "intro_file": entry.intro_file, "fix_hash_url": fixCommitURL,
-        "fix_file_url": fixFileURL, "intro_hash_url": introCommitURL, "intro_file_url": introFileURL}
+        "fix_file_url": fixFileURL, "intro_hash_url": introCommitURL, "intro_file_url": introFileURL,
+        "comment": entry.comment, "edit_date": entry.edit_date}
 
 def insertPercentages(block):
     length = len(block)-1
@@ -117,38 +125,50 @@ def insertPercentages(block):
     for i in range(0,len(subBlock)):
         if length > 0:
             if i == 0:
-                subBlock[i] = {"cve": subBlock[i]["cve"], "username": subBlock[i]["username"],
+                subBlock[i] = {"cve_id": subBlock[i]["cve_id"], "username": subBlock[i]["username"],
+                "repo_name": subBlock[i]["repo_name"], "repo_user": subBlock[i]["repo_user"],
+                "group_num": subBlock[i]["group_num"], "label_num": subBlock[i]["label_num"],
                 "fix_hash": subBlock[i]["fix_hash"], "fix_hash_agree": str(round(fixCommitCount/length*100)) + "%",
                 "fix_file": subBlock[i]["fix_file"], "fix_file_agree": str(round(fixFileCount/length*100)) + "%",
                 "intro_hash": subBlock[i]["intro_hash"], "intro_hash_agree": str(round(introCommitCount/length*100)) + "%",
                 "intro_file": subBlock[i]["intro_file"], "intro_file_agree": str(round(introFileCount/length*100)) + "%",
                 "fix_hash_url": subBlock[i]["fix_hash_url"], "fix_file_url": subBlock[i]["fix_file_url"],
-                "intro_hash_url": subBlock[i]["intro_hash_url"], "intro_file_url": subBlock[i]["intro_file_url"]}
+                "intro_hash_url": subBlock[i]["intro_hash_url"], "intro_file_url": subBlock[i]["intro_file_url"],
+                "comment": subBlock[i]["comment"], "edit_date": subBlock[i]["edit_date"]}
             else:
-                subBlock[i] = {"cve": subBlock[i]["cve"], "username": subBlock[i]["username"],
+                subBlock[i] = {"cve_id": subBlock[i]["cve_id"], "username": subBlock[i]["username"],
+                "repo_name": subBlock[i]["repo_name"], "repo_user": subBlock[i]["repo_user"],
+                "group_num": subBlock[i]["group_num"], "label_num": subBlock[i]["label_num"],
                 "fix_hash": subBlock[i]["fix_hash"], "fix_hash_agree": "",
                 "fix_file": subBlock[i]["fix_file"], "fix_file_agree": "",
                 "intro_hash": subBlock[i]["intro_hash"], "intro_hash_agree": "",
                 "intro_file": subBlock[i]["intro_file"], "intro_file_agree": "",
                 "fix_hash_url": subBlock[i]["fix_hash_url"], "fix_file_url": subBlock[i]["fix_file_url"],
-                "intro_hash_url": subBlock[i]["intro_hash_url"], "intro_file_url": subBlock[i]["intro_file_url"]}
+                "intro_hash_url": subBlock[i]["intro_hash_url"], "intro_file_url": subBlock[i]["intro_file_url"],
+                "comment": subBlock[i]["comment"], "edit_date": subBlock[i]["edit_date"]}
         else:
             if i == 0:
-                subBlock[i] = {"cve": subBlock[i]["cve"], "username": subBlock[i]["username"],
+                subBlock[i] = {"cve_id": subBlock[i]["cve_id"], "username": subBlock[i]["username"],
+                "repo_name": subBlock[i]["repo_name"], "repo_user": subBlock[i]["repo_user"],
+                "group_num": subBlock[i]["group_num"], "label_num": subBlock[i]["label_num"],
                 "fix_hash": subBlock[i]["fix_hash"], "fix_hash_agree": "N/A",
                 "fix_file": subBlock[i]["fix_file"], "fix_file_agree": "N/A",
                 "intro_hash": subBlock[i]["intro_hash"], "intro_hash_agree": "N/A",
                 "intro_file": subBlock[i]["intro_file"], "intro_file_agree": "N/A",
                 "fix_hash_url": subBlock[i]["fix_hash_url"], "fix_file_url": subBlock[i]["fix_file_url"],
-                "intro_hash_url": subBlock[i]["intro_hash_url"], "intro_file_url": subBlock[i]["intro_file_url"]}
+                "intro_hash_url": subBlock[i]["intro_hash_url"], "intro_file_url": subBlock[i]["intro_file_url"],
+                "comment": subBlock[i]["comment"], "edit_date": subBlock[i]["edit_date"]}
             else:
-                subBlock[i] = {"cve": subBlock[i]["cve"], "username": subBlock[i]["username"],
+                subBlock[i] = {"cve_id": subBlock[i]["cve_id"], "username": subBlock[i]["username"],
+                "repo_name": subBlock[i]["repo_name"], "repo_user": subBlock[i]["repo_user"],
+                "group_num": subBlock[i]["group_num"], "label_num": subBlock[i]["label_num"],
                 "fix_hash": subBlock[i]["fix_hash"], "fix_hash_agree": "",
                 "fix_file": subBlock[i]["fix_file"], "fix_file_agree": "",
                 "intro_hash": subBlock[i]["intro_hash"], "intro_hash_agree": "",
                 "intro_file": subBlock[i]["intro_file"], "intro_file_agree": "",
                 "fix_hash_url": subBlock[i]["fix_hash_url"], "fix_file_url": subBlock[i]["fix_file_url"],
-                "intro_hash_url": subBlock[i]["intro_hash_url"], "intro_file_url": subBlock[i]["intro_file_url"]}
+                "intro_hash_url": subBlock[i]["intro_hash_url"], "intro_file_url": subBlock[i]["intro_file_url"],
+                "comment": subBlock[i]["comment"], "edit_date": subBlock[i]["edit_date"]}
     block[0] = subBlock
     return block
 
@@ -156,7 +176,7 @@ def eliminateRedundancies(subBlock):
     newSubBlock = []
     for i in range(0, len(subBlock)):
         if i != 0:
-            subBlock[i].cve = ""
+            subBlock[i].cve_id = ""
             subBlock[i].username = ""
 # The following lines remove duplicate files/hashes within a sub block. Currently
 # we are choosing to show raw labels, but these can be uncommented in the future

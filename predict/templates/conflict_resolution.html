@@ -4,6 +4,8 @@
 
 {% block content%}
 
+
+
 <center>
   <div class = "jumbotron">
     <h1 class = "text-left">Conflict Resolution</h1>
@@ -13,27 +15,27 @@
 <div class = "accordion">
   {% for block in blocks %}
   <div class="card">
-    <div class="card-header" id="heading{{block[0][0]['cve']}}">
+    <div class="card-header" id="heading{{block[0][0]['cve_id']}}">
       <h2 class="mb-0">
         {% if block[0][0]["username"] == current_user.username %}
           {% if block[0][0]["fix_hash_agree"] != "100%" or block[0][0]["fix_file_agree"] != "100%" or block[0][0]["intro_hash_agree"] != "100%" or block[0][0]["intro_file_agree"] != "100%" %}
-            <button class="btn btn-danger collapsed" type="button" data-toggle="collapse" data-target="#collapse{{block[0][0]['cve']}}" aria-expanded="false" aria-controls="collapse{{block[0][0]['cve']}}">
-              {{block[0][0]['cve']}}
+            <button class="btn btn-danger collapsed" type="button" data-toggle="collapse" data-target="#collapse{{block[0][0]['cve_id']}}" aria-expanded="false" aria-controls="collapse{{block[0][0]['cve_id']}}">
+              {{block[0][0]['cve_id']}}
             </button>
           {% else %}
-            <button class="btn btn-success collapsed" type="button" data-toggle="collapse" data-target="#collapse{{block[0][0]['cve']}}" aria-expanded="false" aria-controls="collapse{{block[0][0]['cve']}}">
-              {{block[0][0]['cve']}}
+            <button class="btn btn-success collapsed" type="button" data-toggle="collapse" data-target="#collapse{{block[0][0]['cve_id']}}" aria-expanded="false" aria-controls="collapse{{block[0][0]['cve_id']}}">
+              {{block[0][0]['cve_id']}}
             </button>
           {% endif %}
         {% else %}
-        <button class="btn btn-basic collapsed" type="button" data-toggle="collapse" data-target="#collapse{{block[0][0]['cve']}}" aria-expanded="false" aria-controls="collapse{{block[0][0]['cve']}}">
-          {{block[0][0]['cve']}}
+        <button class="btn btn-basic collapsed" type="button" data-toggle="collapse" data-target="#collapse{{block[0][0]['cve_id']}}" aria-expanded="false" aria-controls="collapse{{block[0][0]['cve_id']}}">
+          {{block[0][0]['cve_id']}}
         </button>
         {% endif %}
       </h2>
     </div>
 
-    <div id="collapse{{block[0][0]['cve']}}" class="collapse" aria-labelledby="{{block[0][0]['cve']}}">
+    <div id="collapse{{block[0][0]['cve_id']}}" class="collapse" aria-labelledby="{{block[0][0]['cve_id']}}">
       <div class="card-body p-0">
         <div class = "table-responsive">
           <table class="table table-striped table-bordered mb-0">
@@ -48,48 +50,54 @@
                 <th>%</th>
                 <th>Intro File</th>
                 <th>%</th>
+                <th>Accept Labels</th>
               </tr>
             </thead>
             <tbody>
               {% for subBlock in block %}
-                {% for entry in subBlock %}
+                {% for i in range(0, subBlock|length) %}
                   {% if subBlock[0]["username"] == current_user.username %}
                     <tr class="table-primary">
                   {% else %}
                     <tr>
                   {% endif %}
-                  <td>{{entry["username"]}}</td>
-                  <td><a href={{entry["fix_hash_url"]}} title={{entry["fix_hash_url"]}}>{{entry["fix_hash"]}}</a></td>
+                  <td>{{subBlock[i]["username"]}}</td>
+                  <td><a href={{subBlock[i]["fix_hash_url"]}} title={{subBlock[i]["fix_hash_url"]}}>{{subBlock[i]["fix_hash"]}}</a></td>
                   {% if subBlock[0]["fix_hash_agree"] == "Match" %}
-                    <td class="table-success">{{entry["fix_hash_agree"]}}</td>
+                    <td class="table-success">{{subBlock[i]["fix_hash_agree"]}}</td>
                   {% elif subBlock[0]["fix_hash_agree"] == "Conflict" %}
-                    <td class="table-danger">{{entry["fix_hash_agree"]}}</td>
+                    <td class="table-danger">{{subBlock[i]["fix_hash_agree"]}}</td>
                   {% else %}
-                    <td>{{entry["fix_hash_agree"]}}</td>
+                    <td>{{subBlock[i]["fix_hash_agree"]}}</td>
                   {% endif %}
-                  <td><a href={{entry["fix_file_url"]}} title={{entry["fix_file_url"]}}>{{entry["fix_file"]}}</a></td>
+                  <td><a href={{subBlock[i]["fix_file_url"]}} title={{subBlock[i]["fix_file_url"]}}>{{subBlock[i]["fix_file"]}}</a></td>
                   {% if subBlock[0]["fix_file_agree"] == "Match" %}
-                    <td class="table-success">{{entry["fix_file_agree"]}}</td>
+                    <td class="table-success">{{subBlock[i]["fix_file_agree"]}}</td>
                   {% elif subBlock[0]["fix_file_agree"] == "Conflict" %}
-                    <td class="table-danger">{{entry["fix_file_agree"]}}</td>
+                    <td class="table-danger">{{subBlock[i]["fix_file_agree"]}}</td>
                   {% else %}
-                    <td>{{entry["fix_file_agree"]}}</td>
+                    <td>{{subBlock[i]["fix_file_agree"]}}</td>
                   {% endif %}
-                  <td><a href={{entry["intro_hash_url"]}} title={{entry["intro_hash_url"]}}>{{entry["intro_hash"]}}</a></td>
+                  <td><a href={{subBlock[i]["intro_hash_url"]}} title={{subBlock[i]["intro_hash_url"]}}>{{subBlock[i]["intro_hash"]}}</a></td>
                   {% if subBlock[0]["intro_hash_agree"] == "Match" %}
-                    <td class="table-success">{{entry["intro_hash_agree"]}}</td>
+                    <td class="table-success">{{subBlock[i]["intro_hash_agree"]}}</td>
                   {% elif subBlock[0]["intro_hash_agree"] == "Conflict" %}
-                    <td class="table-danger">{{entry["intro_hash_agree"]}}</td>
+                    <td class="table-danger">{{subBlock[i]["intro_hash_agree"]}}</td>
                   {% else %}
-                    <td>{{entry["intro_hash_agree"]}}</td>
+                    <td>{{subBlock[i]["intro_hash_agree"]}}</td>
                   {% endif %}
-                  <td><a href={{entry["intro_file_url"]}} title={{entry["intro_file_url"]}}>{{entry["intro_file"]}}</a></td>
+                  <td><a href={{subBlock[i]["intro_file_url"]}} title={{subBlock[i]["intro_file_url"]}}>{{subBlock[i]["intro_file"]}}</a></td>
                   {% if subBlock[0]["intro_file_agree"] == "Match" %}
-                    <td class="table-success">{{entry["intro_file_agree"]}}</td>
+                    <td class="table-success">{{subBlock[i]["intro_file_agree"]}}</td>
                   {% elif subBlock[0]["intro_file_agree"] == "Conflict" %}
-                    <td class="table-danger">{{entry["intro_file_agree"]}}</td>
+                    <td class="table-danger">{{subBlock[i]["intro_file_agree"]}}</td>
                   {% else %}
-                    <td>{{entry["intro_file_agree"]}}</td>
+                    <td>{{subBlock[i]["intro_file_agree"]}}</td>
+                  {% endif %}
+                  {% if i == 0 and subBlock[0]["username"] != current_user.username %}
+                    <td><button class="btn btn-success" onclick='updateLabels("{{block[0][0]['cve_id']}}", {{subBlock|tojson}})'>Accept Labels</button></td>
+                  {% else %}
+                    <td></td>
                   {% endif %}
                   </tr>
                 {% endfor %}
@@ -102,6 +110,9 @@
   </div>
   {% endfor %}
 </div>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/label.js') }}"></script>
+
 
 
 {% endblock %}
