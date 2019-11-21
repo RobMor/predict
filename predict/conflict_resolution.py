@@ -271,22 +271,22 @@ def setEquality(subBlock1, subBlock2, field):
     contained in subBlock2 AND the entries have the same repo_name and repo_user
      and vice versa, false otherwise."""
     for entry in subBlock1:
-        if not contains(subBlock2, entry[field], field, subBlock1):
+        if not contains(subBlock2, entry[field], field, entry["repo_name"], entry["repo_user"]):
             return False
 
     for entry in subBlock2:
-        if not contains(subBlock1, entry[field], field, subBlock2):
+        if not contains(subBlock1, entry[field], field, entry["repo_name"], entry["repo_user"]):
             return False
 
     return True
 
 
-def contains(subBlock, element, field, otherSubBlock):
+def contains(subBlock, element, field, repo_name, repo_user):
     """Checks if the subBlock contains the element passed in for the field passed
     in, for an entry where the repo_name and repo_user also match. True if found
     false otherwise."""
     for i in range(0, len(subBlock)):
-        if subBlock[i][field] == element:
+        if subBlock[i][field] == element and subBlock[i]["repo_name"] == repo_name and subBlock[i]["repo_user"] == repo_user:
             return True
     return False
 
