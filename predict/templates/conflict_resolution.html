@@ -18,7 +18,7 @@
     <div class="card-header" id="heading{{block[0][0]['cve_id']}}">
       <h2 class="mb-0">
         {% if block[0][0]["username"] == current_user.username %}
-          {% if block[0][0]["fix_hash_agree"] != "100%" or block[0][0]["fix_file_agree"] != "100%" or block[0][0]["intro_hash_agree"] != "100%" or block[0][0]["intro_file_agree"] != "100%" %}
+          {% if block|length != 1 and (block[0][0]["fix_hash_agree"] != "100%" or block[0][0]["fix_file_agree"] != "100%" or block[0][0]["intro_hash_agree"] != "100%" or block[0][0]["intro_file_agree"] != "100%") %}
             <button class="btn btn-danger dropdown-toggle collapsed" type="button" data-toggle="collapse" data-target="#collapse{{block[0][0]['cve_id']}}" aria-expanded="false" aria-controls="collapse{{block[0][0]['cve_id']}}">
               {{block[0][0]['cve_id']}}
             </button>
