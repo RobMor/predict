@@ -11,9 +11,9 @@ def configure_app(config):
     # Configure App
     app = Flask("predict", static_url_path="")
 
+    # Whether or not the whitelist exists will function as our whitelist enabled
+    # flag
     if config.getboolean("WHITELIST", "WHITELIST_ENABLED"):
-        #If true, does not actually delete the WHITELIST_ENABLED key from the config file
-        app.config["WHITELIST_ENABLED"] = config.getboolean("WHITELIST", "WHITELIST_ENABLED")
         config.remove_option("WHITELIST", "WHITELIST_ENABLED")
         app.config["WHITELIST"] = config["WHITELIST"].keys()
 

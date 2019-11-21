@@ -20,7 +20,10 @@ blueprint = flask.Blueprint("main", __name__)
 
 @blueprint.route("/")
 def base():
-    if flask.current_app.config["LOGIN_DISABLED"] or flask_login.current_user.is_authenticated:
+    if (
+        flask.current_app.config["LOGIN_DISABLED"]
+        or flask_login.current_user.is_authenticated
+    ):
         return flask.redirect(flask.url_for("main.dashboard"))
     else:
         return flask.redirect(flask.url_for("main.login"))
@@ -73,29 +76,27 @@ def register_post():
         flask.flash("Passwords entered do not match! Please try again.")
         return flask.render_template("register.html")
 
-    if not predict.auth.string_match(username, flask.current_app.config['USERNAME_REGEX']):
+    if not predict.auth.string_match(
+        username, flask.current_app.config["USERNAME_REGEX"]
+    ):
         flask.flash(flask.current_app.config["USERNAME_FEEDBACK"])
         return flask.render_template("register.html")
 
-    if not predict.auth.string_match(password, flask.current_app.config['PASSWORD_REGEX']):
+    if not predict.auth.string_match(
+        password, flask.current_app.config["PASSWORD_REGEX"]
+    ):
         flask.flash(flask.current_app.config["PASSWORD_FEEDBACK"])
         return flask.render_template("register.html")
 
-    #DEBUG #print (type(flask.current_app.config["WHITELIST_ENABLED"]))
-    created = False 
-
-    if (
-        "WHITELIST" in flask.current_app.config and
-        flask.current_app.config["WHITELIST_ENABLED"]
-        and username not in flask.current_app.config["WHITELIST"]
-    ):
+    whitelist = flask.current_app.config.get("WHITELIST")
+    if whitelist is not None and username not in whitelist:
         flask.flash(
-            "Username not in the whitelist. Please register using your whitelisted username."
+            "Username not in the whitelist. Please register using your "
+            + "whitelisted username."
         )
         return flask.render_template("register.html")
 
-    else:
-        created = predict.auth.create_user(username, password)
+    created = predict.auth.create_user(username, password)
 
     if created:
         return flask.redirect(flask.url_for("main.login"))
@@ -258,9 +259,9 @@ def datetime_format(dt):
 
 def svg(name, class_name=""):
     """Insert an svg"""
-    with flask.current_app.open_resource("static/svg/{}.svg".format(name), 'rt') as f:
+    with flask.current_app.open_resource("static/svg/{}.svg".format(name), "rt") as f:
         svg = f.read()
 
-    svg = svg.replace("<svg ", "<svg class=\"icon {}\" ".format(class_name))
+    svg = svg.replace("<svg ", '<svg class="icon {}" '.format(class_name))
 
     return jinja2.Markup(svg)
