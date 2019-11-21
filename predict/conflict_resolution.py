@@ -286,7 +286,7 @@ def contains(subBlock, element, field, otherSubBlock):
     in, for an entry where the repo_name and repo_user also match. True if found
     false otherwise."""
     for i in range(0, len(subBlock)):
-        if subBlock[i][field] == element and subBlock[i]["repo_name"] == otherSubBlock[i]["repo_name"] and subBlock[i]["repo_user"] == otherSubBlock[i]["repo_user"]:
+        if subBlock[i][field] == element:
             return True
     return False
 
