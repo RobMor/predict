@@ -29,10 +29,10 @@
 }
 
 .review-cve-link {
-    color: black;
+    color: inherit;
     font-size: 16px;
 }
 
 .review-label-link {
-    color: black;
+    color: inherit;
 }
