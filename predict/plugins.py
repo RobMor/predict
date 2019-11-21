@@ -137,7 +137,7 @@ def export(filter_, extra_data, strategy, file_format):
 			extra = extra(l, q)
 			l = extra.add_data()
 	
-	if(strategy != "none"):
+	if(strategy != "none" and filter_ == "none"):
 		strat =  entrypoints.get_single("predict.plugins", strategy).load()
 		strat = strat(l, q)
 		l = strat.resolve()
