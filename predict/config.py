@@ -120,14 +120,14 @@ def create_default_config():
     config.add_section("AUTHENTICATION")
     config.set("AUTHENTICATION", "; " + AUTH_INFO)
 
-    config["AUTHENTICATION"]["USERNAME_REGEX"] = "\\w+"
+    config["AUTHENTICATION"]["USERNAME_REGEX"] = ".+"
     config["AUTHENTICATION"][
         "USERNAME_FEEDBACK"
-    ] = "Usernames must be at least one alphanumeric character"
-    config["AUTHENTICATION"]["PASSWORD_REGEX"] = "\\w{8,}"
+    ] = "Usernames must be at least one character"
+    config["AUTHENTICATION"]["PASSWORD_REGEX"] = ".{8,}"
     config["AUTHENTICATION"][
         "PASSWORD_FEEDBACK"
-    ] = "Passwords must be at least eight alphanumeric characters"
+    ] = "Passwords must be at least eight characters"
 
     config.add_section("DATABASE")
     config.set("DATABASE", "; " + DB_INFO)
