@@ -82,6 +82,7 @@ def register_post():
         return flask.render_template("register.html")
 
     #DEBUG #print (type(flask.current_app.config["WHITELIST_ENABLED"]))
+    created = False 
 
     if (
         "WHITELIST" in flask.current_app.config and
@@ -93,7 +94,8 @@ def register_post():
         )
         return flask.render_template("register.html")
 
-    created = predict.auth.create_user(username, password)
+    else:
+        created = predict.auth.create_user(username, password)
 
     if created:
         return flask.redirect(flask.url_for("main.login"))
