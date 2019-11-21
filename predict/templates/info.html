@@ -24,7 +24,7 @@
     {% for file in github_data["files"] %}
     <div id="file-{{ hash(file['path']) }}" class="card file">
         <div class="card-header file-header">
-            <a class="file-name" href="{{ file['blame_link'] }}">{{ file["path"] }}</a>
+            <a class="file-name" href="{{ file['blame_link'] }}" target="_blank">{{ file["path"] }}</a>
             <div class="file-controls">
                 <a class="file-btn" title="This change fixes the vulnerability" onclick="fixesVulnerability('{{ github_data['repo_user'] }}', '{{ github_data['repo_name'] }}', '{{ file['path'] }}', '{{ github_data['hash'] }}')">
                     <!-- Fixes Vulnerability --> {{ svg("check", "text-success") }}

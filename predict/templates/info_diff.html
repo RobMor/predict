@@ -48,7 +48,7 @@
                 <td class="line-num old"></td> {# Old Line Number is Blank #}
                 <td class="line-num new">{{ line+group["new_start"] }}</td> {# New Line Number #}
                 <td class="code insert"><span class="highlight">{{ group["new_code"][line]|safe }}</span> {# The code itself #}
-                    <a class="blame-line" href="{{ file['blame_link'] }}#L{{ line+group["new_start"] }}">
+                    <a class="blame-line" href="{{ file['blame_link'] }}#L{{ line+group["new_start"] }}" target="_blank">
                         Blame {{ svg("circuit-board") }}
                     </a>
                 </td>

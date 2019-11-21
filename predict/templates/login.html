@@ -16,6 +16,19 @@
          <h1>Predict Login Page</h1>
     </div>
 
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div id="bottom-alert">
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{ messages[0] }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        </div>
+        {% endif %}
+    {% endwith %}
+
     <form method="POST" id="main-form">
         <div class="form-group">
             <label for="username">Username:</label>
@@ -32,17 +45,5 @@
     </form>
     <!-- <a class="dropdown-item" href="#">Forgot password?</a> -->
 
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-        <div id="bottom-alert">
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                {{ messages[0] }}
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        </div>
-        {% endif %}
-    {% endwith %}
 </div>
 {% endblock %}
