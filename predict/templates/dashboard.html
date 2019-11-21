@@ -95,7 +95,6 @@
             <p class="card-text">Review your past labels.</p>
 
             <div id="review-cards">
-                {% if recent_labels|length > 0 %}
                 {% for (cve_id, edit_date), labels in recent_labels %}
                 <div class="card border-dark review-card">
                     <div class="card-header review-header">
@@ -120,9 +119,6 @@
                     {% endfor %}
                 </div>
                 {% endfor %}
-                {% else %}
-                    Nothing to see here.
-                {% endif %}
             </div>
         </div>
     </div>

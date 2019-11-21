@@ -32,7 +32,7 @@ def load_recent(username):
     #     group a: "a"
     # Hence need to order labels before passing it in
 
-    return list(itertools.groupby(labels, key=lambda l: (l.cve_id, l.edit_date)))
+    return itertools.groupby(labels, key=lambda l: (l.cve_id, l.edit_date))
 
 
 def load_labels(cve_id, username):
