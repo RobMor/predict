@@ -22,8 +22,7 @@ def up(arguments):
 
     app = predict.configure_app(config)
 
-    # TODO remove `debug` later
-    app.run(debug=True)
+    app.run()
 
 def config(arguments):
     # Precedence order
