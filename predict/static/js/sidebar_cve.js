@@ -208,10 +208,9 @@ function labelsChanged() {
     clearTimeout(timer)
 
     timer = setTimeout(function () {
-        cve_id = document.getElementById("user-labels").dataset.cve
         labels = getLabels()
 
-        updateLabels(cve_id, labels, labelUpdateSucceeded, labelUpdateFailed)
+        updateLabels(currentCVE, labels, labelUpdateSucceeded, labelUpdateFailed)
     }, 500)
 }
 

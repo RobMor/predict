@@ -15,7 +15,7 @@
     var triangleDownSVG = $.parseHTML(`{{ svg("triangle-down") }}`);
     var triangleUpSVG = $.parseHTML(`{{ svg("triangle-up") }}`);
 
-    var currentCVE = "{{ cve_data['cve_id'] }}";
+    var currentCVE = "{{ cve_data['id'] }}";
 </script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/sidebar_cve.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/label.js') }}"></script>

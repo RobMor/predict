@@ -22,10 +22,12 @@
 #file-name {
     font-family: 'Courier New', Courier, monospace;
     font-size: 16px;
+    color: inherit;
 }
 
 #commit-hash {
     font-family: 'Courier New', Courier, monospace;
+    color: inherit;
 }
 
 #blame {

@@ -12,13 +12,13 @@
 {% if github_data is not none %}
     <div id="header" class="bg-light">
         <div id="file-info">
-            <span id="file-name">{{ github_data["file_name"] }}</span>
+            <a id="file-name" href="{{ url_for('main.info_page', cve_id=cve_data['id'], repo_user=github_data['repo_user'], repo_name=github_data['repo_name'], commit=github_data['hash'])  }}#file-{{ hash(github_data['file_name']) }}">{{ github_data["file_name"] }}</a>
             <div id="commit-meta">
                 <span id="repository-user">{{ github_data["repo_user"] }}</span>
                 /
                 <span id="repository-name">{{ github_data["repo_name"] }}</span>
                 @
-                <span id="commit-hash">{{ github_data["hash"] }}</span>
+                <a id="commit-hash" href="{{ url_for('main.info_page', cve_id=cve_data['id'], repo_user=github_data['repo_user'], repo_name=github_data['repo_name'], commit=github_data['hash'])  }}">{{ github_data["hash"] }}</a>
             </div>
         </div>
         <div id="header-controls">
