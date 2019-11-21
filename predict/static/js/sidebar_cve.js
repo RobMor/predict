@@ -191,14 +191,14 @@ function introducesVulnerability(repoUser, repoName, introFile, introHash) {
     group = getGroup(repoUser, repoName)
     addLabelToGroup(group, null, null, introFile, introHash)
     toggleSidebar()
-    openLabels()
+    openLabelTab()
 }
 
 function fixesVulnerability(repoUser, repoName, fixFile, fixHash) {
     group = getGroup(repoUser, repoName)
     addLabelToGroup(group, fixFile, fixHash, null, null)
     toggleSidebar()
-    openLabels()
+    openLabelTab()
 }
 
 var timer;
