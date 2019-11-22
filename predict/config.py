@@ -24,7 +24,7 @@ DB_INFO = "This section lets you configure location of the database used by pred
 USERNAME_FEEDBACK = "Usernames must be at least one character"
 PASSWORD_FEEDBACK = "Passwords must be at least eight characters"
 
-config_template = {
+CONFIG_TEMPLATE = {
     "WHITELIST": {"WHITELIST_ENABLED": "False"},
     "SECURITY": {"SECRET_KEY": binascii.hexlify(os.urandom(24)).decode("utf-8"), "LOGIN_REQUIRED" : "False"},
     "AUTHENTICATION": {"USERNAME_REGEX": ".+", "USERNAME_FEEDBACK": USERNAME_FEEDBACK, "PASSWORD_REGEX": ".{8,}", "PASSWORD_FEEDBACK": PASSWORD_FEEDBACK},
@@ -35,7 +35,6 @@ def config_location():
     return os.environ.get("PREDICT_CONFIG") or os.path.expanduser(
         os.path.join("~", ".predict", "config.ini")
     )
-
 
 def load_config(file_path):
     """
@@ -97,13 +96,13 @@ def validate_required_options(config):
     """
     # Raises an error with a message containing the sections present in the template, but not present in 
     # the actual config. Order not important.
-    template_secs = list(config_template.keys()) 
+    template_secs = list(CONFIG_TEMPLATE.keys()) 
     if config.sections() != template_secs:
         raise configparser.Error("Missing section(s): " + str(set(template_secs).difference(config.sections())))
     # Then make sure the passed in config contains all the options it needs. # TODO: Maybe change this to the set diff thing, so we can see more missing options at once
     # in the error mesage.
     for s in template_secs:
-        for o in config_template[s].keys():
+        for o in CONFIG_TEMPLATE[s].keys():
             if not config.has_option(s, o):
                 raise configparser.Error("Missing option " + o + " from section " + s)
 
@@ -120,6 +119,7 @@ def validate_booleans(config):
     except ValueError:
         raise configparser.Error("The value of "+ config["SECURITY"]["LOGIN_REQUIRED"] + " from section SECURITY option LOGIN_REQUIRED is not a suitable boolean value!")
   
+
 def validate_whitelist(config):
     """
         Ensure the names in whitelist match the username regex pattern.
@@ -183,6 +183,6 @@ def create_default_config():
     
     config.set("DATABASE", "; " + DB_INFO)
 
-    config.read_dict(config_template)
+    config.read_dict(CONFIG_TEMPLATE)
    
     return config
