@@ -60,8 +60,9 @@ def load_config(file_path):
 
 def validate_config(config):
     """
-        Validates a given configuration file, by ensuring the required predict whitelist options and
-        headers are present, the given regexes compile, .
+        Validates a given configuration file, by ensuring the required options and
+        sections are present, the given regexes compile, boolean options have boolean values,
+        and the whitelist if enabled conforms to the config specified regex. 
 
         Args:
             config: the configuration object to validate
@@ -122,17 +123,21 @@ def validate_booleans(config):
 def validate_whitelist(config):
     """
         Ensure the names in whitelist match the username regex pattern.
-    """   
+    """
+    bad_names = []   
     for username in config["WHITELIST"]:
         if username != "WHITELIST_ENABLED":
             if not predict.auth.string_match(
                 username, config["AUTHENTICATION"]["USERNAME_REGEX"]
-            ):# TODO: Dynamicaly create list of bad whitelist names and include in message when error raisesd. 
-                raise configparser.Error(
-                    "The username '{}' does not conform to the regex '{}'".format(
-                        username, config["AUTHENTICATION"]["USERNAME_REGEX"]
+            ):
+                bad_names.append(username)
+    if bad_names != []:
+        raise configparser.Error(
+                    "The username(s) {} do not conform to the regex '{}'".format(
+                        bad_names, config["AUTHENTICATION"]["USERNAME_REGEX"]
                     )
                 )
+                
 
 def write_config(config, file_path):
     """
