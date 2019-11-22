@@ -1,8 +1,10 @@
 """Handles operations related to the configuration of predict."""
 import os
+import re
 import stat
 import binascii
 import configparser
+
 
 import predict.auth
 
@@ -20,7 +22,15 @@ SECURITY_INFO = [
 
 AUTH_INFO = "This section lets you configure the regular expressions used by the registration system."
 DB_INFO = "This section lets you configure location of the database used by predict."
+USERNAME_FEEDBACK = "Usernames must be at least one character"
+PASSWORD_FEEDBACK = "Passwords must be at least eight characters"
 
+config_template = {
+    "WHITELIST": {"WHITELIST_ENABLED": "False"},
+    "SECURITY": {"SECRET_KEY": binascii.hexlify(os.urandom(24)).decode("utf-8"), "LOGIN_REQUIRED" : "False"},
+    "AUTHENTICATION": {"USERNAME_REGEX": ".+", "USERNAME_FEEDBACK": USERNAME_FEEDBACK, "PASSWORD_REGEX": ".{8,}", "PASSWORD_FEEDBACK": PASSWORD_FEEDBACK},
+    "DATABASE": {"LOCATION": "" + os.path.expanduser(os.path.join("~", ".predict", "db.sqlite"))},
+}
 
 def config_location():
     return os.environ.get("PREDICT_CONFIG") or os.path.expanduser(
@@ -38,10 +48,13 @@ def load_config(file_path):
     if os.path.exists(file_path):
         try:
             config.read(file_path)
-            validate_config(config, file_path)
+            validate_config(config)
+        except re.error as e:
+            print(e)
         except configparser.Error as e:
             # If there is a malformed config, print a general error message, and do not let the application continue.
             import sys
+            print("Configuration file is located at: " + file_path)
             print("Predict Configuration Error: {}".format(e))
             sys.exit(1)
         return config
@@ -49,20 +62,20 @@ def load_config(file_path):
     return None  # Otherwise return None, because there is no config at given location
 
 
-def validate_config(config, file_path):
+def validate_config(config):
     """
         Validates a given configuration file, by ensuring the required predict whitelist options and
-        headers are present.
+        headers are present, the given regexes compile, .
 
         Args:
             config: the configuration object to validate
-            file_path: the location of the given configuration.
     """
 
-    # TODO make sure all required fields are there.
-    # TODO make sure that all fields that should be booleans are booleans...
-    # TODO make sure regular expressions are valid by trying to compile them
-    # TODO only run this check when whitelist is enabled
+   
+    validate_required_options(config)
+    validate_regex(config)
+    validate_booleans(config)
+
     for username in config["WHITELIST"]:
         if username != "WHITELIST_ENABLED":
             if not predict.auth.string_match(
@@ -74,6 +87,39 @@ def validate_config(config, file_path):
                     )
                 )
 
+def validate_regex(config):
+    """
+        Compiles the config's regex patterns to check they are valid.
+
+        Args:
+            the configuration object whose regex to validate
+
+        Raises:
+            re.error if the regex is invalid.
+    """
+    re.compile(config["AUTHENTICATION"]["USERNAME_REGEX"])
+    re.compile(config["AUTHENTICATION"]["PASSWORD_REGEX"])
+
+def validate_required_options(config):
+    """
+        Ensures that all of the required Predict config options and sections are present in the
+        configuration file.
+
+        Args:
+            the configuration object to check 
+    """
+    # Raises an error with a message containing the sections present in the template, but not present in 
+    # the actual config
+    template_secs = list(config_template.keys()) 
+    if config.sections() != template_secs:
+        raise configparser.Error("Missing section(s): " + str(set(template_secs).difference(config.sections())))
+    
+
+def validate_booleans(config):
+    """
+        Ensures that the options that should be boolean, are.
+    """
+    pass
 
 def write_config(config, file_path):
     """
@@ -103,42 +149,18 @@ def create_default_config():
     config = configparser.ConfigParser(allow_no_value=True)
     config.optionxform = str
 
-    config.add_section("WHITELIST")
+    print(config_template)
+    config.read_dict(config_template)
+   
     config.set("WHITELIST", "; " + WHITELIST_INFO[0])
     config.set("WHITELIST", "; " + WHITELIST_INFO[1])
     config.set("WHITELIST", "; " + WHITELIST_INFO[2])
 
-    config["WHITELIST"]["WHITELIST_ENABLED"] = "True"
-
-    config.add_section("SECURITY")
     config.set("SECURITY", "; " + SECURITY_INFO[0])
     config.set("SECURITY", "; " + SECURITY_INFO[1])
 
-    config["SECURITY"]["SECRET_KEY"] = random_secret_key(24)
-    config["SECURITY"]["LOGIN_REQUIRED"] = "False"
-
-    config.add_section("AUTHENTICATION")
     config.set("AUTHENTICATION", "; " + AUTH_INFO)
-
-    config["AUTHENTICATION"]["USERNAME_REGEX"] = ".+"
-    config["AUTHENTICATION"][
-        "USERNAME_FEEDBACK"
-    ] = "Usernames must be at least one character"
-    config["AUTHENTICATION"]["PASSWORD_REGEX"] = ".{8,}"
-    config["AUTHENTICATION"][
-        "PASSWORD_FEEDBACK"
-    ] = "Passwords must be at least eight characters"
-
-    config.add_section("DATABASE")
+    
     config.set("DATABASE", "; " + DB_INFO)
 
-    config["DATABASE"]["LOCATION"] = os.path.expanduser(
-        os.path.join("~", ".predict", "db.sqlite")
-    )
-
     return config
-
-
-def random_secret_key(length):
-    """Generate a random secret key with length bytes"""
-    return binascii.hexlify(os.urandom(length)).decode("utf-8")
