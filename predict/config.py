@@ -5,7 +5,6 @@ import stat
 import binascii
 import configparser
 
-
 import predict.auth
 
 
@@ -49,9 +48,7 @@ def load_config(file_path):
         try:
             config.read(file_path)
             validate_config(config)
-        except re.error as e:
-            print(e)
-        except configparser.Error as e:
+        except (configparser.Error, re.error) as e:
             # If there is a malformed config, print a general error message, and do not let the application continue.
             import sys
             print("Configuration file is located at: " + file_path)
@@ -61,7 +58,6 @@ def load_config(file_path):
 
     return None  # Otherwise return None, because there is no config at given location
 
-
 def validate_config(config):
     """
         Validates a given configuration file, by ensuring the required predict whitelist options and
@@ -69,35 +65,25 @@ def validate_config(config):
 
         Args:
             config: the configuration object to validate
+
+        Raises:
+            re.error If anything in the given configuration is invalid by Predict's standards
     """
 
-   
     validate_required_options(config)
     validate_regex(config)
     validate_booleans(config)
-
-    for username in config["WHITELIST"]:
-        if username != "WHITELIST_ENABLED":
-            if not predict.auth.string_match(
-                username, config["AUTHENTICATION"]["USERNAME_REGEX"]
-            ):
-                raise configparser.Error(
-                    "The username '{}' does not conform to the regex '{}'".format(
-                        username, config["AUTHENTICATION"]["USERNAME_REGEX"]
-                    )
-                )
-
+    if config.getboolean("WHITELIST", "WHITELIST_ENABLED"):
+        validate_whitelist(config)
+    
 def validate_regex(config):
     """
         Compiles the config's regex patterns to check they are valid.
 
         Args:
             the configuration object whose regex to validate
-
-        Raises:
-            re.error if the regex is invalid.
     """
-    re.compile(config["AUTHENTICATION"]["USERNAME_REGEX"])
+    re.compile(config["AUTHENTICATION"]["USERNAME_REGEX"]) #TODO: Specify which regex had a problem and where, currently not verbose enough.
     re.compile(config["AUTHENTICATION"]["PASSWORD_REGEX"])
 
 def validate_required_options(config):
@@ -109,17 +95,44 @@ def validate_required_options(config):
             the configuration object to check 
     """
     # Raises an error with a message containing the sections present in the template, but not present in 
-    # the actual config
+    # the actual config. Order not important.
     template_secs = list(config_template.keys()) 
     if config.sections() != template_secs:
         raise configparser.Error("Missing section(s): " + str(set(template_secs).difference(config.sections())))
-    
+    # Then make sure the passed in config contains all the options it needs. # TODO: Maybe change this to the set diff thing, so we can see more missing options at once
+    # in the error mesage.
+    for s in template_secs:
+        for o in config_template[s].keys():
+            if not config.has_option(s, o):
+                raise configparser.Error("Missing option " + o + " from section " + s)
 
 def validate_booleans(config):
     """
-        Ensures that the options that should be boolean, are.
+        Ensures that the Predict options that should be boolean, are.
     """
-    pass
+    try:
+        config.getboolean("WHITELIST", "WHITELIST_ENABLED")
+    except ValueError: # TODO: List suitable boolean values as specified by the get_boolean method of configparser.
+         raise configparser.Error("The value of "+ config["WHITELIST"]["WHITELIST_ENABLED"] + " from section WHITELIST, option WHITELIST_ENABLED is not a suitable boolean value!")
+    try:
+        config.getboolean("SECURITY", "LOGIN_REQUIRED")
+    except ValueError:
+        raise configparser.Error("The value of "+ config["SECURITY"]["LOGIN_REQUIRED"] + " from section SECURITY option LOGIN_REQUIRED is not a suitable boolean value!")
+  
+def validate_whitelist(config):
+    """
+        Ensure the names in whitelist match the username regex pattern.
+    """   
+    for username in config["WHITELIST"]:
+        if username != "WHITELIST_ENABLED":
+            if not predict.auth.string_match(
+                username, config["AUTHENTICATION"]["USERNAME_REGEX"]
+            ):# TODO: Dynamicaly create list of bad whitelist names and include in message when error raisesd. 
+                raise configparser.Error(
+                    "The username '{}' does not conform to the regex '{}'".format(
+                        username, config["AUTHENTICATION"]["USERNAME_REGEX"]
+                    )
+                )
 
 def write_config(config, file_path):
     """
@@ -149,9 +162,11 @@ def create_default_config():
     config = configparser.ConfigParser(allow_no_value=True)
     config.optionxform = str
 
-    print(config_template)
-    config.read_dict(config_template)
-   
+    config.add_section("WHITELIST")
+    config.add_section("SECURITY")
+    config.add_section("AUTHENTICATION")
+    config.add_section("DATABASE")
+
     config.set("WHITELIST", "; " + WHITELIST_INFO[0])
     config.set("WHITELIST", "; " + WHITELIST_INFO[1])
     config.set("WHITELIST", "; " + WHITELIST_INFO[2])
@@ -163,4 +178,6 @@ def create_default_config():
     
     config.set("DATABASE", "; " + DB_INFO)
 
+    config.read_dict(config_template)
+   
     return config
