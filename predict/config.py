@@ -103,7 +103,7 @@ def validate_required_options(config):
     # in the error mesage.
     for section_name, section in CONFIG_TEMPLATE.items():
         for option in section.keys():
-            if not config.has_option(section, option):
+            if not config.has_option(section_name, option):
                 raise configparser.Error("Missing option " + o + " from section " + s)
 
 def validate_booleans(config):
