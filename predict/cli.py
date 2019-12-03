@@ -24,6 +24,7 @@ def up(arguments):
 
     app.run()
 
+
 def config(arguments):
     # Precedence order
     config_location = arguments.location or predict.config.config_location()

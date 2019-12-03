@@ -95,30 +95,34 @@
             <p class="card-text">Review your past labels.</p>
 
             <div id="review-cards">
-                {% for (cve_id, edit_date), labels in recent_labels %}
-                <div class="card border-dark review-card">
-                    <div class="card-header review-header">
-                        <a class="review-cve-link" onclick="setSidebarOpenOnPageLoad()" href="{{ url_for('main.cve_base', cve_id=cve_id) }}">
-                            {{ cve_id }}
-                        </a>
-                        <small>{{ datetime_format(edit_date) }}</small>
+                {% if recent_labels|length > 0 %}
+                    {% for (cve_id, edit_date), labels in recent_labels %}
+                    <div class="card border-dark review-card">
+                        <div class="card-header review-header">
+                            <a class="review-cve-link" onclick="setSidebarOpenOnPageLoad()" href="{{ url_for('main.cve_base', cve_id=cve_id) }}">
+                                {{ cve_id }}
+                            </a>
+                            <small>{{ datetime_format(edit_date) }}</small>
+                        </div>
+                        
+                        {% for label in labels %}
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item review-label">
+                                <a class="review-label-link" href="{{ url_for('main.info_page', cve_id=cve_id, repo_user=label.repo_user, repo_name=label.repo_name, commit=label.fix_hash) }}#file-{{ hash(label.fix_file) }}">{{ label.fix_file }}</a>
+                                @
+                                <a class="review-label-link" href="{{ url_for('main.info_page', cve_id=cve_id, repo_user=label.repo_user, repo_name=label.repo_name, commit=label.fix_hash) }}">{{ label.fix_hash[:7] }}</a>
+                                ←
+                                <a class="review-label-link" href="{{ url_for('main.info_page', cve_id=cve_id, repo_user=label.repo_user, repo_name=label.repo_name, commit=label.intro_hash) }}#file-{{ hash(label.intro_file) }}">{{ label.intro_file }}</a>
+                                @
+                                <a class="review-label-link" href="{{ url_for('main.info_page', cve_id=cve_id, repo_user=label.repo_user, repo_name=label.repo_name, commit=label.intro_hash) }}">{{ label.intro_hash[:7] }}</a>
+                            </li>
+                        </ul>
+                        {% endfor %}
                     </div>
-                    
-                    {% for label in labels %}
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item review-label">
-                            <a class="review-label-link" href="{{ url_for('main.info_page', cve_id=cve_id, repo_user=label.repo_user, repo_name=label.repo_name, commit=label.fix_hash) }}#file-{{ hash(label.fix_file) }}">{{ label.fix_file }}</a>
-                            @
-                            <a class="review-label-link" href="{{ url_for('main.info_page', cve_id=cve_id, repo_user=label.repo_user, repo_name=label.repo_name, commit=label.fix_hash) }}">{{ label.fix_hash[:7] }}</a>
-                            ←
-                            <a class="review-label-link" href="{{ url_for('main.info_page', cve_id=cve_id, repo_user=label.repo_user, repo_name=label.repo_name, commit=label.intro_hash) }}#file-{{ hash(label.intro_file) }}">{{ label.intro_file }}</a>
-                            @
-                            <a class="review-label-link" href="{{ url_for('main.info_page', cve_id=cve_id, repo_user=label.repo_user, repo_name=label.repo_name, commit=label.intro_hash) }}">{{ label.intro_hash[:7] }}</a>
-                        </li>
-                    </ul>
                     {% endfor %}
-                </div>
-                {% endfor %}
+                {% else %}
+                    Nothing to see here.
+                {% endif %}
             </div>
         </div>
     </div>

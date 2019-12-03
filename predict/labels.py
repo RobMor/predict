@@ -1,5 +1,6 @@
 import datetime
 import itertools
+from collections import defaultdict
 
 import predict.db
 
@@ -18,21 +19,16 @@ def load_recent(username):
     labels = (
         predict.db.Session.query(predict.models.Label)
         .filter_by(username=username)
-        .order_by(predict.models.Label.edit_date.desc())
         .limit(10)
         .all()
     ) or []
 
-    # Itertools groupby is weird, here's an example:
-    # Input: list= ["a","a", "b", "b", "c", "a"]
-    # Output:
-    #     group a: "a", "a"
-    #     group b: "b", "b"
-    #     group c: "c"
-    #     group a: "a"
-    # Hence need to order labels before passing it in
 
-    return itertools.groupby(labels, key=lambda l: (l.cve_id, l.edit_date))
+    groups = defaultdict(list)
+    for label in labels:
+        groups[(label.cve_id, label.edit_date)].append(label)
+
+    return list(sorted(groups.items(), key=lambda e: e[0][1], reverse=True))
 
 
 def load_labels(cve_id, username):
