@@ -101,7 +101,7 @@ def validate_required_options(config):
 
     # Then make sure the passed in config contains all the options it needs. # TODO: Maybe change this to the set diff thing, so we can see more missing options at once
     # in the error mesage.
-    for section_name, section in CONFIG_TEMPLATE:
+    for section_name, section in CONFIG_TEMPLATE.items():
         for option in section.keys():
             if not config.has_option(section, option):
                 raise configparser.Error("Missing option " + o + " from section " + s)
