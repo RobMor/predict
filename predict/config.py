@@ -94,16 +94,16 @@ def validate_required_options(config):
         Args:
             the configuration object to check 
     """
-    # Raises an error with a message containing the sections present in the template, but not present in 
-    # the actual config. Order not important.
-    template_secs = list(CONFIG_TEMPLATE.keys()) 
-    if config.sections() != template_secs:
-        raise configparser.Error("Missing section(s): " + str(set(template_secs).difference(config.sections())))
+    actual_secs = set(config.sections())
+    required_secs = set(CONFIG_TEMPLATE.keys()) 
+    if actual_secs != required_secs:
+        raise configparser.Error("Missing Required Section(s): " + ", ".join(required_secs - expected_secs))
+
     # Then make sure the passed in config contains all the options it needs. # TODO: Maybe change this to the set diff thing, so we can see more missing options at once
     # in the error mesage.
-    for s in template_secs:
-        for o in CONFIG_TEMPLATE[s].keys():
-            if not config.has_option(s, o):
+    for section_name, section in CONFIG_TEMPLATE:
+        for option in section.keys():
+            if not config.has_option(section, option):
                 raise configparser.Error("Missing option " + o + " from section " + s)
 
 def validate_booleans(config):
