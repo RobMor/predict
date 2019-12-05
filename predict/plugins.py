@@ -37,7 +37,7 @@ class FilterPlugin(PluginBase, abc.ABC):
 	@abc.abstractmethod
 	def filterl(self):
 		"""Defines the functionality associated with this filter.
-		Handles construction of a flask response to be handed back to he user.
+			In general, filters based on provided parameters.
 		"""
 		pass
 
@@ -49,13 +49,13 @@ class DataPlugin(PluginBase, abc.ABC):
 		"""Defines the construction of this data plugin
 
 		Args:
-			data (list of lists): The data that will be exported later. Additional data must be added later.
+			data (list of lists): The data that will be exported later. Additional data must be added to this list.
 		"""
 	pass
 
 	@abc.abstractmethod
 	def add_data(self):
-		"""goes through list and adds the additional data we want.
+		"""goes through list and adds the additional data that was chosen by the user.
 
 		Args:
 			data (list of lists): The data that will be exported later. Additional data must be added later.
@@ -76,9 +76,8 @@ class ConflictPlugin(PluginBase, abc.ABC):
 
 	@abc.abstractmethod
 	def resolve(self):
-		"""Defines the functionality associated with this file format.
-
-		Handles construction of a flask response to be handed back to he user.
+		"""
+		This command resolves all conflicts based on chosen resolution strategy
 		"""
 		pass
 	pass
