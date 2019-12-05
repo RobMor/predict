@@ -148,10 +148,16 @@ def convert_github_link(cve_id: str, parsed_link: urllib.parse.ParseResult) -> s
     )
 
 
-# TODO
 # A dictionary mapping known repositories to their github mirrors.
 # Dict[URL, Tuple[repo_user, repo_name]]
-known_repositories = {"git.qemu.org": ("qemu", "qemu")}
+known_repositories = {
+    "git.qemu.org": ("qemu", "qemu"),
+    "git.openssl.org": ("openssl", "openssl"),
+    "git.kernel.org": ("torvalds", "linux"),
+    "git.videolan.org": ("FFmpeg", "FFmpeg"),
+    "git.libav.org": ("libav", "libav"),
+    "libvirt.org": ("libvirt", "libvirt"),
+}
 
 
 def is_git_link(parsed_link: urllib.parse.ParseResult) -> bool:
@@ -165,7 +171,10 @@ def is_git_link(parsed_link: urllib.parse.ParseResult) -> bool:
     """
     query = urllib.parse.parse_qs(parsed_link.query)
 
-    return parsed_link.netloc in known_repositories and query["a"][0] == "commit"
+    if "a" not in query:
+        return False
+
+    return parsed_link.netloc in known_repositories and "commit" in query["a"][0]
 
 
 def convert_git_link(cve_id: str, parsed_link: urllib.parse.ParseResult) -> str:
