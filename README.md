@@ -1,7 +1,7 @@
 # Predict: CVE Labeling Tool
 
 Predict is a tool meant for researchers looking to trace vulnerabilities back
-through the history of a code base. The tool centers around CVE's as a source
+through the history of a code base. The tool centers around CVEs as a source
 of ground truth and offers many enhancements to the normal vulnerability tracing
 workflow. A few of the main attractions are as follows:
 
