@@ -139,22 +139,17 @@
 }
 
 input.hidden-input {
-    background: transparent;
+    background-color: white;
+    border-color: black;
 
     border-width: 1px;
     border-style: solid;
-    border-radius: 0.25rem;
-    border-color: transparent;
+    border-radius: 5px;
 
     max-width: 10rem;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
-}
-
-input.hidden-input:focus {
-    border-color: black;
-    background-color: white;
 }
 
 .hidden-input-sep {
